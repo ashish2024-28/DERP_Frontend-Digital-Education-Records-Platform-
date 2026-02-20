@@ -6,6 +6,7 @@ import "./Signup.css";
 export default function Signup() {
 
     const API_BASE = "http://localhost:8080";
+    
     const platformLogo = "/Logo.png"
     const univLogo = "/defaultUniversity.png";
 

@@ -4,7 +4,9 @@ import { Link, useParams, Outlet, useNavigate, useLocation} from "react-router-d
 import "./StudentDashboard.css";
 
 export default function StudentDashboard() {
+  
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
+  
   const { domain } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -25,25 +27,35 @@ export default function StudentDashboard() {
 
 
   const fetchAllData = async () => {
-      try {
-          const headers = {
-            "Authorization": `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json"
-          }
+  try {
+    const token = localStorage.getItem("token");
+    console.log("Token sent:", token);
 
-        // Student data
-        const studentRes = await fetch(`${API_BASE}/${domain}/student`, { headers });
-        const studentData = await studentRes.json();
-        setStudent(studentData);
+    const studentRes = await fetch(`${API_BASE}/${domain}/student`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
 
-      } catch (error) {
-      console.error("Error:", error);
-      alert("Error:", error)
-      localStorage.clear();
-      navigate(`/${domain}/login`);
+    console.log("Status:", studentRes.status);
+
+    if (!studentRes.ok) {
+      throw new Error("Unauthorized or server error");
     }
 
-  };
+    const studentData = await studentRes.json();
+    console.log("Student Data:", studentData);
+
+    setStudent(studentData);
+
+  } catch (error) {
+    console.error("Dashboard error:", error);
+    alert("Session expired. Please login again.");
+    localStorage.clear();
+    navigate(`/${domain}/login`);
+  }
+};
     
 
   // user Lougout

@@ -4,7 +4,9 @@ import { Link, useParams, Outlet, useNavigate, useLocation } from "react-router-
 import "./FacultyDashboard.css";
 
 export default function FacultyDashboard() {
+  
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
   const { domain } = useParams();
   const location = useLocation();
   const navigate = useNavigate();

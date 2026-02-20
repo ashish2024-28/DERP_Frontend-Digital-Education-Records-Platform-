@@ -6,6 +6,7 @@ import "./Signup.css";
 export default function SignupConfirm() {
 
     const API_BASE = "http://localhost:8080";
+
     const { domain } = useParams();
     const navigate = useNavigate();
     const location = useLocation();

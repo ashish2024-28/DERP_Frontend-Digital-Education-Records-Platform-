@@ -3,7 +3,9 @@ import { Link, useParams, Outlet, useNavigate, useLocation} from "react-router-d
 import "./SubAdminDashboard.css";
 
 export default function SubAdminDashboard() {
+
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
+  
   const { domain } = useParams();
   const location = useLocation();
   const navigate = useNavigate();

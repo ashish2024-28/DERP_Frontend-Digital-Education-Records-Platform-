@@ -2,7 +2,7 @@ import {  useState } from "react";
 import {  useNavigate } from "react-router-dom";
 
 export default function UniversityRegister() {
-    const API_BASE = "http://localhost:8080/home_page";
+    const API_BASE = import.meta.env.VITE_API_BASE_URL;
     const platformLogo = "/Logo.png"
 
 
@@ -67,7 +67,7 @@ export default function UniversityRegister() {
 
         try {
 
-            const response = await fetch(`${API_BASE}/register_university`, {
+            const response = await fetch(`${API_BASE}/home_page/register_university`, {
                 method: "POST",
                 // body: formData //logo
 

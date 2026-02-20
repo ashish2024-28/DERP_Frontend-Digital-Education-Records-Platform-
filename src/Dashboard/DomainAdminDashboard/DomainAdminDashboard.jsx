@@ -7,6 +7,7 @@ import { Eye, EyeOff } from "lucide-react";
 export default function DomainAdminDashboard() {
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
+  
   const { domain } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -71,11 +72,12 @@ export default function DomainAdminDashboard() {
 
 // 
 console.log(admin)
+
     } catch (error) {
       console.error("Error:", error);
       alert("Error:", error)
-      localStorage.clear();
-      navigate(`/${domain}/login`);
+      // localStorage.clear();
+      // navigate(`/${domain}/login`);
     }
   };
 
