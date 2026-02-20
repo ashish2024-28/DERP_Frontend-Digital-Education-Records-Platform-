@@ -49,7 +49,10 @@ export default function Login() {
 
     fetch(`${API_BASE}/${domain}/signup`)
         .then(res => {
-            if (!res.ok) throw new Error("University not found ");
+            if (!res.ok) {
+                alert("University not found ");
+                throw new Error("University not found ");
+            }
             return res.json();
         })
         .then(data => {

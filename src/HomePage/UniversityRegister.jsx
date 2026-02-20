@@ -3,6 +3,8 @@ import {  useNavigate } from "react-router-dom";
 
 export default function UniversityRegister() {
     const API_BASE = "http://localhost:8080/home_page";
+    const platformLogo = "/Logo.png"
+
 
     const navigate = useNavigate();
     const [university, setUniversity] = useState({
@@ -103,6 +105,11 @@ export default function UniversityRegister() {
             <NavLink>Home</NavLink>
             </div> */}
         <div className="container">
+
+            <div className="login_Signup_Logo-container">
+                <img src={platformLogo} alt="Platform Logo" />
+            </div>
+
             <h1>Register University Form </h1>
             <h2>University details</h2>
 
@@ -125,8 +132,8 @@ export default function UniversityRegister() {
                 <input type="text" name="name" placeholder="Name" onChange={handleDomainAdminChange} required />
                 <input type="tel" name="mobileNumber" placeholder="MobileNumber" onChange={handleDomainAdminChange} autoComplete="tel" required />
                 <input type="email"  name="email" placeholder="Email" onChange={handleDomainAdminChange} autoComplete="email" required />
-                <input type="password" name="password" onChange={handleDomainAdminChange} autoComplete="new-password" required />
-                <input type="password" placeholder="Confirm Password" onChange={(e)=>{setConfirmPassword(e.target.value)}} autoComplete="new-password" required />
+                <input type="password" name="password" onChange={handleDomainAdminChange} autoComplete="new-password" placeholder="Enter Password" required />
+                <input type="password" onChange={(e)=>{setConfirmPassword(e.target.value)}} autoComplete="new-password" placeholder="Confirm Password" required />
 
                 <button type="submit" disabled={loading}>{loading ? "Saving..." : "Signup"}</button>
             </form>
