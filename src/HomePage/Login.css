@@ -1,0 +1,44 @@
+    
+.password-wrapper span {
+    /* style={{ marginLeft: "8px", cursor: "pointer" ,display:"flex" ,}} */
+     top: 5px;  right: 0;  position: absolute;
+}
+
+
+
+/* 📌 Valid Common autocomplete Values
+Field	                        Value
+Email	                        "email"
+Username                        "username"
+New password                    "new-password"
+Current password                "current-password"
+Phone                       	"tel"
+Name                        	"name"
+
+Address Field                   "street-address"  
+City                             "address-level2"
+State                            "address-level1"
+
+
+✅ Browser Autofill Fast Ho Jata Hai
+Agar user ne pehle browser me apna address save kiya hai,
+to ye fields automatically fill ho jayengi.
+
+
+*/
+
+
+/* 
+🎯 Simple Rule Yaad Rakho
+Page Type	Email Field autocomplete
+Login Page	username
+Signup Page	email
+Username Field	username
+Login Password	current-password
+Signup Password	new-password */
+
+
+/* 💡 Final Advice (MNC Level Rule)
+✔ Email field → type="email"
+✔ Login identifier → autoComplete="username"
+✔ Signup email → autoComplete="email" */

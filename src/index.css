@@ -1,0 +1,255 @@
+
+
+
+/* ======================
+   BASE
+====================== */
+body {
+  font-family: Arial, sans-serif;
+  transition: background 0.3s, color 0.3s;
+  margin: 0;
+  padding: 0;
+}
+
+/* ======================
+   LIGHT MODE
+====================== */
+body.light {
+  background: #f4f6f8;
+  color: #000;
+}
+
+/* ======================
+   DARK MODE
+====================== */
+body.dark {
+  background: #121212;
+  color: #fff;
+}
+
+/* ======================
+   LAYOUT
+====================== */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* .title {
+  position: fixed;
+  top: 10px;
+  font-weight: bold;
+} */
+ .title {
+  margin-top: 10px;
+  font-weight: bold;
+  text-align: center;
+}
+
+
+/* ======================
+   LOGO 
+====================== */
+.login_Signup_Logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.login_Signup_Logo-container img{
+    width: 300px;
+    border-radius: 50%;
+    /* transform: scale(1); */
+    
+}   
+
+/* Hover Scale + Glow */
+.login_Signup_Logo-container img:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 20px rgba(79, 70, 229, 0.7), 0 0 30px rgba(79, 70, 229, 0.5);
+}
+
+/* Dark mode glow */
+body.dark .login_Signup_Logo-container img {
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.5), 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+body.dark .login_Signup_Logo-container img:hover {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.7), 0 0 30px rgba(99, 102, 241, 0.5);
+}
+
+
+/* ======================
+   CARD
+====================== */
+.card {
+  padding: 20px;
+  margin-top: 20px;
+  width: 300px;
+  border-radius: 8px;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+body.light .card {
+  background: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+body.dark .card {
+  background: #1e1e1e;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* ======================
+   INPUTS
+====================== */
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  outline: none;
+}
+
+body.light input {
+  background: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+}
+
+body.dark input {
+  background: #2c2c2c;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+/* ======================
+   PASSWORD TOGGLE
+====================== */
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper input {
+  width: 100%;
+
+}
+
+.eye-icon {
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.eye-icon:hover {
+  color: #4f46e5;
+}
+
+/* Dark mode support */
+body.dark .eye-icon {
+  color: #9ca3af;
+}
+
+.password-box span {
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+body.light .password-box span {
+  color: blue;
+}
+
+body.dark .password-box span {
+  color: #9ca3ff;
+}
+
+/* ======================
+   BUTTON
+====================== */
+button {
+  width: 100%;
+  padding: 10px;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* ======================
+   ERROR + LINKS
+====================== */
+.error {
+  color: red;
+  font-size: 14px;
+}
+
+.link {
+  margin-top: 10px;
+  text-align: center;
+}
+
+body.dark .link a {
+  color: #9ca3ff;
+}
+
+/* ======================
+   THEME TOGGLE BUTTON
+====================== */
+.theme-toggle {
+  width: 50px;
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  background: #4f46e5;
+  color: white;
+}
+
+/* login.jsx */ 
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+
+
+
+
+
+
+@media (max-width: 600px) {
+  .card {
+    width: 95%;
+  }
+
+  .login_Signup_Logo-container img {
+    width: 150px;
+  }
+
+}
+
+@media (max-width: 300px) {
+  .card {
+    width: 95%;
+  }
+
+  .login_Signup_Logo-container img {
+    width: 120px;
+  }
+
+}
+
