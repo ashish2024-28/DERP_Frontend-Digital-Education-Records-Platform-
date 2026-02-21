@@ -76,8 +76,8 @@ console.log(admin)
     } catch (error) {
       console.error("Error:", error);
       alert("Error:", error)
-      // localStorage.clear();
-      // navigate(`/${domain}/login`);
+      localStorage.clear();
+      navigate(`/${domain}/login`);
     }
   };
 
