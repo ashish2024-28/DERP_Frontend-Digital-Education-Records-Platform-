@@ -1,6 +1,8 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter , Routes, Route, Navigate } from "react-router-dom";
 import ThemeToggle from "./Components/DarakNLightMode/ThemToggle";
 import { ThemeProvider } from "./Components/DarakNLightMode/ThemeContext"; // Import the Provider you created
+import NotFound from './Error/NotFound_404/NotFound';
+
 // university add
 import UniversityRegister from "./HomePage/UniversityRegister";
 //home
@@ -89,7 +91,8 @@ function App() {
 
 
 
-
+          
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter >
     </ThemeProvider>
