@@ -132,3 +132,8 @@
 .card a:hover {
   text-decoration: underline;
 }
+
+.password-wrapper span {
+    /* style={{ marginLeft: "8px", cursor: "pointer" ,display:"flex" ,}} */
+     top: 5px;  right: 0;  position: absolute;
+}

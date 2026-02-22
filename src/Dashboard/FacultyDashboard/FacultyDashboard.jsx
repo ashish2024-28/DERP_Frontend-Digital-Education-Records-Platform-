@@ -1,7 +1,11 @@
 // // export default StudentDashboard;
 import { useEffect, useState } from "react";
 import { Link, useParams, Outlet, useNavigate, useLocation } from "react-router-dom";
+
+import "../Common/css/common.css";
 import "./FacultyDashboard.css";
+import FormatDate from "../../Components/DateTimeFunction/FormatDate";
+
 
 export default function FacultyDashboard() {
   
@@ -93,8 +97,8 @@ export default function FacultyDashboard() {
           <p>Mobile: {faculty.mobileNumber}</p>
           <p>Course: {faculty.course}</p>
           <p>Teaching Batch: {faculty.teachingBatch}</p>
-          <p>Last Login : {faculty.lastLoginDateTime}</p>
-          <p>Account Created Date: {faculty.createdDateTime}</p>
+          <p>Last Login : {FormatDate(faculty.lastLoginDateTime)}</p>
+          <p>Account Created Date: {FormatDate(faculty.createdDateTime)}</p>
 
           <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
@@ -113,9 +117,7 @@ export default function FacultyDashboard() {
             <Link className="main-content-Link" to={"test-quize"}><div className="card">Tests / Quiz</div> </Link>
             <Link className="main-content-Link" to={"notes"}><div className="card">Note Pad</div> </Link>
 
-            <div className="target-section">
-              Keep your goals section here if you want it on the main page
-            </div>
+           
             <div className="target-section">
 
               <h3>🎯 My Goals</h3>

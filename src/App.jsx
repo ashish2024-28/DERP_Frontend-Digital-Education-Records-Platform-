@@ -1,14 +1,15 @@
 import { BrowserRouter , Routes, Route, Navigate } from "react-router-dom";
 import ThemeToggle from "./Components/DarakNLightMode/ThemToggle";
 import { ThemeProvider } from "./Components/DarakNLightMode/ThemeContext"; // Import the Provider you created
+// NotFound 404 
 import NotFound from './Error/NotFound_404/NotFound';
-
+// Home Page
+import Home from './HomePage/Home/Home';
+import Login from "./HomePage/Login/Login";
+import Signup from "./HomePage/Signup/Signup";
+import SignupConfirm from "./HomePage/Signup/SignupConfirm";
 // university add
-import UniversityRegister from "./HomePage/UniversityRegister";
-//home
-import Login from "./HomePage/Login";
-import Signup from "./HomePage/Signup";
-import SignupConfirm from "./HomePage/SignupConfirm";
+import UniversityRegister from "./HomePage/UniversityRegister/UniversityRegister";
 // common 
 import Notes from "./Dashboard/Common/StudentFacultyDashboard/ClassRoom/Notes";
 import TestQuize from "./Dashboard/Common/StudentFacultyDashboard/ClassRoom/TestsQuiz";
@@ -45,8 +46,8 @@ function App() {
         <ThemeToggle /> {/* This button now has access to the context */}
         <Routes>
           {/* Default redirect */}
-          <Route path="/" element={<Navigate to="/:domain/login" />} />
-
+          <Route path="/" element={<Home />} />
+          {/* <Route path="/" element={<Navigate to="/:domain/login" />} /> */}
           {/* University register */}
           <Route path="/HomePage/university-register" element={<UniversityRegister />} />
 

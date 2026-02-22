@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Search, Edit } from "lucide-react";
-import "./DomainAdminDashboard.css";
 import { Eye, EyeOff } from "lucide-react";
+
+import "../Common/css/common.css";
+import "./DomainAdminDashboard.css";
+import FormatDate from "../../Components/DateTimeFunction/FormatDate";
+
 
 export default function DomainAdminDashboard() {
 
@@ -125,8 +129,8 @@ console.log(admin)
           <p>University Id : {admin.universityId}</p>
           <p>University Name : {admin.universityName}</p>
           <p>University Domain : {admin.domain}</p>
-          <p>Last Login : {admin.lastLoginDateTime}</p>
-          <p>Account Created Date Time : {admin.createdDateTime}</p>
+          <p>Last Login : {FormatDate(admin.lastLoginDateTime)}</p>
+          <p>Account Created Date Time : {FormatDate(admin.createdDateTime)}</p>
 
           <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
@@ -234,8 +238,8 @@ console.log(admin)
                       )}
 
                       <td>{item.course}</td>
-                      <td>{item.lastLoginDateTime}</td>
-                      <td>{item.createdDateTime}</td>
+                      <td>{FormatDate(item.lastLoginDateTime)}</td>
+                      <td>{FormatDate(item.createdDateTime)}</td>
                       <td>
                         {showPassword
                           ? item.password

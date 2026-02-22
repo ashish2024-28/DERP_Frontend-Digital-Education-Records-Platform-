@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
-import "./Signup.css";
+import '../SignupLogin.css'
 
 
 export default function Signup() {
@@ -42,8 +42,16 @@ export default function Signup() {
     
 
     useEffect(() => {
+    if (!domain) return;
+
     fetch(`${API_BASE}/${domain}/signup`)
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) {
+                alert("University not found ");
+                throw new Error("University not found ");
+            }
+            return res.json();
+        })
         .then(data => {
             setUniversityName(data.universityName);
             setUniversityLogoPath(data.universityLogoPath);
@@ -51,8 +59,9 @@ export default function Signup() {
         .catch(err => {
             alert("Error fetching university:", err);
             console.error("Error fetching university:", err);
+            navigate(`/`);
         });
-    }, [domain]);
+    }, [domain], API_BASE, navigate);
 
 
     const handleChange = (e) => {
@@ -70,9 +79,9 @@ export default function Signup() {
             return setError("Invalid email format");
         }
 
-        // if (userData.password.length < 8) {
-        //     return setError("Password must be at least 8 characters");
-        // }
+        if (userData.password.length < 8) {
+            return setError("Password must be at least 8 characters");
+        }
 
         if (userData.password !== confirmPassword) {
             return setError("Passwords do not match");
@@ -110,10 +119,6 @@ export default function Signup() {
                 ↔️
                 <img  src={(universityLogoPath) ? universityLogoPath : `${univLogo}`} alt="University Logo" />
             </div>
-
-            <h1>{universityLogoPath}</h1>
-
-
 
             <form onSubmit={handleSubmit} className="card">
                 {error && <p style={{ color: "red" }}>{error}</p>}

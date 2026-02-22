@@ -1,6 +1,7 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState, Link } from "react";
-import "./Signup.css";
+import '../SignupLogin.css'
+
 
 
 export default function SignupConfirm() {

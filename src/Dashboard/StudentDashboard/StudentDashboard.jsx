@@ -1,17 +1,20 @@
 // // export default StudentDashboard;
 import { useEffect, useState } from "react";
-import { Link, useParams, Outlet, useNavigate, useLocation} from "react-router-dom";
+import { Link, useParams, Outlet, useNavigate, useLocation } from "react-router-dom";
+
+import "../Common/css/common.css";
 import "./StudentDashboard.css";
+import FormatDate from "../../Components/DateTimeFunction/FormatDate"; "../../Components/DateTimeFunction/FormatDate";
 
 export default function StudentDashboard() {
-  
+
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
-  
+
   const { domain } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
 
-    // ===== Data Lists =====
+  // ===== Data Lists =====
   const [student, setStudent] = useState([]);
 
   const [showSidebar, setShowSidebar] = useState(true);
@@ -27,36 +30,31 @@ export default function StudentDashboard() {
 
 
   const fetchAllData = async () => {
-  try {
-    const token = localStorage.getItem("token");
-    console.log("Token sent:", token);
+    try {
+      const token = localStorage.getItem("token");
+      const studentRes = await fetch(`${API_BASE}/${domain}/student`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
 
-    const studentRes = await fetch(`${API_BASE}/${domain}/student`, {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json"
+      if (!studentRes.ok) {
+        throw new Error("Unauthorized or server error");
       }
-    });
 
-    console.log("Status:", studentRes.status);
+      const studentData = await studentRes.json();
+      setStudent(studentData);
+      alert(localStorage.getItem("role") + "Login Successfully.");
 
-    if (!studentRes.ok) {
-      throw new Error("Unauthorized or server error");
+    } catch (error) {
+      console.error("Dashboard error:", error);
+      alert(`Session expired. ${ocalStorage.getItem("role")} Please login again.`);
+      localStorage.clear();
+      navigate(`/${domain}/login`);
     }
+  };
 
-    const studentData = await studentRes.json();
-    console.log("Student Data:", studentData);
-
-    setStudent(studentData);
-
-  } catch (error) {
-    console.error("Dashboard error:", error);
-    alert("Session expired. Please login again.");
-    localStorage.clear();
-    navigate(`/${domain}/login`);
-  }
-};
-    
 
   // user Lougout
   const handleLogout = () => {
@@ -85,28 +83,28 @@ export default function StudentDashboard() {
       {/* Sidebar */}
       {showSidebar && (
         <div className="sidebar">
-            <div className="profile-pic">
-              <img className="profile-pic-img" src={(student.profilePic)?student.profilePic:"../../../public/default.png"} alt="Profile" />
-            </div>
-            <p>img : {student.profilePhotoPath}</p>
-            <p>Roll No : {student.rollNumber}</p>
-            <p>Name : {student.name}</p>
-            <p>Email : {student.email}</p>
-            <p>Mobile: {student.mobileNumber}</p>
-            <p>Father Name : {student.fatherName}</p>
-            <p>Father Mobile : {student.fatherMobNo}</p>
-            <p>Course : {student.course}</p>
-            <p>Branch : {student.branch}</p>
-            <p>Batch : {student.batch}</p>
-            <p>Account Created Date : {student.createdDateTime}</p>
-            <p>Last Login : {student.lastLoginDateTime}</p>
+          <div className="profile-pic">
+            <img className="profile-pic-img" src={(student.profilePic) ? student.profilePic : "/default.png"} alt="Profile" />
+          </div>
+          <p>img : {student.profilePhotoPath}</p>
+          <p>Roll No : {student.rollNumber}</p>
+          <p>Name : {student.name}</p>
+          <p>Email : {student.email}</p>
+          <p>Mobile: {student.mobileNumber}</p>
+          <p>Father Name : {student.fatherName}</p>
+          <p>Father Mobile : {student.fatherMobNo}</p>
+          <p>Course : {student.course}</p>
+          <p>Branch : {student.branch}</p>
+          <p>Batch : {student.batch}</p>
+          <p>Account Created Date : {FormatDate(student.createdDateTime)}</p>
+          <p>Last Login : {FormatDate(student.lastLoginDateTime)}</p>
 
           <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
       )}
 
       {/* Main Content */}
-      <div className="main-content">      
+      <div className="main-content">
         {isParentRoute ? (
           /* ONLY SHOW GRID IF ON MAIN DASHBOARD */
           <div className="card-grid">
@@ -117,10 +115,8 @@ export default function StudentDashboard() {
             <Link className="main-content-Link" to={"assignment"}><div className="card">Assignments</div> </Link>
             <Link className="main-content-Link" to={"test-quize"}><div className="card">Tests / Quiz</div> </Link>
             <Link className="main-content-Link" to={"notes"}><div className="card">Note Pad</div> </Link>
-          
-            <div className="target-section"> 
-              Keep your goals section here if you want it on the main page
-            </div>
+
+            
             <div className="target-section">
 
               <h3>🎯 My Goals</h3>
@@ -135,7 +131,7 @@ export default function StudentDashboard() {
                 ))}
               </ul>
             </div>
-            
+
           </div>
         ) : (
           /* SHOW SUB-PAGE AND BACK BUTTON */
@@ -148,8 +144,8 @@ export default function StudentDashboard() {
         )}
 
 
-          
-        
+
+
       </div>
 
     </div>

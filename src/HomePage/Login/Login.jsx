@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import './Login.css'
+import '../SignupLogin.css'
 
 
 export default function Login() {
@@ -47,7 +47,7 @@ export default function Login() {
     useEffect(() => {
     if (!domain) return;
 
-    fetch(`${API_BASE}/${domain}/signup`)
+    fetch(`${API_BASE}/${domain}/login_profile`)
         .then(res => {
             if (!res.ok) {
                 alert("University not found ");
@@ -60,7 +60,9 @@ export default function Login() {
             setUniversityLogoPath(data.universityLogoPath || "");
         })
         .catch(err => {
+            alert("Error fetching university:", err);
             console.error("Error fetching university:", err);
+            navigate(`/`);
         });
     }, [domain]);
 
@@ -70,7 +72,7 @@ export default function Login() {
         e.preventDefault();
         if (!email || !password) { setError("All fields are required"); return; }
         if (!email.includes("@")) { setError("Enter a valid email"); return; }
-        // if (password.length < 8) { setError("Password must be at least 8 characters"); return; }
+        if (password.length < 8) { setError("Password must be at least 8 characters"); return; }
 
         setError("");
         setLoading(true);
@@ -92,8 +94,7 @@ export default function Login() {
             localStorage.setItem("token", data.token);
             localStorage.setItem("role", data.role);
 
-            alert("Login successful 🎉 token : " + localStorage.getItem("token") + " ,role : " + localStorage.getItem("role"));
-            // alert(` Login successful 🎉 token: ${data.token}  ,role: ${data.role} `);
+            alert("Login successful 🎉 token : " +" ,role : " + localStorage.getItem("role"));
 
             // Redirect based on role
             const rolePath = data.role.toLowerCase().replace('_', '');
@@ -116,9 +117,6 @@ export default function Login() {
                 ↔️
                 <img  src={(universityLogoPath) ? universityLogoPath : `${univLogo}`} alt="University Logo" />
             </div>
-
-            <h1>{universityLogoPath}</h1>
-
 
             <h2>Login</h2>
             <form onSubmit={handleSubmit} className="card">

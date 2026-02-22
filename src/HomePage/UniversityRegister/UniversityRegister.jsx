@@ -41,7 +41,15 @@ export default function UniversityRegister() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        setLoading(true);
+        setError("");
+
+        if (domainAdmin.password.length < 8) {
+            setLoading(false);
+            return setError("Password must be at least 8 characters");
+        }
         if (domainAdmin.password !== confirmPassword) {
+            setLoading(false);
             return setError("Passwords do not match");
         }
         
@@ -88,9 +96,9 @@ export default function UniversityRegister() {
             navigate(`/${university.domain}/login`);
 
         } catch (err) {
-            alert(err)
-            alert(err.message)
-            setError(err);
+            console.error(err)
+            setError(err.message || "Something went wrong");
+            alert("Something went wrong. Please try again.");
         } finally {
             setLoading(false);
         }
