@@ -109,12 +109,12 @@ export default function StudentDashboard() {
           /* ONLY SHOW GRID IF ON MAIN DASHBOARD */
           <div className="card-grid">
             <Link className="main-content-Link" to={"certification"}><div className="card">Certification</div> </Link>
-            <Link className="main-content-Link" to={"notepad"}><div className="card">Notes</div> </Link>
+            <Link className="main-content-Link" to={"notepad"}><div className="card">Notepad</div> </Link>
             <Link className="main-content-Link" to={"erp-attendence"}><div className="card">ERP / Attendance</div> </Link>
             <Link className="main-content-Link" to={"fees"}><div className="card">Fees</div> </Link>
             <Link className="main-content-Link" to={"assignment"}><div className="card">Assignments</div> </Link>
             <Link className="main-content-Link" to={"test-quize"}><div className="card">Tests / Quiz</div> </Link>
-            <Link className="main-content-Link" to={"notes"}><div className="card">Note Pad</div> </Link>
+            <Link className="main-content-Link" to={"notes"}><div className="card">Notes</div> </Link>
 
             
             <div className="target-section">

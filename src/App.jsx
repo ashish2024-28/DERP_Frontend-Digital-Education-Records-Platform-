@@ -14,12 +14,12 @@ import UniversityRegister from "./HomePage/UniversityRegister/UniversityRegister
 import Notes from "./Dashboard/Common/StudentFacultyDashboard/ClassRoom/Notes";
 import TestQuize from "./Dashboard/Common/StudentFacultyDashboard/ClassRoom/TestsQuiz";
 import Assignment from "./Dashboard/Common/StudentFacultyDashboard/ClassRoom/Assignments";
+import Notepad from "./Dashboard/Common/NotePad/Notepad";
 
 
 // Student 
 import StudentDashboard from "./Dashboard/StudentDashboard/StudentDashboard";
 import Certification from "./Dashboard/StudentDashboard/StudentInfo/Certification";
-import StudentNotepad from "./Dashboard/StudentDashboard/StudentInfo/Notepad";
 import StudentErpAttendence from "./Dashboard/StudentDashboard/StudentInfo/ErpAttendence";
 import Fees from "./Dashboard/Common/AdminStudent/Fees";
 
@@ -27,7 +27,6 @@ import Fees from "./Dashboard/Common/AdminStudent/Fees";
 import FacultyDashboard from "./Dashboard/FacultyDashboard/FacultyDashboard";
 import AllStudents from "./Dashboard/FacultyDashboard/FacultyInfo/AllStudnts";
 import FacultyErpAttendence from "./Dashboard/FacultyDashboard/FacultyInfo/ErpAttendence";
-import FacultyNotepad from "./Dashboard/FacultyDashboard/FacultyInfo/Notepad";
 
 // SubAdminDashboard
 import SubAdminDashboard from "./Dashboard/SubAdminDashboard/SubAdminDashboard";
@@ -60,10 +59,10 @@ function App() {
           <Route path="/:domain/student/dashboard" element={<StudentDashboard />} >
             {/* Use index or relative paths */}
             <Route path="certification" element={<Certification />} />
-            <Route path="notepad" element={<StudentNotepad />} />
             <Route path="erp-attendence" element={<StudentErpAttendence />} />
             <Route path="fees" element={<Fees />} />
             {/* common student and faculty */}
+            <Route path="notepad" element={<Notepad />} />
             <Route path="assignment" element={<Assignment />} />
             <Route path="test-quize" element={<TestQuize />} />
             <Route path="notes" element={<Notes />} />
@@ -73,9 +72,9 @@ function App() {
           {/*Faculty Dashboards */}
           <Route path="/:domain/faculty/dashboard" element={<FacultyDashboard />} >
             <Route path="all-students" element={<AllStudents />} />
-            <Route path="notepad" element={<FacultyNotepad />} />
             <Route path="erp-attendence" element={<FacultyErpAttendence />} />
             {/* common student and faculty */}
+            <Route path="notepad" element={<Notepad />} />
             <Route path="assignment" element={<Assignment />} />
             <Route path="test-quize" element={<TestQuize />} />
             <Route path="notes" element={<Notes />} />
@@ -84,11 +83,13 @@ function App() {
 
 
           {/*SubAdmin Dashboards */}
+            <Route path="notepad" element={<Notepad />} />
           <Route path="/:domain/subadmin/dashboard" element={<SubAdminDashboard />} />
 
 
           {/*DomainAdmin Dashboards */}
           <Route path="/:domain/domainAdmin/dashboard" element={<DomainAdminDashboard />} />
+            <Route path="notepad" element={<Notepad />} />
 
 
 

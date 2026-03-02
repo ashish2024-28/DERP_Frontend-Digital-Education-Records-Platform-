@@ -4,8 +4,8 @@ import { useParams } from "react-router-dom";
 export default function Notepad(){
     const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-
     const { domain } = useParams();
+    const role = localStorage.getItem("role")
     const [message, setMessage] = useState("");
     const [title, setTitle] = useState("");
     const [noteText, setNoteText] = useState("");
@@ -19,7 +19,7 @@ export default function Notepad(){
         formData.append("file", file);
         try{
             await fetch(
-                `${API_BASE}/${domain}/${role}/notepad/add`,
+                `${API_BASE}/${domain}/${role}/notespad/add`,
                 {
                     method: "POST",
                     headers:{
@@ -28,13 +28,14 @@ export default function Notepad(){
                     body: formData
                 }
             );
-
+            
             alert("Note Added Successfully");
             setTitle("");
             setNoteText("");
             setFile(null);
         } catch (error) {
             console.log(error);
+            setMessage(`Note not added. \n${error}. \nTry Again...`)
         }
     }
 
