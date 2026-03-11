@@ -15,45 +15,43 @@ export default function SubAdminDashboard() {
 
   // ===== Data Lists =====
   const [subAdmin, setSubAdmin] = useState([]);
+  const [faculty, setFaculty] = useState([]);
+  const [students, setStudents] = useState([]);
+
 
   const [showSidebar, setShowSidebar] = useState(true);
   const [targets, setTargets] = useState([]);
   const [input, setInput] = useState("");
 
-  const navigateLogout = useNavigate(); // Initialize it
+  // ================= FETCH DATA =================
+useEffect(() => {
+    fetchAllData();
+  }, [domain]);
 
-
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch(`${API_BASE}/${domain}/subAdmin`, {
-          method: "GET", // This is the 'Security Check'
-          headers: {
-            "Authorization": `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json"
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error("Unauthorized or server error");
-        }
-
-        const data = await response.json();
-        setSubAdmin(data);
-
-        alert(localStorage.getItem("role") + "Login Successfully.");
-
-      } catch (error) {
-        console.error("Dashboard error:", error);
-        alert(`Session expired. ${localStorage.getItem("role")} Please login again.`);
-        localStorage.clear();
-        navigate(`/${domain}/login`);
+  const fetchAllData = async () => {
+    try {
+      const headers = {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json"
       }
-    }
-    fetchData();
-  }, [domain, API_BASE]);
+      // 1️⃣ Faculty Details
+      const subAdminRes = await fetch(`${API_BASE}/${domain}/subAdmin`, { headers });
+      const subAdminData = await subAdminRes.json();
+      setSubAdmin(subAdminData);
 
+      // 2️⃣ All Students
+      const studentRes = await fetch(`${API_BASE}/${domain}/subAdmin/all_student`, { headers });
+      const studentData = await studentRes.json();
+      setStudents(studentData.data);
+
+
+    } catch (error) {
+      console.error("Error:", error);
+      alert(`Session expired. ${localStorage.getItem("role")} Please login again.`);
+      localStorage.clear();
+      navigate(`/${domain}/login`);
+    }
+  };
   // user Lougout
   const handleLogout = () => {
     localStorage.clear(); // Clear all data
@@ -106,29 +104,9 @@ export default function SubAdminDashboard() {
         {isParentRoute ? (
           /* ONLY SHOW GRID IF ON MAIN DASHBOARD */
           <div className="card-grid">
-            <Link className="main-content-Link" to={"certification"}><div className="card">Certification</div> </Link>
-            <Link className="main-content-Link" to={"notepad"}><div className="card">Notes</div> </Link>
-            <Link className="main-content-Link" to={"erp-attendence"}><div className="card">ERP / Attendance</div> </Link>
-            <Link className="main-content-Link" to={"fees"}><div className="card">Fees</div> </Link>
-            <Link className="main-content-Link" to={"assignment"}><div className="card">Assignments</div> </Link>
-            <Link className="main-content-Link" to={"test-quize"}><div className="card">Tests / Quiz</div> </Link>
-            <Link className="main-content-Link" to={"notes"}><div className="card">Note Pad</div> </Link>
-
-            
-            <div className="target-section">
-
-              <h3>🎯 My Goals</h3>
-              <div className="target-input">
-                <input type="text" placeholder="Write your aim..." value={input} onChange={(e) => setInput(e.target.value)} />
-                <button onClick={addTarget}>+</button>
-              </div>
-
-              <ul>
-                {targets.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </div>
+            <Link className="main-content-Link" to={"all-students"} state={{ students }}><div className="card">All Students</div> </Link>
+            <Link className="main-content-Link" to={"all-faculty"} state={{ faculty }}><div className="card">All Faculty</div> </Link>
+            <Link className="main-content-Link" to={"notepad"}><div className="card">Notepad</div> </Link>
 
           </div>
         ) : (

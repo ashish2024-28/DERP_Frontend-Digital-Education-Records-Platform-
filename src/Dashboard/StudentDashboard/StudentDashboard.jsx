@@ -31,25 +31,21 @@ export default function StudentDashboard() {
 
   const fetchAllData = async () => {
     try {
-      const token = localStorage.getItem("token");
+      
       const studentRes = await fetch(`${API_BASE}/${domain}/student`, {
         headers: {
-          "Authorization": `Bearer ${token}`,
+          "Authorization": `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json"
         }
       });
 
-      if (!studentRes.ok) {
-        throw new Error("Unauthorized or server error");
-      }
-
       const studentData = await studentRes.json();
       setStudent(studentData);
-      alert(localStorage.getItem("role") + "Login Successfully.");
+      alert(localStorage.getItem("role") + " Login Successfully.");
 
     } catch (error) {
       console.error("Dashboard error:", error);
-      alert(`Session expired. ${ocalStorage.getItem("role")} Please login again.`);
+      alert(`Session expired. ${localStorage.getItem("role")} Please login again.`);
       localStorage.clear();
       navigate(`/${domain}/login`);
     }

@@ -87,18 +87,25 @@ export default function UniversityRegister() {
                 })
             });
 
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.message || "Signup failed");
+            let data = {};
+            try {
+                data = await response.json();
+            } catch {
+                data = {};
             }
+            
+            if (!response.ok || !data.success) {
+                throw new Error(data.message);
+            }
+
 
             alert(data.message + " 🎉 Please login as DomainAdmin");
             navigate(`/${university.domain}/login`);
 
         } catch (err) {
-            console.error(err)
-            setError(err.message || "Something went wrong");
-            alert("Something went wrong. Please try again.");
+            const msg = err.message || "Something went wrong";
+            setError(msg);
+            alert(msg);
         } finally {
             setLoading(false);
         }

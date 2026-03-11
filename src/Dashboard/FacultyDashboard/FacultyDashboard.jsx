@@ -16,11 +16,10 @@ export default function FacultyDashboard() {
   const navigate = useNavigate();
 
   // ===== Data Lists =====
+  const [faculty, setFaculty] = useState({});
   const [students, setStudents] = useState([]);
-  const [faculty, setFaculty] = useState([]);
 
   const [showSidebar, setShowSidebar] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
   const [targets, setTargets] = useState([]);
   const [input, setInput] = useState("");
 
@@ -33,8 +32,7 @@ export default function FacultyDashboard() {
   const fetchAllData = async () => {
     try {
       const headers = {
-        "Authorization": `Bearer ${localStorage.getItem("token")
-          }`,
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json"
       }
       // 1️⃣ Faculty Details
@@ -45,25 +43,16 @@ export default function FacultyDashboard() {
       // 2️⃣ All Students
       const studentRes = await fetch(`${API_BASE}/${domain}/faculty/all_student`, { headers });
       const studentData = await studentRes.json();
-      setStudents(studentData);
+      setStudents(studentData.data);
 
 
     } catch (error) {
       console.error("Error:", error);
-      alert("Error:", error)
+      alert(`Session expired. ${localStorage.getItem("role")} Please login again.`);
       localStorage.clear();
       navigate(`/${domain}/login`);
     }
   };
-
-  const studentData = students.filter(item =>
-    item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.rollNumber?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.course?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.branch?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.batch?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.email?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   const handleLogout = () => {
     localStorage.clear(); // Clear all data
@@ -88,7 +77,7 @@ export default function FacultyDashboard() {
       {showSidebar && (
         <div className="sidebar">
           <div className="profile-pic">
-            <img className="profile-pic-img" src={(faculty.profilePhotoPath)? faculty.profilePhotoPath:"../../../public/default.png"} alt="Profile" />
+            <img className="profile-pic-img" src={(faculty.profilePhotoPath)? faculty.profilePhotoPath : "/default.png"} alt="Profile" />
           </div>
             <p>img: {faculty.profilePhotoPath}</p>
           <p>Faculty Id: {faculty.facultyId}</p>
@@ -109,13 +98,13 @@ export default function FacultyDashboard() {
         {isParentRoute ? (
           /* ONLY SHOW GRID IF ON MAIN DASHBOARD */
           <div className="card-grid">
-            <Link className="main-content-Link" to={"all-Students"}><div className="card">All Students</div> </Link>
-            <Link className="main-content-Link" to={"notepad"}><div className="card">Notes</div> </Link>
+            <Link className="main-content-Link" to={"all-students"} state={{ students }}><div className="card">All Students</div> </Link>
+            <Link className="main-content-Link" to={"notepad"}><div className="card">Notepad</div> </Link>
             <Link className="main-content-Link" to={"erp-attendence"}><div className="card">ERP / Attendance</div> </Link>
             {/* common student and faculty */}
             <Link className="main-content-Link" to={"assignment"}><div className="card">Assignments</div> </Link>
             <Link className="main-content-Link" to={"test-quize"}><div className="card">Tests / Quiz</div> </Link>
-            <Link className="main-content-Link" to={"notes"}><div className="card">Note Pad</div> </Link>
+            <Link className="main-content-Link" to={"notes"}><div className="card">Notes</div> </Link>
 
            
             <div className="target-section">

@@ -47,13 +47,13 @@ export default function SignupConfirm() {
                 body: JSON.stringify({ ...userData, role })
             });
 
-            const message = await response.text();
+            const data = await response.json();
 
-            if (!response.ok) {
-                throw new Error(message);
+            if (!response.ok || !data.success) {
+                throw new Error(data.message);
             }
 
-            alert("Signup successful 🎉 Please login");
+            alert(`Signup successful 🎉 Please login\n${data.message}`);
 
             navigate(`/${domain}/login`);
 

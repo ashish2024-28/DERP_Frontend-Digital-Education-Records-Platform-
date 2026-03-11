@@ -24,46 +24,29 @@ export default function Login() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    //   useEffect(() => {
-    //     // Only fetch if domain actually exists in the URL
-    //     if (domain) {
-    //         async function fetchUniversity() {
-    //             try {
-    //                 const response = await fetch(`${API_BASE}/${domain}/login_profile`);
-    //                 // const response = await fetch(`http://localhost:8080/rps/login_profile`);
-    //                 if (!response.ok) throw new Error("University not found");
-
-    //                 const data = await response.json();
-    //                 // 
-    //                 setUniversityName(data.universityName); 
-    //             } catch (err) {
-    //                 alert("Failed to fetch university info:", err);
-    //                 console.error("Failed to fetch university info:", err);
-    //             }
-    //         }
-    //         fetchUniversity();
-    //     }
-    //   }, [domain]);      
     useEffect(() => {
-    if (!domain) return;
+        if (!domain) return;
 
-    fetch(`${API_BASE}/${domain}/login_profile`)
-        .then(res => {
-            if (!res.ok) {
-                alert("University not found ");
-                throw new Error("University not found ");
+        const fetchUniversity = async () => {
+            try {
+                const res = await fetch(`${API_BASE}/${domain}/login_profile`);
+
+                if (!res.ok) {
+                    throw new Error("University not found");
+                }
+
+                const data = await res.json();
+                setUniversityName(data.universityName || "");
+                setUniversityLogoPath(data.universityLogoPath || "");
+
+            } catch (err) {
+                alert(`Error fetching university: ${err.message}`);
+                navigate("/");
             }
-            return res.json();
-        })
-        .then(data => {
-            setUniversityName(data.universityName || "");
-            setUniversityLogoPath(data.universityLogoPath || "");
-        })
-        .catch(err => {
-            alert("Error fetching university:", err);
-            console.error("Error fetching university:", err);
-            navigate(`/`);
-        });
+        };
+
+        fetchUniversity();
+
     }, [domain]);
 
 
@@ -86,18 +69,19 @@ export default function Login() {
             
             const data = await response.json();
 
-            if (!response.ok) {
+            if (!response.ok || !data.success) {
                 throw new Error(data.message || "Login failed");
             }
 
+            const { token, role } = data.data;
             // Save session
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("role", data.role);
+            localStorage.setItem("token", token);
+            localStorage.setItem("role", role);
 
-            alert("Login successful 🎉 token : " +" ,role : " + localStorage.getItem("role"));
+            alert("Login successful 🎉 " +"role : " + localStorage.getItem("role"));
 
             // Redirect based on role
-            const rolePath = data.role.toLowerCase().replace('_', '');
+            const rolePath = data.data.role.toLowerCase().replace('_', '');
             navigate(`/${domain}/${rolePath}/dashboard`);
 
         } catch (err) {

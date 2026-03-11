@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Outlet, useNavigate, useLocation } from "react-router-dom";
+import { useParams, Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import { Search, Edit } from "lucide-react";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -11,7 +11,7 @@ import FormatDate from "../../Components/DateTimeFunction/FormatDate";
 export default function DomainAdminDashboard() {
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
-  
+
   const { domain } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -74,8 +74,8 @@ export default function DomainAdminDashboard() {
       const subData = await subRes.json();
       setSubAdmins(subData);
 
-// 
-console.log(admin)
+      // 
+      console.log(admin)
 
     } catch (error) {
       console.error("Error:", error);
@@ -118,8 +118,8 @@ console.log(admin)
       {showSidebar && (
         <div className="sidebar">
 
-           <div className="profile-pic">
-              <img className="profile-pic-img" src={(admin.profilePic)?admin.profilePic:"../../../public/default.png"} alt="Profile" />
+          <div className="profile-pic">
+            <img className="profile-pic-img" src={(admin.profilePic) ? admin.profilePic : "../../../public/default.png"} alt="Profile" />
           </div>
 
           <p>ID : {admin.id}</p>
@@ -141,6 +141,14 @@ console.log(admin)
 
         {isParentRoute ? (
           <>
+            <div className="card-grid">
+              <Link className="main-content-Link" to={"all-students"} ><div className="card">All Students : {totalStudent}</div> </Link>
+              <Link className="main-content-Link" to={"all-faculty"} ><div className="card">All Faculty : {totalFaculty}</div> </Link>
+              <Link className="main-content-Link" to={"all-subAdmin"} ><div className="card">All SubAdmin : {totalSubAdmin}</div> </Link>
+              {/* common student and faculty */}
+              <Link className="main-content-Link" to={"notepad"}><div className="card">Notepad</div> </Link>
+            </div>
+
             {/* COUNT CARDS */}
             <div className="grid grid-cols-3 gap-6 mb-8">
               <button onClick={() => setActiveTab("student")}>
@@ -195,15 +203,15 @@ console.log(admin)
                     )}
 
                     <th>Course:</th>
-                    <th>Last Login:</th>
-                    <th>Created Date:</th>
-                    <th>
+                    {/* <th>Last Login:</th>
+                    <th>Created Date:</th> */}
+                    {/* <th>
                       Password
-                      <span style={{ marginLeft: "8px", cursor: "pointer" }} 
+                      <span style={{ marginLeft: "8px", cursor: "pointer" }}
                         onClick={() => setShowPassword(!showPassword)}>
                         {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                       </span>
-                    </th>
+                    </th> */}
                   </tr>
                 </thead>
 
@@ -238,13 +246,13 @@ console.log(admin)
                       )}
 
                       <td>{item.course}</td>
-                      <td>{FormatDate(item.lastLoginDateTime)}</td>
+                      {/* <td>{FormatDate(item.lastLoginDateTime)}</td>
                       <td>{FormatDate(item.createdDateTime)}</td>
                       <td>
                         {showPassword
                           ? item.password
                           : "••••••••"}
-                      </td>
+                      </td> */}
 
                     </tr>
                   ))}
@@ -255,7 +263,13 @@ console.log(admin)
             </div>
           </>
         ) : (
-          <Outlet />
+          /* SHOW SUB-PAGE AND BACK BUTTON */
+          <div className="sub-page-container">
+            <button className="back-btn" onClick={() => navigate(-1)}>
+              ← Back to Dashboard
+            </button>
+            <Outlet />
+          </div>
         )}
 
       </div>

@@ -15,6 +15,9 @@ import Notes from "./Dashboard/Common/StudentFacultyDashboard/ClassRoom/Notes";
 import TestQuize from "./Dashboard/Common/StudentFacultyDashboard/ClassRoom/TestsQuiz";
 import Assignment from "./Dashboard/Common/StudentFacultyDashboard/ClassRoom/Assignments";
 import Notepad from "./Dashboard/Common/NotePad/Notepad";
+import AllStudents from "./Dashboard/Common/GetAllRoleDashbord/AllStudent";
+import AllFaculty from "./Dashboard/Common/GetAllRoleDashbord/AllFaculty";
+import AllSubAdmin from "./Dashboard/Common/GetAllRoleDashbord/AllSubAdmin";
 
 
 // Student 
@@ -25,7 +28,6 @@ import Fees from "./Dashboard/Common/AdminStudent/Fees";
 
 // Faculty
 import FacultyDashboard from "./Dashboard/FacultyDashboard/FacultyDashboard";
-import AllStudents from "./Dashboard/FacultyDashboard/FacultyInfo/AllStudnts";
 import FacultyErpAttendence from "./Dashboard/FacultyDashboard/FacultyInfo/ErpAttendence";
 
 // SubAdminDashboard
@@ -71,25 +73,36 @@ function App() {
 
           {/*Faculty Dashboards */}
           <Route path="/:domain/faculty/dashboard" element={<FacultyDashboard />} >
-            <Route path="all-students" element={<AllStudents />} />
             <Route path="erp-attendence" element={<FacultyErpAttendence />} />
-            {/* common student and faculty */}
             <Route path="notepad" element={<Notepad />} />
+            {/* common */}
+            <Route path="all-students" element={<AllStudents />} />
             <Route path="assignment" element={<Assignment />} />
             <Route path="test-quize" element={<TestQuize />} />
-            <Route path="notes" element={<Notes />} />
 
+            <Route path="notes" element={<Notes />} />
           </Route>
 
 
           {/*SubAdmin Dashboards */}
+          <Route path="/:domain/subadmin/dashboard" element={<SubAdminDashboard />} >
+            <Route path="all-faculty" element={<AllStudents />} />
+            {/* common */}
+            <Route path="all-students" element={<AllStudents />} />
             <Route path="notepad" element={<Notepad />} />
-          <Route path="/:domain/subadmin/dashboard" element={<SubAdminDashboard />} />
+
+          </Route>
 
 
           {/*DomainAdmin Dashboards */}
-          <Route path="/:domain/domainAdmin/dashboard" element={<DomainAdminDashboard />} />
+          <Route path="/:domain/domainAdmin/dashboard" element={<DomainAdminDashboard />} >
+            {/* common */}
+            <Route path="all-students" element={<AllStudents />} />
+            <Route path="all-faculty" element={<AllFaculty />} />
+            <Route path="all-subAdmin" element={<AllSubAdmin />} />
             <Route path="notepad" element={<Notepad />} />
+
+          </Route>
 
 
 
