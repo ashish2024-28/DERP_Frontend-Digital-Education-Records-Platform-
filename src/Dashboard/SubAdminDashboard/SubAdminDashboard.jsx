@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useParams, Outlet, useNavigate, useLocation } from "react-router-dom";
 
 import "../Common/css/common.css";
-import "./SubAdminDashboard.css";
 import FormatDate from "../../Components/DateTimeFunction/FormatDate";
 
 export default function SubAdminDashboard() {
@@ -20,11 +19,10 @@ export default function SubAdminDashboard() {
 
 
   const [showSidebar, setShowSidebar] = useState(true);
-  const [targets, setTargets] = useState([]);
   const [input, setInput] = useState("");
 
   // ================= FETCH DATA =================
-useEffect(() => {
+  useEffect(() => {
     fetchAllData();
   }, [domain]);
 
@@ -34,10 +32,15 @@ useEffect(() => {
         "Authorization": `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json"
       }
-      // 1️⃣ Faculty Details
+
       const subAdminRes = await fetch(`${API_BASE}/${domain}/subAdmin`, { headers });
       const subAdminData = await subAdminRes.json();
       setSubAdmin(subAdminData);
+
+      // 1️⃣ Faculty Details
+      const facultyRes = await fetch(`${API_BASE}/${domain}/subAdmin/all_faculty`, { headers });
+      const facultyData = await facultyRes.json();
+      setFaculty(facultyData);
 
       // 2️⃣ All Students
       const studentRes = await fetch(`${API_BASE}/${domain}/subAdmin/all_student`, { headers });
@@ -48,29 +51,55 @@ useEffect(() => {
     } catch (error) {
       console.error("Error:", error);
       alert(`Session expired. ${localStorage.getItem("role")} Please login again.`);
-      localStorage.clear();
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
       navigate(`/${domain}/login`);
     }
   };
   // user Lougout
   const handleLogout = () => {
-    localStorage.clear(); // Clear all data
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
     // Redirect to the specific login page for that domain
-    navigateLogout(`/${domain}/login`);
-  };
-
-
-  const addTarget = () => {
-    if (input.trim() !== "") {
-      setTargets([...targets, input]);
-      setInput("");
-    }
+    navigate(`/${domain}/login`);
   };
 
   // Logic to check if we are on the base dashboard path
   // If the path ends with "/dashboard", show the grid. 
   // If it's "/dashboard/certification", hide the grid.
   const isParentRoute = location.pathname.endsWith("/dashboard");
+
+
+  const handleProfileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("profilePic", file);
+
+    try {
+      const res = await fetch(`${API_BASE}/${domain}/subAdmin/update_profile_pic`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
+        body: formData
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        throw new Error(data.message);
+      }
+      alert(data.message);
+
+      fetchAllData();
+
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   return (
     <div className="dashboard-container">
 
@@ -81,10 +110,18 @@ useEffect(() => {
       {showSidebar && (
         <div className="sidebar">
           <div className="profile-section">
-            <div className="profile-pic">
-              <img className="profile-pic-img" src={(subAdmin.profilePhotoPath ? subAdmin.profilePhotoPath : "/default.png")} alt="Profile" />
-            </div>
-            <p>img  : {subAdmin.profilePhotoPath}</p>
+            <input
+              type="file"
+              id="profileUpload"
+              style={{ display: "none" }}
+              onChange={handleProfileUpload}
+            />
+            <img
+              className="profile-pic-img"
+              src={subAdmin.profilePic ? `${API_BASE}/${subAdmin.profilePic}` : "/default.png"}
+              alt="Profile"
+              onDoubleClick={() => document.getElementById("profileUpload").click()}
+            />
             <p>SubAdmin Id : {subAdmin.subAdminId}</p>
             <p>Name : {subAdmin.name}</p>
             <p>Email : {subAdmin.email}</p>

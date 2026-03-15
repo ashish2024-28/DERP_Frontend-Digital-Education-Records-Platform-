@@ -17,30 +17,37 @@ export default function SignupConfirm() {
     const [checked, setChecked] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    const [otpSent, setOtpSent] = useState(false);
+    const [otp, setOtp] = useState("");
+
+    const [sendingOtp, setSendingOtp] = useState(false);
+    const [verifyingOtp, setVerifyingOtp] = useState(false);
+
     if (!userData) {
         return (
-        <>
-        <h2>No Data Found! </h2>;
-        <h3>Go to <Link to={`/${domain}/signup`}>Signup</Link></h3>
-        </>
+            <>
+                <h2>No Data Found! </h2>;
+                <h3>Go to <Link to={`/${domain}/signup`}>Signup</Link></h3>
+            </>
 
         );
     }
 
-    const handleFinalSubmit = async () => {
-
-        if (!checked) {
-            return alert("Please confirm information");
-        }
-
-        setLoading(true);
+    const createUser = async () => {
 
         let apiEndpoint = "";
-        if (role === "STUDENT") apiEndpoint = `/${domain}/signup/create_student`;
-        else if (role === "FACULTY") apiEndpoint = `/${domain}/signup/create_faculty`;
-        else if (role === "SUB_ADMIN") apiEndpoint = `/${domain}/signup/create_subAdmin`;
+
+        if (role === "STUDENT")
+            apiEndpoint = `/${domain}/signup/create_student`;
+
+        else if (role === "FACULTY")
+            apiEndpoint = `/${domain}/signup/create_faculty`;
+
+        else if (role === "SUB_ADMIN")
+            apiEndpoint = `/${domain}/signup/create_subAdmin`;
 
         try {
+
             const response = await fetch(`${API_BASE}${apiEndpoint}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -53,14 +60,78 @@ export default function SignupConfirm() {
                 throw new Error(data.message);
             }
 
-            alert(`Signup successful 🎉 Please login\n${data.message}`);
+            alert("Signup successful 🎉");
 
             navigate(`/${domain}/login`);
 
         } catch (err) {
             alert(err.message);
+        }
+    };
+
+    const handleFinalSubmit = () => {
+
+        if (!checked) {
+            return alert("Please confirm information");
+        }
+
+        sendOtp();
+    };
+
+    // send otp
+    const sendOtp = async () => {
+
+        try {
+
+            setSendingOtp(true);
+
+            const res = await fetch(`${API_BASE}/otp/send?email=${userData.email}`, {
+                method: "POST"
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                throw new Error(data.message);
+            }
+
+            alert("OTP sent to your email");
+
+            setOtpSent(true);
+
+        } catch (err) {
+            alert(err.message);
         } finally {
-            setLoading(false);
+            setSendingOtp(false);
+        }
+    };
+
+    // verify otp
+    const verifyOtp = async () => {
+        if (!otp) { return alert("Please enter OTP"); }
+
+        try {
+
+            setVerifyingOtp(true);
+
+            const res = await fetch(`${API_BASE}/otp/verify?email=${userData.email}&otp=${otp}`, {
+                method: "POST"
+            });
+
+            const data = await res.json();
+
+            if (!data.success) {
+                throw new Error(data.message);
+            }
+
+            alert("OTP Verified");
+
+            await createUser();
+
+        } catch (err) {
+            alert(err.message);
+        } finally {
+            setVerifyingOtp(false);
         }
     };
 
@@ -80,19 +151,50 @@ export default function SignupConfirm() {
                     )
                 ))}
 
-                <div style={{ marginTop: "15px", display:"flex" }}>
-                    <input type="checkbox" id="checkConform" checked={checked} 
-                        onChange={() => setChecked(!checked)} style={{width:"50px", height:"20px" }} />
-                    <label htmlFor="checkConform" >&nbsp; I confirm all information is correct </label>
+                <div style={{ marginTop: "15px", display: "flex" }}>
+                    <input
+                        type="checkbox"
+                        id="checkConform"
+                        checked={checked}
+                        onChange={() => setChecked(!checked)}
+                        style={{ width: "50px", height: "20px" }}
+                    />
+                    <label htmlFor="checkConform">
+                        &nbsp; I confirm all information is correct
+                    </label>
                 </div>
 
-                <button
-                    onClick={handleFinalSubmit}
-                    disabled={loading}
-                    style={{ margin: "15px" }}
-                >
-                    {loading ? "Submitting..." : "Final Submit"}
-                </button>
+                {/* SEND OTP BUTTON */}
+                {!otpSent && (
+                    <button
+                        onClick={handleFinalSubmit}
+                        disabled={sendingOtp}
+                        style={{ marginTop: "15px" }}
+                    >
+                        {sendingOtp ? "Sending OTP..." : "Send OTP"}
+                    </button>
+                )}
+
+                {/* OTP INPUT + VERIFY */}
+                {otpSent && (
+                    <div style={{ marginTop: "15px" }}>
+
+                        <input
+                            type="text"
+                            placeholder="Enter OTP"
+                            value={otp} maxLength={6}
+                            onChange={(e) => setOtp(e.target.value)}
+                        />
+
+                        <button
+                            onClick={verifyOtp}
+                            disabled={verifyingOtp}
+                        >
+                            {verifyingOtp ? "Verifying..." : "Verify OTP"}
+                        </button>
+
+                    </div>
+                )}
 
                 <button
                     onClick={() =>
@@ -100,7 +202,7 @@ export default function SignupConfirm() {
                             state: { userData, role }
                         })
                     }
-                    style={{ marginLeft: "15px" }}
+                    style={{ marginTop: "15px" }}
                 >
                     Back
                 </button>

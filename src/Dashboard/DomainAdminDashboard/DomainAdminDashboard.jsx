@@ -23,8 +23,6 @@ export default function DomainAdminDashboard() {
   const [totalStudent, setTotalStudent] = useState(0);
   const [totalFaculty, setTotalFaculty] = useState(0);
   const [totalSubAdmin, setTotalSubAdmin] = useState(0);
-  const [showPassword, setShowPassword] = useState(false);
-
 
   // ===== Data Lists =====
   const [students, setStudents] = useState([]);
@@ -35,6 +33,14 @@ export default function DomainAdminDashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showSidebar, setShowSidebar] = useState(true);
 
+  const [editData, setEditData] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const handleChange = (field, value) => {
+    setEditData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
   // ================= FETCH DATA =================
   useEffect(() => {
     fetchAllData();
@@ -50,14 +56,14 @@ export default function DomainAdminDashboard() {
       // 1️⃣ DomainAdmin Details
       const adminRes = await fetch(`${API_BASE}/${domain}/domainAdmin`, { headers });
       const adminData = await adminRes.json();
-      setAdmin(adminData);
+      setAdmin(adminData.data);
 
       // 2️⃣ Dashboard Total Count of Student, Faculty, SubAdmin
       const dashboardRes = await fetch(`${API_BASE}/${domain}/domainAdmin/get_dashboard`, { headers });
       const dashboardData = await dashboardRes.json();
-      setTotalStudent(dashboardData.students);
-      setTotalFaculty(dashboardData.faculty);
-      setTotalSubAdmin(dashboardData.subAdmin);
+      setTotalStudent(dashboardData.data.students);
+      setTotalFaculty(dashboardData.data.faculty);
+      setTotalSubAdmin(dashboardData.data.subAdmin);
 
       // 3️⃣ All Students
       const studentRes = await fetch(`${API_BASE}/${domain}/domainAdmin/all_student`, { headers });
@@ -78,15 +84,49 @@ export default function DomainAdminDashboard() {
       console.log(admin)
 
     } catch (error) {
-      console.error("Error:", error);
-      alert("Error:", error)
-      localStorage.clear();
+      console.error("Error:" + error);
+      alert("Error:" + error)
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+
       navigate(`/${domain}/login`);
     }
   };
 
+  const handleProfileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("profilePic", file);
+
+    try {
+      const res = await fetch(`${API_BASE}/${domain}/domainAdmin/update_profile_pic`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
+        body: formData
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        throw new Error(data.message);
+      }
+      alert(data.message);
+
+      fetchAllData();
+
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   const handleLogout = () => {
-    localStorage.clear();
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+
     navigate(`/${domain}/login`);
   };
 
@@ -109,32 +149,128 @@ export default function DomainAdminDashboard() {
 
   const isParentRoute = location.pathname.endsWith("/dashboard");
 
+
+  const handleEdit = (item) => {
+    setEditData({ ...item }); // clone object
+    setShowEditModal(true);
+  };
+
+  // delete 
+  const handleDelete = async (item) => {
+
+    if (!window.confirm("Delete this user?")) return;
+
+    try {
+
+      let url = "";
+
+      if (activeTab === "student")
+        url = `${API_BASE}/${domain}/domainAdmin/delete_student_by_email?email=${item.email}`;
+
+      if (activeTab === "faculty")
+        url = `${API_BASE}/${domain}/domainAdmin/delete_faculty_by_facultyId?facultyId=${item.facultyId}`;
+
+      if (activeTab === "subAdmin")
+        url = `${API_BASE}/${domain}/domainAdmin/delete_subadmin_by_subadminId?subAdminId=${item.subAdminId}`;
+
+      await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+
+      fetchAllData();
+
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleUpdate = async () => {
+
+    try {
+
+      let url = "";
+
+      if (activeTab === "student")
+        url = `${API_BASE}/${domain}/domainAdmin/update_student_by_email`;
+
+      if (activeTab === "faculty")
+        url = `${API_BASE}/${domain}/domainAdmin/update_faculty_by_facultyId`;
+
+      if (activeTab === "subAdmin")
+        url = `${API_BASE}/${domain}/domainAdmin/update_subadmin_by_subadminId`;
+
+      const dataToSend = { ...editData };
+
+      // remove protected fields
+      delete dataToSend.email;
+      delete dataToSend.password;
+      delete dataToSend.lastLoginDateTime;
+      delete dataToSend.createdDateTime;
+      delete dataToSend.profilePic;
+
+      const res = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify(dataToSend)
+      });
+
+      if (!res.ok) throw new Error("Update failed");
+
+      alert("Updated Successfully");
+
+      setShowEditModal(false);
+
+      fetchAllData();
+
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   return (
-    <div className="dashboard-container">
-      {/* Toggle Button (OUTSIDE SIDEBAR) */}
-      <button className="toggle-btn" onClick={() => setShowSidebar(!showSidebar)} > ☰ </button>
+    <div className="min-h-screen flex flex-col md:flex-row bg-slate-50 dark:bg-slate-950 transition-colors duration-300">      {/* Toggle Button (OUTSIDE SIDEBAR) */}
+      <aside>
+        <button className="toggle-btn" onClick={() => setShowSidebar(!showSidebar)} > ☰ </button>
 
-      {/* Sidebar */}
-      {showSidebar && (
-        <div className="sidebar">
+        {/* Sidebar */}
+        {showSidebar && (
+          <div className="sidebar">
+            <div className="profile-section">
+              <input
+                type="file"
+                id="profileUpload"
+                style={{ display: "none" }}
+                onChange={handleProfileUpload}
+              />
+              <img
+                className="profile-pic-img"
+                src={admin.profilePic ? `${API_BASE}/${admin.profilePic}` : "/default.png"}
+                alt="Profile"
+                onDoubleClick={() => document.getElementById("profileUpload").click()}
+              />
 
-          <div className="profile-pic">
-            <img className="profile-pic-img" src={(admin.profilePic) ? admin.profilePic : "../../../public/default.png"} alt="Profile" />
+              <p>ID : {admin.id}</p>
+              <p>Name : {admin.name}</p>
+              <p>Mobile Number : {admin.mobileNumber}</p>
+              <p>Email : {admin.email}</p>
+              <p>University Id : {admin.universityId}</p>
+              <p>University Name : {admin.universityName}</p>
+              <p>University Domain : {admin.domain}</p>
+              <p>Last Login : {FormatDate(admin.lastLoginDateTime)}</p>
+              <p>Account Created Date Time : {FormatDate(admin.createdDateTime)}</p>
+
+            </div>
+            <button className="logout-btn" onClick={handleLogout}>Logout</button>
           </div>
+        )}
+      </aside>
 
-          <p>ID : {admin.id}</p>
-          <p>Name : {admin.name}</p>
-          <p>Mobile Number : {admin.mobileNumber}</p>
-          <p>Email : {admin.email}</p>
-          <p>University Id : {admin.universityId}</p>
-          <p>University Name : {admin.universityName}</p>
-          <p>University Domain : {admin.domain}</p>
-          <p>Last Login : {FormatDate(admin.lastLoginDateTime)}</p>
-          <p>Account Created Date Time : {FormatDate(admin.createdDateTime)}</p>
-
-          <button className="logout-btn" onClick={handleLogout}>Logout</button>
-        </div>
-      )}
 
       {/* Main Content */}
       <div className="main-content">
@@ -150,7 +286,7 @@ export default function DomainAdminDashboard() {
             </div>
 
             {/* COUNT CARDS */}
-            <div className="grid grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-3 gap-6 mt-10">
               <button onClick={() => setActiveTab("student")}>
                 Students ({totalStudent})
               </button>
@@ -163,7 +299,7 @@ export default function DomainAdminDashboard() {
             </div>
 
             {/* TABLE */}
-            <div className="bg-white shadow rounded-xl p-6">
+            <div className="shadow rounded-xl p-6">
 
               <input
                 type="text"
@@ -175,6 +311,7 @@ export default function DomainAdminDashboard() {
               <table className="table-wrapper">
                 <thead>
                   <tr>
+                    <th>S.NO</th>
                     <th>Name:</th>
                     <th>Email:</th>
                     <th>Mobile Number:</th>
@@ -203,21 +340,16 @@ export default function DomainAdminDashboard() {
                     )}
 
                     <th>Course:</th>
-                    {/* <th>Last Login:</th>
-                    <th>Created Date:</th> */}
-                    {/* <th>
-                      Password
-                      <span style={{ marginLeft: "8px", cursor: "pointer" }}
-                        onClick={() => setShowPassword(!showPassword)}>
-                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                      </span>
-                    </th> */}
+                    <th>Actions</th>
+
                   </tr>
                 </thead>
 
                 <tbody>
                   {filteredData.map((item, index) => (
                     <tr key={index}>
+
+                      <td>{index + 1}</td>
                       <td>{item.name}</td>
                       <td>{item.email}</td>
                       <td>{item.mobileNumber}</td>
@@ -246,21 +378,123 @@ export default function DomainAdminDashboard() {
                       )}
 
                       <td>{item.course}</td>
-                      {/* <td>{FormatDate(item.lastLoginDateTime)}</td>
-                      <td>{FormatDate(item.createdDateTime)}</td>
+
                       <td>
-                        {showPassword
-                          ? item.password
-                          : "••••••••"}
-                      </td> */}
+                        <button className="mb-2" onClick={() => handleEdit(item)}>
+                          <Edit size={20} />
+                        </button>
+
+                        <button onClick={() => handleDelete(item)}>
+                          Delete
+                        </button>
+                      </td>
 
                     </tr>
                   ))}
                 </tbody>
               </table>
+              {showEditModal && (
+                <div className="modal-overlay">
 
+                  <div className="modal-box dark:bg-gray-700  bg-white">
 
+                    <h2 className="underline text-red-700 mb-3 ">Edit {activeTab}</h2>
+
+                    {/* COMMON FIELDS */}
+
+                    <label>Name</label>
+                    <input
+                      value={editData.name || ""}
+                      onChange={(e) => handleChange("name", e.target.value)}
+                    />
+
+                    <label>Mobile</label>
+                    <input
+                      value={editData.mobileNumber || ""}
+                      onChange={(e) => handleChange("mobileNumber", e.target.value)}
+                    />
+
+                    <label>Course</label>
+                    <input
+                      value={editData.course || ""}
+                      onChange={(e) => handleChange("course", e.target.value)}
+                    />
+
+                    {/* STUDENT FIELDS */}
+                    {activeTab === "student" && (
+                      <>
+                        <label>Roll Number</label>
+                        <input
+                          value={editData.rollNumber || ""}
+                          onChange={(e) => handleChange("rollNumber", e.target.value)}
+                        />
+
+                        <label>Branch</label>
+                        <input
+                          value={editData.branch || ""}
+                          onChange={(e) => handleChange("branch", e.target.value)}
+                        />
+
+                        <label>Batch</label>
+                        <input
+                          value={editData.batch || ""}
+                          onChange={(e) => handleChange("batch", e.target.value)}
+                        />
+
+                        <label>Father Name</label>
+                        <input
+                          value={editData.fatherName || ""}
+                          onChange={(e) => handleChange("fatherName", e.target.value)}
+                        />
+
+                        <label>Father Mobile</label>
+                        <input
+                          value={editData.fatherMobNo || ""}
+                          onChange={(e) => handleChange("fatherMobNo", e.target.value)}
+                        />
+                      </>
+                    )}
+
+                    {/* FACULTY FIELDS */}
+                    {activeTab === "faculty" && (
+                      <>
+                        <label>Faculty ID</label>
+                        <input
+                          value={editData.facultyId || ""}
+                          onChange={(e) => handleChange("facultyId", e.target.value)}
+                        />
+
+                        <label>Teaching Batch</label>
+                        <input
+                          value={editData.teachingBatch || ""}
+                          onChange={(e) => handleChange("teachingBatch", e.target.value)}
+                        />
+                      </>
+                    )}
+
+                    {/* SUBADMIN FIELDS */}
+                    {activeTab === "subAdmin" && (
+                      <>
+                        <label>SubAdmin ID</label>
+                        <input
+                          value={editData.subAdminId || ""}
+                          onChange={(e) => handleChange("subAdminId", e.target.value)}
+                        />
+                      </>
+                    )}
+
+                    <div className="modal-actions">
+                      <button onClick={handleUpdate}>Save</button>
+                      <button onClick={() => setShowEditModal(false)}>Cancel</button>
+                    </div>
+
+                  </div>
+
+                </div>
+              )}
             </div>
+
+
           </>
         ) : (
           /* SHOW SUB-PAGE AND BACK BUTTON */

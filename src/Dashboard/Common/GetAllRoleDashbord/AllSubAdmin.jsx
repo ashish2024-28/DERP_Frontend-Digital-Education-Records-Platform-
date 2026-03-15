@@ -12,7 +12,7 @@ export default function AllSubAdmin() {
     const role = localStorage.getItem("role");
     // const location = useLocation();
     const [subAdmin, SetSubAdmin] = useState([]);
-  const [showPassword, setShowPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
 
     const [searchQuery, setSearchQuery] = useState("");
@@ -38,7 +38,8 @@ export default function AllSubAdmin() {
         } catch (error) {
             console.error("Error:", error);
             alert(`Session expired. ${localStorage.getItem("role")} Please login again.`);
-            localStorage.clear();
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
             navigate(`/${domain}/login`);
         }
     };
@@ -57,7 +58,7 @@ export default function AllSubAdmin() {
 
             <h1 className="text-2xl font-bold mb-4">All SubAdmin</h1>
 
-            <div className="bg-white shadow rounded-xl p-6">
+            <div className="shadow rounded-xl p-6">
 
                 <input
                     type="text"
@@ -75,7 +76,6 @@ export default function AllSubAdmin() {
                             <th>Email</th>
                             <th>Mobile Number</th>
                             <th>Course</th>
-                            <th>Batch</th>
                             {role === "DOMAIN_ADMIN" && (<>
                                 <th>Created At</th>
                                 <th>Last Login</th>

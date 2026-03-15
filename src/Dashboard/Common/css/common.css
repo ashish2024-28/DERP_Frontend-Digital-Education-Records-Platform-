@@ -41,7 +41,7 @@ body.dark {
 
 /* Sidebar */
 .sidebar {
-    width: 50vw;
+    width: 35vw;
     background: var(--bg-sidebar);
     color: white;
     margin: 0;

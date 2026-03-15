@@ -13,9 +13,8 @@ export default function Login() {
 
     const { domain } = useParams();
     const navigate = useNavigate();
-
-    const [universityName, setUniversityName] = useState("");
-    const [universityLogoPath, setUniversityLogoPath] = useState("");
+    const university = JSON.parse(localStorage.getItem("universityNameDomainLogo") || "{}");
+    console.log(university)
 
 
     const [email, setEmail] = useState("");
@@ -25,31 +24,12 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (!domain) return;
-
-        const fetchUniversity = async () => {
-            try {
-                const res = await fetch(`${API_BASE}/${domain}/login_profile`);
-
-                if (!res.ok) {
-                    throw new Error("University not found");
-                }
-
-                const data = await res.json();
-                setUniversityName(data.universityName || "");
-                setUniversityLogoPath(data.universityLogoPath || "");
-
-            } catch (err) {
-                alert(`Error fetching university: ${err.message}`);
-                navigate("/");
-            }
-        };
-
-        fetchUniversity();
-
-    }, [domain]);
-
-
+        if (university.domain !== domain) {
+            alert(`Error fetching university. Please select a university from dropdown `);
+            navigate("/");
+            return;
+        }
+    }, [domain, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -66,7 +46,7 @@ export default function Login() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
             });
-            
+
             const data = await response.json();
 
             if (!response.ok || !data.success) {
@@ -78,7 +58,7 @@ export default function Login() {
             localStorage.setItem("token", token);
             localStorage.setItem("role", role);
 
-            alert("Login successful 🎉 " +"role : " + localStorage.getItem("role"));
+            alert("Login successful 🎉 " + "role : " + localStorage.getItem("role"));
 
             // Redirect based on role
             const rolePath = data.data.role.toLowerCase().replace('_', '');
@@ -94,12 +74,12 @@ export default function Login() {
 
     return (
         <div className="container">
-            <h1 className="title">Digital Education Records ↔️ {universityName} </h1>
+            <h1 className="title">DERP ↔️ {university.name} </h1>
 
             <div className="login_Signup_Logo-container">
                 <img src={platformLogo} alt="Platform Logo" />
                 ↔️
-                <img  src={(universityLogoPath) ? universityLogoPath : `${univLogo}`} alt="University Logo" />
+                <img src={`${API_BASE}/${university.logo}`} alt={`${university.name}'s Logo`} />
             </div>
 
             <h2>Login</h2>
@@ -108,7 +88,7 @@ export default function Login() {
                 <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" required />
 
                 <div className="password-wrapper">
-                    <input type={showPassword ? "text" : "password"} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}  autoComplete="current-password" required />
+                    <input type={showPassword ? "text" : "password"} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required />
                     <span
                         onClick={() => setShowPassword(!showPassword)}>
                         {showPassword ? <EyeOff size={30} /> : <Eye size={30} />}

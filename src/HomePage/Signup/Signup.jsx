@@ -7,18 +7,16 @@ export default function Signup() {
 
     const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-    
+
     const platformLogo = "/Logo.png"
     const univLogo = "/defaultUniversity.png";
 
     const { domain } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
+    const university = JSON.parse(localStorage.getItem("universityNameDomainLogo"));
 
-    // university name and logo
-    const [universityName, setUniversityName] = useState("");
-    const [universityLogoPath, setUniversityLogoPath] = useState("");
-    
+
     const [error, setError] = useState("");
     const [role, setRole] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -34,34 +32,20 @@ export default function Signup() {
         course: "",
         //student
         rollNumber: "",
-        branch: "", 
-        batch: "", 
+        branch: "",
+        batch: "",
         fatherName: "",
         fatherMobNo: ""
     });
-    
+
 
     useEffect(() => {
-    if (!domain) return;
-
-    fetch(`${API_BASE}/${domain}/signup`)
-        .then(res => {
-            if (!res.ok) {
-                alert("University not found ");
-                throw new Error("University not found ");
-            }
-            return res.json();
-        })
-        .then(data => {
-            setUniversityName(data.universityName);
-            setUniversityLogoPath(data.universityLogoPath);
-        })
-        .catch(err => {
-            alert("Error fetching university:", err);
-            console.error("Error fetching university:", err);
-            navigate(`/`);
-        });
-    }, [domain], API_BASE, navigate);
+        if (university.domain !== domain) {
+            alert(`Error fetching university. Please select a university from dropdown `);
+            navigate("/");
+            return;
+        }
+    }, [domain, navigate]);
 
 
     const handleChange = (e) => {
@@ -99,8 +83,8 @@ export default function Signup() {
     };
 
 
-// "problem when click back then all data remove"
-// Now it will NOT reset.
+    // "problem when click back then all data remove"
+    // Now it will NOT reset.
     useEffect(() => {
         if (location.state?.userData) {
             setUserData(location.state.userData);
@@ -111,13 +95,15 @@ export default function Signup() {
 
     return (
         <div className="container">
-            <h1>Digital Education Records ↔️ {universityName}</h1>
+            <h1>DERP ↔️ {university.name}</h1>
             <h2>Signup</h2>
 
             <div className="login_Signup_Logo-container">
                 <img src={platformLogo} alt="Platform Logo" />
                 ↔️
-                <img  src={(universityLogoPath) ? universityLogoPath : `${univLogo}`} alt="University Logo" />
+                <img src={`${API_BASE}/${university.logo}`} alt={`${university.name}'s Logo`} />
+
+
             </div>
 
             <form onSubmit={handleSubmit} className="card">
@@ -129,7 +115,7 @@ export default function Signup() {
                 <input type="password" name="password" placeholder="Password" onChange={handleChange} autoComplete="new-password" required />
                 <input type="password" placeholder="Confirm Password" onChange={(e) => setConfirmPassword(e.target.value)} autoComplete="new-password" required />
 
-                <select value={role} onChange={(e) => setRole(e.target.value)} required>
+                <select className="dark:bg-black" value={role} onChange={(e) => setRole(e.target.value)} required>
                     <option value="">Select Role</option>
                     <option value="STUDENT">Student</option>
                     <option value="FACULTY">Faculty</option>

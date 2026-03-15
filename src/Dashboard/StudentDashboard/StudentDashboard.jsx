@@ -1,9 +1,7 @@
-// // export default StudentDashboard;
 import { useEffect, useState } from "react";
 import { Link, useParams, Outlet, useNavigate, useLocation } from "react-router-dom";
 
 import "../Common/css/common.css";
-import "./StudentDashboard.css";
 import FormatDate from "../../Components/DateTimeFunction/FormatDate"; "../../Components/DateTimeFunction/FormatDate";
 
 export default function StudentDashboard() {
@@ -18,7 +16,6 @@ export default function StudentDashboard() {
   const [student, setStudent] = useState([]);
 
   const [showSidebar, setShowSidebar] = useState(true);
-  const [targets, setTargets] = useState([]);
   const [input, setInput] = useState("");
 
   const navigateLogout = useNavigate(); // Initialize it
@@ -31,7 +28,7 @@ export default function StudentDashboard() {
 
   const fetchAllData = async () => {
     try {
-      
+
       const studentRes = await fetch(`${API_BASE}/${domain}/student`, {
         headers: {
           "Authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -46,7 +43,9 @@ export default function StudentDashboard() {
     } catch (error) {
       console.error("Dashboard error:", error);
       alert(`Session expired. ${localStorage.getItem("role")} Please login again.`);
-      localStorage.clear();
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+
       navigate(`/${domain}/login`);
     }
   };
@@ -54,22 +53,48 @@ export default function StudentDashboard() {
 
   // user Lougout
   const handleLogout = () => {
-    localStorage.clear(); // Clear all data
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
     // Redirect to the specific login page for that domain
     navigateLogout(`/${domain}/login`);
-  };
-
-  const addTarget = () => {
-    if (input.trim() !== "") {
-      setTargets([...targets, input]);
-      setInput("");
-    }
   };
 
   // Logic to check if we are on the base dashboard path
   // If the path ends with "/dashboard", show the grid. 
   // If it's "/dashboard/certification", hide the grid.
   const isParentRoute = location.pathname.endsWith("/dashboard");
+
+
+  const handleProfileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("profilePic", file);
+
+    try {
+      const res = await fetch(`${API_BASE}/${domain}/student/update_profile_pic`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
+        body: formData
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        throw new Error(data.message);
+      }
+      alert(data.message);
+
+      fetchAllData();
+
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   return (
     <div className="dashboard-container">
 
@@ -79,21 +104,33 @@ export default function StudentDashboard() {
       {/* Sidebar */}
       {showSidebar && (
         <div className="sidebar">
-          <div className="profile-pic">
-            <img className="profile-pic-img" src={(student.profilePic) ? student.profilePic : "/default.png"} alt="Profile" />
+          <div className="profile-section">
+            <input
+              type="file"
+              id="profileUpload"
+              style={{ display: "none" }}
+              onChange={handleProfileUpload}
+            />
+            <img
+              className="profile-pic-img"
+              src={student.profilePic ? `${API_BASE}/${student.profilePic}` : "/default.png"}
+              alt="Profile"
+              onDoubleClick={() => document.getElementById("profileUpload").click()}
+            />
+
+            <p>Roll No : {student.rollNumber}</p>
+            <p>Name : {student.name}</p>
+            <p>Email : {student.email}</p>
+            <p>Mobile: {student.mobileNumber}</p>
+            <p>Father Name : {student.fatherName}</p>
+            <p>Father Mobile : {student.fatherMobNo}</p>
+            <p>Course : {student.course}</p>
+            <p>Branch : {student.branch}</p>
+            <p>Batch : {student.batch}</p>
+            <p>Last Login : {FormatDate(student.lastLoginDateTime)}</p>
+            <p>Account Created Date : {FormatDate(student.createdDateTime)}</p>
+
           </div>
-          <p>img : {student.profilePhotoPath}</p>
-          <p>Roll No : {student.rollNumber}</p>
-          <p>Name : {student.name}</p>
-          <p>Email : {student.email}</p>
-          <p>Mobile: {student.mobileNumber}</p>
-          <p>Father Name : {student.fatherName}</p>
-          <p>Father Mobile : {student.fatherMobNo}</p>
-          <p>Course : {student.course}</p>
-          <p>Branch : {student.branch}</p>
-          <p>Batch : {student.batch}</p>
-          <p>Account Created Date : {FormatDate(student.createdDateTime)}</p>
-          <p>Last Login : {FormatDate(student.lastLoginDateTime)}</p>
 
           <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
@@ -111,22 +148,6 @@ export default function StudentDashboard() {
             <Link className="main-content-Link" to={"assignment"}><div className="card">Assignments</div> </Link>
             <Link className="main-content-Link" to={"test-quize"}><div className="card">Tests / Quiz</div> </Link>
             <Link className="main-content-Link" to={"notes"}><div className="card">Notes</div> </Link>
-
-            
-            <div className="target-section">
-
-              <h3>🎯 My Goals</h3>
-              <div className="target-input">
-                <input type="text" placeholder="Write your aim..." value={input} onChange={(e) => setInput(e.target.value)} />
-                <button onClick={addTarget}>+</button>
-              </div>
-
-              <ul>
-                {targets.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </div>
 
           </div>
         ) : (

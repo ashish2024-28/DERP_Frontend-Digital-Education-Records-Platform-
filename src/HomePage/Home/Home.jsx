@@ -48,6 +48,16 @@ const Home = () => {
     );
     const handleSelect = (uni) => {
         setSearch(uni.universityName);
+        const universityNameDomainLogo = {
+            name: uni.universityName,
+            domain: uni.domain,
+            logo: uni.universityLogoPath,
+        }
+        localStorage.setItem(
+            "universityNameDomainLogo",
+            JSON.stringify(universityNameDomainLogo)
+        );
+
         setShowDropdown(false);
     };
 

@@ -38,7 +38,8 @@ export default function AllFaculty() {
         } catch (error) {
             console.error("Error:", error);
             alert(`Session expired. ${localStorage.getItem("role")} Please login again.`);
-            localStorage.clear();
+           localStorage.removeItem("token");
+  localStorage.removeItem("role");
             navigate(`/${domain}/login`);
         }
     };
@@ -58,7 +59,7 @@ export default function AllFaculty() {
 
             <h1 className="text-2xl font-bold mb-4">All Facutly</h1>
 
-            <div className="bg-white shadow rounded-xl p-6">
+            <div className="shadow rounded-xl p-6">
 
                 <input
                     type="text"

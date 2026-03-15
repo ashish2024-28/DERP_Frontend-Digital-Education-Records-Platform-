@@ -53,6 +53,10 @@ export default function Notepad() {
 
             } catch (error) {
                 alert(` ${error}`);
+                localStorage.removeItem("token");
+                localStorage.removeItem("role");
+                navigate(`/${domain}/login`);
+
             }
         }
         fetchData();
@@ -135,19 +139,15 @@ export default function Notepad() {
                     className="w-96 p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
             </div>
-            <div className="flex gap-8">
+            <div className="flex gap-8 m-10 ">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
                     {filteredNotes.map((note, index) => (
                         <div
                             key={index}
-                            className={`relative ${getColor(index)} rounded-xl p-5 shadow-lg 
+                            className={`relative ${getColor(index)} rounded-xl  p-5 shadow-lg 
 hover:shadow-2xl hover:-translate-y-2 transition flex flex-col`}
                         >
-
-                            <div className="absolute -top-3 left-4 text-red-500 text-xl">
-                                📌
-                            </div>
 
                             {note.attachmentPath && (
                                 <img
@@ -260,7 +260,7 @@ hover:shadow-2xl hover:-translate-y-2 transition flex flex-col`}
                     value={title} onChange={(e) => setTitle(e.target.value)}
                 />
 
-                <textarea
+                <textarea className=" dark:bg-black"
                     placeholder="Note text" required
                     value={noteText}
                     onChange={(e) => setNoteText(e.target.value)}
