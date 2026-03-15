@@ -1,7 +1,7 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState, Link } from "react";
 import '../SignupLogin.css'
-
+import OtpVerification from "../../Service/OtpVerification";
 
 
 export default function SignupConfirm() {
@@ -17,11 +17,13 @@ export default function SignupConfirm() {
     const [checked, setChecked] = useState(false);
     const [loading, setLoading] = useState(false);
 
+
     const [otpSent, setOtpSent] = useState(false);
     const [otp, setOtp] = useState("");
 
     const [sendingOtp, setSendingOtp] = useState(false);
     const [verifyingOtp, setVerifyingOtp] = useState(false);
+    const [otpVerified, setOtpVerified] = useState(false);
 
     if (!userData) {
         return (
@@ -69,18 +71,24 @@ export default function SignupConfirm() {
         }
     };
 
-    const handleFinalSubmit = () => {
+    const handleFinalSubmit = async () => {
 
         if (!checked) {
             return alert("Please confirm information");
         }
 
-        sendOtp();
+        if (!otpVerified) {
+            return alert("Please verify OTP first");
+        }
+
+        await createUser();
     };
 
     // send otp
     const sendOtp = async () => {
-
+        if (verifyingOtp) {
+            return alert("OTP Verified");
+        }
         try {
 
             setSendingOtp(true);
@@ -108,7 +116,8 @@ export default function SignupConfirm() {
 
     // verify otp
     const verifyOtp = async () => {
-        if (!otp) { return alert("Please enter OTP"); }
+
+        if (!otp) return alert("Please enter OTP");
 
         try {
 
@@ -124,15 +133,21 @@ export default function SignupConfirm() {
                 throw new Error(data.message);
             }
 
-            alert("OTP Verified");
+            alert("OTP Verified ✅");
 
-            await createUser();
+            setOtpVerified(true);
 
         } catch (err) {
             alert(err.message);
         } finally {
             setVerifyingOtp(false);
         }
+    };
+
+    const resendOtp = async () => {
+        setOtp("");
+        setOtpVerified(false);
+        await sendOtp();
     };
 
     return (
@@ -167,34 +182,30 @@ export default function SignupConfirm() {
                 {/* SEND OTP BUTTON */}
                 {!otpSent && (
                     <button
-                        onClick={handleFinalSubmit}
+                        onClick={sendOtp}
                         disabled={sendingOtp}
-                        style={{ marginTop: "15px" }}
                     >
                         {sendingOtp ? "Sending OTP..." : "Send OTP"}
                     </button>
                 )}
 
                 {/* OTP INPUT + VERIFY */}
-                {otpSent && (
-                    <div style={{ marginTop: "15px" }}>
-
-                        <input
-                            type="text"
-                            placeholder="Enter OTP"
-                            value={otp} maxLength={6}
-                            onChange={(e) => setOtp(e.target.value)}
+                <div className="mt-5">
+                    {otpSent && !otpVerified && (
+                        <OtpVerification
+                            email={userData.email}
+                            onVerified={() => setOtpVerified(true)}
                         />
+                    )}
+                </div>
 
-                        <button
-                            onClick={verifyOtp}
-                            disabled={verifyingOtp}
-                        >
-                            {verifyingOtp ? "Verifying..." : "Verify OTP"}
-                        </button>
-
-                    </div>
-                )}
+                <button
+                    onClick={handleFinalSubmit}
+                    disabled={!otpVerified || loading}
+                    style={{ marginTop: "15px" }}
+                >
+                    Submit Signup
+                </button>
 
                 <button
                     onClick={() =>
@@ -211,3 +222,17 @@ export default function SignupConfirm() {
         </div>
     );
 }
+
+
+
+// Confirm Info
+//    ↓
+// Send OTP
+//    ↓
+// Enter OTP
+//    ↓
+// Verify OTP
+//    ↓
+// OTP Verified ✅
+//    ↓
+// Submit Signup
