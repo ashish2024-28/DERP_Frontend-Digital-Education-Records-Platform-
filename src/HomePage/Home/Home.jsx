@@ -8,12 +8,12 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL;
 const Logo = "/Logo.png"
 
 const Home = () => {
+    console.log(API_BASE)
     const [universities, setUniversities] = useState([]);
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
     const [showDropdown, setShowDropdown] = useState(false);
     const [loading, setLoading] = useState(true);
-
     // ✅ Fetch all universities when home loads
     useEffect(() => {
         const cached = localStorage.getItem("universities");

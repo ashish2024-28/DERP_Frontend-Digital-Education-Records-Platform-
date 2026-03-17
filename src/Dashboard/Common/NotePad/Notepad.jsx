@@ -17,6 +17,8 @@ export default function Notepad() {
     const [selectedNote, setSelectedNote] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [previewImage, setPreviewImage] = useState(null);
+    const [loading, setLoading] = useState(false);
+
     const colors = [
         "bg-yellow-100",
         "bg-blue-100",
@@ -34,7 +36,16 @@ export default function Notepad() {
     );
 
     useEffect(() => {
-        async function fetchData() {
+
+        const localNotes = localStorage.getItem("notepad");
+
+        // 1️⃣ Show notes instantly from localStorage
+        if (localNotes) {
+            setNotepad(JSON.parse(localNotes));
+        }
+        // 2️⃣ Fetch from backend only if localStorage empty
+
+        async function fetchData(background = false) {
             try {
                 const responseNotepad = await fetch(`${API_BASE}/${domain}/${role}/notepad`, {
                     method: "GET",
@@ -50,13 +61,22 @@ export default function Notepad() {
                 }
 
                 setNotepad(data.data);
+                localStorage.setItem("notepad", JSON.stringify(data.data));
+
 
             } catch (error) {
-                alert(` ${error}`);
-                localStorage.removeItem("token");
-                localStorage.removeItem("role");
-                navigate(`/${domain}/login`);
-
+                if (!background) {
+                    alert(` ${error}`);
+                    console.log(error);
+                }
+            }
+            // If no local notes → fetch normally
+            if (!localNotes) {
+                fetchNotes();
+            }
+            // If local notes exist → background sync
+            else {
+                fetchNotes(true);
             }
         }
         fetchData();
@@ -65,6 +85,8 @@ export default function Notepad() {
 
     async function addNote(e) {
         e.preventDefault();
+        setLoading(true);
+
         const formData = new FormData();
         formData.append("title", title);
         formData.append("noteText", noteText);
@@ -86,14 +108,23 @@ export default function Notepad() {
             }
 
             alert("Note Added Successfully");
-            setNotepad([...notepad, data.data]);
+
+            setNotepad(prev => {
+                const updated = [...prev, data.data];
+                localStorage.setItem("notepad", JSON.stringify(updated));
+                return updated;
+            });
+
             setTitle("");
             setNoteText("");
             setFile(null);
         } catch (error) {
             alert(`Note not added. \n${error}. \nTry Again...`)
             setMessage(`Note not added. \n${error}. \nTry Again...`)
+        } finally {
+            setLoading(false); // enable button again
         }
+
     }
 
     async function deleteNote(id) {
@@ -116,7 +147,12 @@ export default function Notepad() {
             }
 
             alert("Note Deleted Successfully");
-            setNotepad(note => note.filter(note => note.id !== id));
+
+            setNotepad(prev => {
+                const updated = prev.filter(note => note.id !== id);
+                localStorage.setItem("notepad", JSON.stringify(updated));
+                return updated;
+            });
 
 
         } catch (error) {
@@ -128,7 +164,7 @@ export default function Notepad() {
 
     return (
         <div>
-            <h2 className>Note Pad </h2>
+            <h2 className="underline font-bold m-5 p-3 text-center text-2xl text-red-600 bg-yellow-300 rounded ">Note Pad </h2>
             <p className="text-red-500">{message}</p>
             <div className="flex justify-center mb-6">
                 <input
@@ -144,7 +180,7 @@ export default function Notepad() {
 
                     {filteredNotes.map((note, index) => (
                         <div
-                            key={index}
+                            key={note.id}
                             className={`relative ${getColor(index)} rounded-xl  p-5 shadow-lg 
 hover:shadow-2xl hover:-translate-y-2 transition flex flex-col`}
                         >
@@ -157,7 +193,7 @@ hover:shadow-2xl hover:-translate-y-2 transition flex flex-col`}
                                 />
                             )}
 
-                            <h3 className="text-lg font-bold mb-2">{note.title}</h3>
+                            <h3 className="text-lg font-bold text-gray-700 mb-2">{note.title}</h3>
 
                             <p className="text-sm text-gray-700 flex-grow">
                                 {note.noteText}
@@ -225,7 +261,7 @@ hover:shadow-2xl hover:-translate-y-2 transition flex flex-col`}
                         />
 
                         <textarea
-                            className="w-full border p-2 rounded mb-4"
+                            className=" w-full border p-2 rounded mb-4"
                             value={selectedNote.noteText}
                             onChange={(e) => setSelectedNote({ ...selectedNote, noteText: e.target.value })}
                             required
@@ -260,8 +296,8 @@ hover:shadow-2xl hover:-translate-y-2 transition flex flex-col`}
                     value={title} onChange={(e) => setTitle(e.target.value)}
                 />
 
-                <textarea className=" dark:bg-black"
-                    placeholder="Note text" required
+                <textarea className="p-3 dark:bg-black"
+                    placeholder="Note text ..." required
                     value={noteText}
                     onChange={(e) => setNoteText(e.target.value)}
                 />
@@ -271,7 +307,14 @@ hover:shadow-2xl hover:-translate-y-2 transition flex flex-col`}
                     onChange={(e) => setFile(e.target.files[0])}
                 />
 
-                <button type="submit">Add Note</button>
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className={`px-4 py-2 rounded text-white ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+                        }`}
+                >
+                    {loading ? "Adding..." : "Add Note"}
+                </button>
             </form>
         </div>
     )
