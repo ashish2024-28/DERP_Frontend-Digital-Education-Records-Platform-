@@ -24,6 +24,7 @@ body.dark {
 /* ===== HERO GRADIENT BACKGROUND ===== */
 
 .home-container {
+     min-height: 100vh;
     padding: 0px 5vw;
     text-align: center;
     position: relative;
@@ -278,3 +279,52 @@ body.dark {
         width: 40%;
     }
 }
+
+
+ 
+/* ── Stats row ───────────────────────────────────── */
+.home-stats {
+  display: flex; gap: 12px;
+  margin-top: 36px; width: 100%; max-width: 520px;
+}
+.home-stat {
+  flex: 1; text-align: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 16px; padding: 16px 12px;
+  backdrop-filter: blur(12px);
+  transition: background 0.3s;
+}
+.home-stat-num {
+  font-family: 'Sora', sans-serif;
+  font-size: 24px; font-weight: 800;
+  color: var(--text-primary); line-height: 1;
+  margin-bottom: 4px;
+}
+.home-stat-label {
+  font-size: 10px; font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+ 
+/* ── Responsive ──────────────────────────────────── */
+@media (max-width: 540px) {
+  .home-hero-title { font-size: 28px; }
+  .home-stats { flex-direction: column; }
+}
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

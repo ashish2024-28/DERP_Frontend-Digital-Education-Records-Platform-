@@ -8,6 +8,10 @@ import Home from './HomePage/Home/Home';
 import Login from "./HomePage/Login/Login";
 import Signup from "./HomePage/Signup/Signup";
 import SignupConfirm from "./HomePage/Signup/SignupConfirm";
+// About
+import About from "./Components/About/About";
+// Contact
+import Contact from "./Components/Contact/Contact";
 // university add
 import UniversityRegister from "./HomePage/UniversityRegister/UniversityRegister";
 // common 
@@ -42,12 +46,16 @@ import DomainAdminDashboard from "./Dashboard/DomainAdminDashboard/DomainAdminDa
 
 function App() {
   return (
+    
     <ThemeProvider> {/* 1. Wrap the entire app here */}
       <BrowserRouter>
         <ThemeToggle /> {/* This button now has access to the context */}
         <Routes>
           {/* Default redirect */}
           <Route path="/" element={<Home />} />
+          {/* About */}
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
           {/* <Route path="/" element={<Navigate to="/:domain/login" />} /> */}
           {/* University register */}
           <Route path="/HomePage/university-register" element={<UniversityRegister />} />

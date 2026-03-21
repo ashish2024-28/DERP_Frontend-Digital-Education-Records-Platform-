@@ -1,40 +1,63 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/footer";
 import "./Home.css";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
-const Logo = "/Logo.png"
+
+// ── localStorage key used by Login.jsx and Signup.jsx too ─────────────────────
+export const UNI_CACHE_KEY = "universities_cache";
 
 const Home = () => {
+
     const [universities, setUniversities] = useState([]);
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
     const [showDropdown, setShowDropdown] = useState(false);
     const [loading, setLoading] = useState(true);
+    const wrapperRef = useRef(null);
 
-    // ✅ Fetch all universities when home loads
+
+    // ✅ Seed from cache immediately, then refresh in background ─────────────────
     useEffect(() => {
-        const cached = localStorage.getItem("universities");
+        const cached = localStorage.getItem(UNI_CACHE_KEY);
         if (cached) {
             setUniversities(JSON.parse(cached));
         }
 
         fetch(`${API_BASE}/home_page`)
-            .then(res => res.json())
-            .then(data => {
-                const sorted = data.sort((a, b) =>
-                    a.universityName.localeCompare(b.universityName)
+            .then((res) => {
+                if (!res.ok) throw new Error("Failed to load universities");
+                return res.json();
+            })
+            .then((data) => {
+                const sorted = [...data].sort((a, b) =>
+                    (a.universityName || "").localeCompare(b.universityName || "")
                 );
                 setUniversities(sorted);
-                setLoading(false);
+                // ✅ FIX: store FULL objects (universityName, domain, universityLogoPath,
+                //         domainEmailId) so Login & Signup can skip their own API calls.
+                localStorage.setItem(UNI_CACHE_KEY, JSON.stringify(sorted));
             })
-            .catch(err => {
-                alert("Error fetching universities. Try again.");
+            .catch((err) => {
                 console.error(err);
-                setLoading(false);
-            });
+                if (!localStorage.getItem(UNI_CACHE_KEY)) {
+                    alert("Error loading universities. Please refresh.");
+                }
+            })
+            .finally(() => setLoading(false));
+    }, []);
+
+    // ── Close dropdown on outside click ─────────────────────────────────────────
+    useEffect(() => {
+        const handler = (e) => {
+            if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+                setShowDropdown(false);
+            }
+        };
+        document.addEventListener("mousedown", handler);
+        return () => document.removeEventListener("mousedown", handler);
     }, []);
 
     // ✅ Filter dropdown
@@ -69,16 +92,19 @@ const Home = () => {
 
 
     return (
-        <>
+        // <>
+        <div className="min-h-screen flex flex-col ">
+
             <Navbar />
 
-            <div className="home-container">
+            {/* ── Hero ────────────────────────────────────────────────────────────── */}
+            <div className="home-container ">
                 {/* Background Logo */}
                 <div className="background-logo"></div>
 
                 <div className="logoTitle">
                     {/* Top Logo */}
-                    <img src={Logo} alt="Platform Logo" className="top-logo" />
+                    <img src="/Logo.png" alt="Platform Logo" className="top-logo" />
 
                     <h1 className="home-title">
                         <span className="blue">Digital</span>{" "}
@@ -97,7 +123,8 @@ const Home = () => {
                     </div>
                 )}
 
-                <div className="search-wrapper">
+                {/* ── Search + dropdown ──────────────────────────────────────────────── */}
+                <div ref={wrapperRef} >
                     <input
                         type="text"
                         placeholder="Search University / Institute / College"
@@ -120,13 +147,15 @@ const Home = () => {
                                     onClick={() => handleSelect(uni)}
                                 >
                                     {uni.universityName}
+
                                 </div>
                             ))}
                         </div>
                     )}
                 </div>
 
-                <div className="button-group">
+                {/* ── Login / Signup buttons ─────────────────────────────────────────── */}
+                <div >
                     <button className="primary-btn" onClick={handleLogin}
                         disabled={loading || !selectedUni}>
                         Login
@@ -145,62 +174,57 @@ const Home = () => {
                 </button>
             </div>
 
+
+
+
+            {/* ── Stats Strip ── */}
+            <div className="grid grid-cols-3 gap-4  w-full max-w-lg fade-up fade-up-5 m-auto">
+                {[
+                    { num: universities.length || "—", label: "Universities", color: "#4285F4" },
+                    { num: "24 / 7", label: "Availability", color: "#34A853" },
+                    { num: "100%", label: "Secure", color: "#EA4335" },
+                ].map(({ num, label, color }) => (
+                    <div key={label}
+                        className="stat-card flex flex-col items-center justify-center py-5 px-3
+                              rounded-2xl bg-white dark:bg-[#181818]
+                              border border-gray-100 dark:border-gray-800
+                              shadow-sm cursor-default select-none">
+                        <span className="text-2xl sm:text-3xl font-extrabold leading-none mb-1"
+                            style={{ color }}>
+                            {num}
+                        </span>
+                        <span className="text-[10px] font-bold tracking-widest uppercase
+                                 text-gray-400 dark:text-gray-500">
+                            {label}
+                        </span>
+                    </div>
+                ))}
+            </div>
+
+            {/* /* {Trust badges} */}
+            <div className="flex flex-wrap justify-center gap-3 mt-8 fade-up fade-up-5 m-auto">
+                {["ISO Certified", "256-bit Encryption", "GDPR Ready"].map((badge) => (
+                    <span key={badge}
+                        className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5
+                               rounded-full bg-gray-50 dark:bg-gray-800
+                               text-gray-500 dark:text-gray-400
+                               border border-gray-200 dark:border-gray-700">
+                        <svg className="w-3 h-3 text-[#34A853]" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clipRule="evenodd" />
+                        </svg>
+                        {badge}
+                    </span>
+                ))}
+            </div>
+
+
+
             <Footer />
-        </>
+        </div>
     );
 };
 
-const styles = {
-    container: {
-        textAlign: "center",
-        marginTop: "120px",
-    },
-    title: {
-        fontSize: "48px",
-        fontWeight: "bold",
-    },
-    search: {
-        width: "100%",
-        padding: "15px",
-        borderRadius: "30px",
-        border: "1px solid #ccc",
-        fontSize: "16px",
-    },
-    dropdown: {
-        position: "absolute",
-        width: "100%",
-        background: "white",
-        border: "1px solid #ddd",
-        borderRadius: "10px",
-        marginTop: "5px",
-        maxHeight: "200px",
-        overflowY: "auto",
-        zIndex: 1000,
-    },
-    dropdownItem: {
-        padding: "10px",
-        cursor: "pointer",
-        display: "flex",
-        alignItems: "center",
-    },
-    btn: {
-        margin: "15px",
-        padding: "10px 25px",
-        borderRadius: "20px",
-        border: "none",
-        background: "#4285F4",
-        color: "white",
-        cursor: "pointer",
-    },
-    createBtn: {
-        marginTop: "40px",
-        padding: "12px 30px",
-        background: "#34A853",
-        border: "none",
-        borderRadius: "25px",
-        color: "white",
-        cursor: "pointer",
-    },
-};
 
 export default Home;

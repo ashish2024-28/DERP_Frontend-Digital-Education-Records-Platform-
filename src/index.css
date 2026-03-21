@@ -1,9 +1,15 @@
-@import "tailwindcss";
 @tailwind base;
 @tailwind componenets;
 @tailwind utilities;
 
-
+/* In your global CSS or Home.css */
+.home-page {
+  padding-top: 64px; /* matches navbar height */
+}
+/* index.css */
+body {
+  padding-top: 64px;
+}
 
 /* ======================
    BASE
