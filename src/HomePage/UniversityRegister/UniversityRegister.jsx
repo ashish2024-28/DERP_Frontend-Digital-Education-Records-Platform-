@@ -65,10 +65,10 @@ const RULES = {
     : v.trim().length > 30      ? "Domain must be under 30 characters."
     : null,
 
-  domainEmailId: (v) =>
-    !v.trim()                                      ? "Domain Email ID is required."
-    : !/^@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v) ? "Must start with @ (e.g. @iitd.ac.in)."
-    : null,
+  // domainEmailId: (v) =>
+  //   !v.trim()                                      ? "Domain Email ID is required."
+  //   : !/^@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v) ? "Must start with @ (e.g. @iitd.ac.in)."
+  //   : null,
 
   // Domain Admin
   adminName: (v) =>
@@ -243,7 +243,7 @@ export default function UniversityRegister() {
     add("uniEmail",          university.email);
     add("uniMobile",         university.mobileNumber);
     add("domain",            university.domain);
-    add("domainEmailId",     university.domainEmailId);
+    // add("domainEmailId",     university.domainEmailId);
     add("adminName",         domainAdmin.name);
     add("adminMobile",       domainAdmin.mobileNumber);
     add("adminEmail",        domainAdmin.email);
@@ -384,10 +384,10 @@ export default function UniversityRegister() {
               onChange={handleUniversityChange} onKeyDown={handleKeyDownMoveNext}
               required disabled={otpSent} maxLength={30} error={fe.domain}
             />
-            <FloatInput label="Domain Email (e.g. @iitd.ac.in)" name="domainEmailId" value={university.domainEmailId}
+            {/* <FloatInput label="Domain Email (e.g. @iitd.ac.in)" name="domainEmailId" value={university.domainEmailId}
               onChange={handleUniversityChange} onKeyDown={handleKeyDownMoveNext}
               required disabled={otpSent} error={fe.domainEmailId}
-            />
+            /> */}
 
           </div>
         </div>

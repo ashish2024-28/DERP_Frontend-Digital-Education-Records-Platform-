@@ -57,7 +57,7 @@ export default function AllSubAdmin() {
 
             <h1 className="text-2xl font-bold mb-4">All SubAdmin</h1>
 
-            <div className="bg-white shadow rounded-xl p-6">
+            <div className=" shadow rounded-xl p-6">
 
                 <input
                     type="text"
@@ -70,12 +70,12 @@ export default function AllSubAdmin() {
 
                     <thead>
                         <tr>
-                            <th>Name</th>
+                            <th>S.No</th>
                             <th>SubAdmin ID</th>
+                            <th>Name</th>
+                            <th>Course</th>
                             <th>Email</th>
                             <th>Mobile Number</th>
-                            <th>Course</th>
-                            <th>Batch</th>
                             {role === "DOMAIN_ADMIN" && (<>
                                 <th>Created At</th>
                                 <th>Last Login</th>
@@ -94,14 +94,15 @@ export default function AllSubAdmin() {
                     <tbody>
                         {filteredData.map((item, index) => (
                             <tr key={index}>
-                                <td>{item.name}</td>
+                                <td>{index+1}.</td>
                                 <td>{item.subAdminId}</td>
+                                <td>{item.name}</td>
+                                <td>{item.course}</td>
                                 <td>{item.email}</td>
                                 <td>{item.mobileNumber}</td>
-                                <td>{item.course}</td>
                                 {role === "DOMAIN_ADMIN" && (<>
-                                    <td>{FormatDate(item.lastLoginDateTime)}</td>
                                     <td>{FormatDate(item.createdDateTime)}</td>
+                                    <td>{FormatDate(item.lastLoginDateTime)}</td>
                                     <td>
                                         {showPassword
                                             ? item.password

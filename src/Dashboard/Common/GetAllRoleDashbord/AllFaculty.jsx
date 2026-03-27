@@ -58,7 +58,7 @@ export default function AllFaculty() {
 
             <h1 className="text-2xl font-bold mb-4">All Facutly</h1>
 
-            <div className="bg-white shadow rounded-xl p-6">
+            <div className=" shadow rounded-xl p-6">
 
                 <input
                     type="text"
@@ -71,11 +71,12 @@ export default function AllFaculty() {
 
                     <thead>
                         <tr>
+                            <th>S.No</th>
                             <th>Faculty ID</th>
                             <th>Name</th>
-                            <th>Email</th>
                             <th>Course</th>
                             <th>Teaching Batch</th>
+                            <th>Email</th>
                             <th>Mobile Number</th>
                             {role === "DOMAIN_ADMIN" && (<>
                                 <th>Created At</th>
@@ -95,15 +96,16 @@ export default function AllFaculty() {
                     <tbody>
                         {filteredData.map((item, index) => (
                             <tr key={index}>
+                                <td>{index+1}.</td>
                                 <td>{item.facultyId}</td>
                                 <td>{item.name}</td>
-                                <td>{item.email}</td>
                                 <td>{item.course}</td>
                                 <td>{item.teachingBatch}</td>
+                                <td>{item.email}</td>
                                 <td>{item.mobileNumber}</td>
                                 {role === "DOMAIN_ADMIN" && (<>
-                                    <td>{FormatDate(item.lastLoginDateTime)}</td>
                                     <td>{FormatDate(item.createdDateTime)}</td>
+                                    <td>{FormatDate(item.lastLoginDateTime)}</td>
                                     <td>
                                         {showPassword
                                             ? item.password
