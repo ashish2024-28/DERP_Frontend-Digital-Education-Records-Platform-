@@ -50,14 +50,14 @@ export default function DomainAdminDashboard() {
       // 1️⃣ DomainAdmin Details
       const adminRes = await fetch(`${API_BASE}/${domain}/domainAdmin`, { headers });
       const adminData = await adminRes.json();
-      setAdmin(adminData);
+      setAdmin(adminData.data);
 
       // 2️⃣ Dashboard Total Count of Student, Faculty, SubAdmin
       const dashboardRes = await fetch(`${API_BASE}/${domain}/domainAdmin/get_dashboard`, { headers });
       const dashboardData = await dashboardRes.json();
-      setTotalStudent(dashboardData.students);
-      setTotalFaculty(dashboardData.faculty);
-      setTotalSubAdmin(dashboardData.subAdmin);
+      setTotalStudent(dashboardData.data.students);
+      setTotalFaculty(dashboardData.data.faculty);
+      setTotalSubAdmin(dashboardData.data.subAdmin);
 
       // 3️⃣ All Students
       const studentRes = await fetch(`${API_BASE}/${domain}/domainAdmin/all_student`, { headers });
@@ -117,20 +117,21 @@ export default function DomainAdminDashboard() {
       {/* Sidebar */}
       {showSidebar && (
         <div className="sidebar">
+          <div className="profile-section">
+            <div className="profile-pic">
+              <img className="profile-pic-img" src={(admin.profilePic) ? admin.profilePic : "../../../public/default.png"} alt="Profile" />
+            </div>
 
-          <div className="profile-pic">
-            <img className="profile-pic-img" src={(admin.profilePic) ? admin.profilePic : "../../../public/default.png"} alt="Profile" />
+            <p>Admin(Domain Admin) ID : {admin.id}</p>
+            <p>Name : {admin.name}</p>
+            <p>Mobile Number : {admin.mobileNumber}</p>
+            <p>Email : {admin.email}</p>
+            <p>University Id : {admin.universityId}</p>
+            <p>University Name : {admin.universityName}</p>
+            <p>University Domain : {admin.domain}</p>
+            <p>Last Login : {FormatDate(admin.lastLoginDateTime)}</p>
+            <p>Account Created Date Time : {FormatDate(admin.createdDateTime)}</p>
           </div>
-
-          <p>ID : {admin.id}</p>
-          <p>Name : {admin.name}</p>
-          <p>Mobile Number : {admin.mobileNumber}</p>
-          <p>Email : {admin.email}</p>
-          <p>University Id : {admin.universityId}</p>
-          <p>University Name : {admin.universityName}</p>
-          <p>University Domain : {admin.domain}</p>
-          <p>Last Login : {FormatDate(admin.lastLoginDateTime)}</p>
-          <p>Account Created Date Time : {FormatDate(admin.createdDateTime)}</p>
 
           <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
@@ -150,103 +151,104 @@ export default function DomainAdminDashboard() {
             </div>
 
             {/* COUNT CARDS */}
-            <div className="grid grid-cols-3 gap-6 mb-8">
-              <button onClick={() => setActiveTab("student")}>
-                Students ({totalStudent})
-              </button>
-              <button onClick={() => setActiveTab("faculty")}>
-                Faculty ({totalFaculty})
-              </button>
-              <button onClick={() => setActiveTab("subAdmin")}>
-                SubAdmin ({totalSubAdmin})
-              </button>
-            </div>
 
-            {/* TABLE */}
-            <div className="bg-white shadow rounded-xl p-6">
+              <div className="grid grid-cols-3 gap-6 mb-8 mt-5">
+                <button onClick={() => setActiveTab("student")}>
+                  Students ({totalStudent})
+                </button>
+                <button onClick={() => setActiveTab("faculty")}>
+                  Faculty ({totalFaculty})
+                </button>
+                <button onClick={() => setActiveTab("subAdmin")}>
+                  SubAdmin ({totalSubAdmin})
+                </button>
+              </div>
 
-              <input
-                type="text"
-                placeholder="Search..."
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="border p-2 mb-4"
-              />
+              {/* TABLE */}
+              <div className="shadow rounded-xl p-6">
 
-              <table className="table-wrapper">
-                <thead>
-                  <tr>
-                    <th>Name:</th>
-                    <th>Email:</th>
-                    <th>Mobile Number:</th>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="border p-2 mb-4"
+                />
 
-                    {activeTab === "student" && (
-                      <>
-                        <th>Roll No:</th>
-                        <th>Branch:</th>
-                        <th>Batch:</th>
-                        <th>Father Name</th>
-                        <th>Father Mob No:</th>
-                      </>
-                    )}
+                <table className="table-wrapper">
+                  <thead>
+                    <tr>
+                      <th>Name:</th>
+                      <th>Email:</th>
+                      <th>Mobile Number:</th>
 
-                    {activeTab === "faculty" && (
-                      <>
-                        <th>Faculty ID:</th>
-                        <th>Teaching Batch:</th>
-                      </>
-                    )}
+                      {activeTab === "student" && (
+                        <>
+                          <th>Roll No:</th>
+                          <th>Branch:</th>
+                          <th>Batch:</th>
+                          <th>Father Name</th>
+                          <th>Father Mob No:</th>
+                        </>
+                      )}
 
-                    {activeTab === "subAdmin" && (
-                      <>
-                        <th>SubAdmin ID:</th>
-                      </>
-                    )}
+                      {activeTab === "faculty" && (
+                        <>
+                          <th>Faculty ID:</th>
+                          <th>Teaching Batch:</th>
+                        </>
+                      )}
 
-                    <th>Course:</th>
-                    {/* <th>Last Login:</th>
+                      {activeTab === "subAdmin" && (
+                        <>
+                          <th>SubAdmin ID:</th>
+                        </>
+                      )}
+
+                      <th>Course:</th>
+                      {/* <th>Last Login:</th>
                     <th>Created Date:</th> */}
-                    {/* <th>
+                      {/* <th>
                       Password
                       <span style={{ marginLeft: "8px", cursor: "pointer" }}
                         onClick={() => setShowPassword(!showPassword)}>
                         {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                       </span>
                     </th> */}
-                  </tr>
-                </thead>
+                    </tr>
+                  </thead>
 
-                <tbody>
-                  {filteredData.map((item, index) => (
-                    <tr key={index}>
-                      <td>{item.name}</td>
-                      <td>{item.email}</td>
-                      <td>{item.mobileNumber}</td>
+                  <tbody>
+                    {filteredData.map((item, index) => (
+                      <tr key={index}>
+                        <td>{item.name}</td>
+                        <td>{item.email}</td>
+                        <td>{item.mobileNumber}</td>
 
-                      {activeTab === "student" && (
-                        <>
-                          <td>{item.rollNumber}</td>
-                          <td>{item.branch}</td>
-                          <td>{item.batch}</td>
-                          <td>{item.fatherName}</td>
-                          <td>{item.fatherMobNo}</td>
-                        </>
-                      )}
+                        {activeTab === "student" && (
+                          <>
+                            <td>{item.rollNumber}</td>
+                            <td>{item.branch}</td>
+                            <td>{item.batch}</td>
+                            <td>{item.fatherName}</td>
+                            <td>{item.fatherMobNo}</td>
+                          </>
+                        )}
 
-                      {activeTab === "faculty" && (
-                        <>
-                          <td>{item.facultyId}</td>
-                          <td>{item.teachingBatch}</td>
-                        </>
-                      )}
+                        {activeTab === "faculty" && (
+                          <>
+                            <td>{item.facultyId}</td>
+                            <td>{item.teachingBatch}</td>
+                          </>
+                        )}
 
-                      {activeTab === "subAdmin" && (
-                        <>
-                          <td>{item.subAdminId}</td>
-                        </>
-                      )}
+                        {activeTab === "subAdmin" && (
+                          <>
+                            <td>{item.subAdminId}</td>
+                          </>
+                        )}
 
-                      <td>{item.course}</td>
-                      {/* <td>{FormatDate(item.lastLoginDateTime)}</td>
+                        <td>{item.course}</td>
+                        {/* <td>{FormatDate(item.lastLoginDateTime)}</td>
                       <td>{FormatDate(item.createdDateTime)}</td>
                       <td>
                         {showPassword
@@ -254,13 +256,13 @@ export default function DomainAdminDashboard() {
                           : "••••••••"}
                       </td> */}
 
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
 
+              </div>
 
-            </div>
           </>
         ) : (
           /* SHOW SUB-PAGE AND BACK BUTTON */

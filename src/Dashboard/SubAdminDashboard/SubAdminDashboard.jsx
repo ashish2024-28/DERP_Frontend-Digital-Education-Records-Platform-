@@ -84,7 +84,6 @@ useEffect(() => {
             <div className="profile-pic">
               <img className="profile-pic-img" src={(subAdmin.profilePhotoPath ? subAdmin.profilePhotoPath : "/default.png")} alt="Profile" />
             </div>
-            <p>img  : {subAdmin.profilePhotoPath}</p>
             <p>SubAdmin Id : {subAdmin.subAdminId}</p>
             <p>Name : {subAdmin.name}</p>
             <p>Email : {subAdmin.email}</p>

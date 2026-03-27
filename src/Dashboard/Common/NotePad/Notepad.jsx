@@ -213,7 +213,7 @@ hover:shadow-2xl hover:-translate-y-2 transition flex flex-col`}
             {showModal && selectedNote && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
 
-                    <div className="bg-white p-6 rounded-xl w-96">
+                    <div className=" p-6 rounded-xl w-96">
 
                         <h2 className="text-xl font-bold mb-4">Edit Note</h2>
 
@@ -225,7 +225,7 @@ hover:shadow-2xl hover:-translate-y-2 transition flex flex-col`}
                         />
 
                         <textarea
-                            className="w-full border p-2 rounded mb-4"
+                            className=" w-full border p-2 rounded mb-4"
                             value={selectedNote.noteText}
                             onChange={(e) => setSelectedNote({ ...selectedNote, noteText: e.target.value })}
                             required
@@ -261,6 +261,7 @@ hover:shadow-2xl hover:-translate-y-2 transition flex flex-col`}
                 />
 
                 <textarea
+                    className="dark:bg-gray-700 rounded-xl p-3 "
                     placeholder="Note text" required
                     value={noteText}
                     onChange={(e) => setNoteText(e.target.value)}

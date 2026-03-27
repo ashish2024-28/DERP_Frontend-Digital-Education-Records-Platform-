@@ -31,7 +31,7 @@ export default function StudentDashboard() {
 
   const fetchAllData = async () => {
     try {
-      
+
       const studentRes = await fetch(`${API_BASE}/${domain}/student`, {
         headers: {
           "Authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -79,21 +79,22 @@ export default function StudentDashboard() {
       {/* Sidebar */}
       {showSidebar && (
         <div className="sidebar">
-          <div className="profile-pic">
-            <img className="profile-pic-img" src={(student.profilePic) ? student.profilePic : "/default.png"} alt="Profile" />
+          <div className="profile-section">
+            <div className="profile-pic">
+              <img className="profile-pic-img" src={(student.profilePic) ? student.profilePic : "/default.png"} alt="Profile" />
+            </div>
+            <p>Roll No : {student.rollNumber}</p>
+            <p>Name : {student.name}</p>
+            <p>Email : {student.email}</p>
+            <p>Mobile: {student.mobileNumber}</p>
+            <p>Father Name : {student.fatherName}</p>
+            <p>Father Mobile : {student.fatherMobNo}</p>
+            <p>Course : {student.course}</p>
+            <p>Branch : {student.branch}</p>
+            <p>Batch : {student.batch}</p>
+            <p>Account Created Date : {FormatDate(student.createdDateTime)}</p>
+            <p>Last Login : {FormatDate(student.lastLoginDateTime)}</p>
           </div>
-          <p>img : {student.profilePhotoPath}</p>
-          <p>Roll No : {student.rollNumber}</p>
-          <p>Name : {student.name}</p>
-          <p>Email : {student.email}</p>
-          <p>Mobile: {student.mobileNumber}</p>
-          <p>Father Name : {student.fatherName}</p>
-          <p>Father Mobile : {student.fatherMobNo}</p>
-          <p>Course : {student.course}</p>
-          <p>Branch : {student.branch}</p>
-          <p>Batch : {student.batch}</p>
-          <p>Account Created Date : {FormatDate(student.createdDateTime)}</p>
-          <p>Last Login : {FormatDate(student.lastLoginDateTime)}</p>
 
           <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
@@ -112,7 +113,7 @@ export default function StudentDashboard() {
             <Link className="main-content-Link" to={"test-quize"}><div className="card">Tests / Quiz</div> </Link>
             <Link className="main-content-Link" to={"notes"}><div className="card">Notes</div> </Link>
 
-            
+
             <div className="target-section">
 
               <h3>🎯 My Goals</h3>

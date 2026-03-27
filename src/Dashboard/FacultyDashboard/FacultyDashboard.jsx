@@ -8,7 +8,7 @@ import FormatDate from "../../Components/DateTimeFunction/FormatDate";
 
 
 export default function FacultyDashboard() {
-  
+
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
   const { domain } = useParams();
@@ -76,18 +76,20 @@ export default function FacultyDashboard() {
       {/* Sidebar */}
       {showSidebar && (
         <div className="sidebar">
-          <div className="profile-pic">
-            <img className="profile-pic-img" src={(faculty.profilePhotoPath)? faculty.profilePhotoPath : "/default.png"} alt="Profile" />
+          <div className="profile-section">
+
+            <div className="profile-pic">
+              <img className="profile-pic-img" src={(faculty.profilePhotoPath) ? faculty.profilePhotoPath : "/default.png"} alt="Profile" />
+            </div>
+            <p>Faculty Id: {faculty.facultyId}</p>
+            <p>Name: {faculty.name}</p>
+            <p>Email: {faculty.email}</p>
+            <p>Mobile: {faculty.mobileNumber}</p>
+            <p>Course: {faculty.course}</p>
+            <p>Teaching Batch: {faculty.teachingBatch}</p>
+            <p>Last Login : {FormatDate(faculty.lastLoginDateTime)}</p>
+            <p>Account Created Date: {FormatDate(faculty.createdDateTime)}</p>
           </div>
-            <p>img: {faculty.profilePhotoPath}</p>
-          <p>Faculty Id: {faculty.facultyId}</p>
-          <p>Name: {faculty.name}</p>
-          <p>Email: {faculty.email}</p>
-          <p>Mobile: {faculty.mobileNumber}</p>
-          <p>Course: {faculty.course}</p>
-          <p>Teaching Batch: {faculty.teachingBatch}</p>
-          <p>Last Login : {FormatDate(faculty.lastLoginDateTime)}</p>
-          <p>Account Created Date: {FormatDate(faculty.createdDateTime)}</p>
 
           <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
@@ -106,7 +108,7 @@ export default function FacultyDashboard() {
             <Link className="main-content-Link" to={"test-quize"}><div className="card">Tests / Quiz</div> </Link>
             <Link className="main-content-Link" to={"notes"}><div className="card">Notes</div> </Link>
 
-           
+
             <div className="target-section">
 
               <h3>🎯 My Goals</h3>
