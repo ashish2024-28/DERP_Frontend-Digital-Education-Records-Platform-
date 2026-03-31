@@ -14,8 +14,8 @@ const CONTACT_LINKS = [
       </svg>
     ),
     label:   "Email",
-    value:   "ashish224444q@gmail.com",
-    href:    "mailto:ashish224444q@gmail.com",
+    value:   "derp.digital.erp@gmail.com",
+    href:    "mailto:derp.digital.erp@gmail.com",
     color:   "blue",
     hint:    "Best for project inquiries & collaboration",
   },

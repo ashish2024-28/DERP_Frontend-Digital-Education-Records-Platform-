@@ -85,18 +85,18 @@ function App() {
             <Route path="notepad" element={<Notepad />} />
             {/* common */}
             <Route path="all-students" element={<AllStudents />} />
+            <Route path="notes" element={<Notes />} />
             <Route path="assignment" element={<Assignment />} />
             <Route path="test-quize" element={<TestQuize />} />
 
-            <Route path="notes" element={<Notes />} />
           </Route>
 
 
           {/*SubAdmin Dashboards */}
           <Route path="/:domain/subadmin/dashboard" element={<SubAdminDashboard />} >
-            <Route path="all-faculty" element={<AllStudents />} />
             {/* common */}
             <Route path="all-students" element={<AllStudents />} />
+            <Route path="all-faculty" element={<AllFaculty />} />
             <Route path="notepad" element={<Notepad />} />
 
           </Route>
