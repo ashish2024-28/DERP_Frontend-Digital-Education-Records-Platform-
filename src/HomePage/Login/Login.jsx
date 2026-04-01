@@ -60,7 +60,7 @@ export default function Login() {
         e.preventDefault();
         if (!email || !password) { setError("All fields are required"); return; }
         if (!email.includes("@")) { setError("Enter a valid email"); return; }
-        if (password.length < 8) { setError("Password must be at least 8 characters"); return; }
+        // if (password.length < 8) { setError("Password must be at least 8 characters"); return; }
 
         setError("");
         setLoading(true);
