@@ -288,8 +288,8 @@ export default function UniversityRegister() {
     setOtpSending(true);
     try {
       const [r1, r2] = await Promise.all([
-        fetch(`${API_BASE}/otp/send?email=${university.email}`,  { method: "POST" }),
-        fetch(`${API_BASE}/otp/send?email=${domainAdmin.email}`, { method: "POST" }),
+        fetch(`${API_BASE}/otp/send?email=${encodeURIComponent(university.email)}`,  { method: "POST" }),
+        fetch(`${API_BASE}/otp/send?email=${encodeURIComponent(domainAdmin.email)}`, { method: "POST" }),
       ]);
       const [d1, d2] = await Promise.all([r1.json(), r2.json()]);
       if (!d1.success || !d2.success) throw new Error("Failed to send OTP to one or both emails.");
@@ -505,7 +505,7 @@ export default function UniversityRegister() {
                   <OtpVerification
                     email={university.email}
                     onVerified={() => setOtpVerifiedUniversity(true)}
-                    onResend={() => fetch(`${API_BASE}/otp/send?email=${university.email}`, { method: "POST" })}
+                    onResend={() => fetch(`${API_BASE}/otp/send?email=${encodeURIComponent(university.email)}`, { method: "POST" })}
                   />
                 )}
               </div>
@@ -520,7 +520,7 @@ export default function UniversityRegister() {
                   <OtpVerification
                     email={domainAdmin.email}
                     onVerified={() => setOtpVerifiedAdmin(true)}
-                    onResend={() => fetch(`${API_BASE}/otp/send?email=${domainAdmin.email}`, { method: "POST" })}
+                    onResend={() => fetch(`${API_BASE}/otp/send?email=${encodeURIComponent(domainAdmin.email)}`, { method: "POST" })}
                   />
                 )}
               </div>
