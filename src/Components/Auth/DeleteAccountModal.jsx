@@ -14,9 +14,12 @@
 import { useState } from "react";
 import OtpStep from "./OtpStep";
 
+const apiBase = import.meta.env.VITE_API_OTP_URL;
+
 const STEP = { WARN: 1, VERIFY: 2, CONFIRM: 3 };
 
-export default function DeleteAccountModal({ name, email, apiBase, onDeleteAccount, onClose }) {
+// export default function DeleteAccountModal({ name, email, apiBase, onDeleteAccount, onClose }) {
+export default function DeleteAccountModal({ name, email, onDeleteAccount, onClose }) {
   const [step,    setStep]    = useState(STEP.WARN);
   const [sending, setSending] = useState(false);
   const [deleting,setDeleting]= useState(false);

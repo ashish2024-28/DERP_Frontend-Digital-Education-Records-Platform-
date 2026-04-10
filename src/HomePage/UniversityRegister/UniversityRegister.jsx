@@ -167,6 +167,7 @@ function FloatInput({
 
 export default function UniversityRegister() {
   const API_BASE     = import.meta.env.VITE_API_BASE_URL;
+  const API_OTP     = import.meta.env.VITE_API_OTP_URL;
   const platformLogo = "/Logo.png";
   const navigate     = useNavigate();
 
@@ -288,8 +289,8 @@ export default function UniversityRegister() {
     setOtpSending(true);
     try {
       const [r1, r2] = await Promise.all([
-        fetch(`${API_BASE}/otp/send?email=${encodeURIComponent(university.email)}`,  { method: "POST" }),
-        fetch(`${API_BASE}/otp/send?email=${encodeURIComponent(domainAdmin.email)}`, { method: "POST" }),
+        fetch(`${API_OTP}/otp/send?email=${encodeURIComponent(university.email)}`,  { method: "POST" }),
+        fetch(`${API_OTP}/otp/send?email=${encodeURIComponent(domainAdmin.email)}`, { method: "POST" }),
       ]);
       const [d1, d2] = await Promise.all([r1.json(), r2.json()]);
       if (!d1.success || !d2.success) throw new Error("Failed to send OTP to one or both emails.");
@@ -505,7 +506,7 @@ export default function UniversityRegister() {
                   <OtpVerification
                     email={university.email}
                     onVerified={() => setOtpVerifiedUniversity(true)}
-                    onResend={() => fetch(`${API_BASE}/otp/send?email=${encodeURIComponent(university.email)}`, { method: "POST" })}
+                    onResend={() => fetch(`${API_OTP}/otp/send?email=${encodeURIComponent(university.email)}`, { method: "POST" })}
                   />
                 )}
               </div>
@@ -520,7 +521,7 @@ export default function UniversityRegister() {
                   <OtpVerification
                     email={domainAdmin.email}
                     onVerified={() => setOtpVerifiedAdmin(true)}
-                    onResend={() => fetch(`${API_BASE}/otp/send?email=${encodeURIComponent(domainAdmin.email)}`, { method: "POST" })}
+                    onResend={() => fetch(`${API_OTP}/otp/send?email=${encodeURIComponent(domainAdmin.email)}`, { method: "POST" })}
                   />
                 )}
               </div>

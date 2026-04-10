@@ -13,6 +13,7 @@ import OtpVerification from "../../Service/Otpverification";
 const platformLogo =  "/Logo.png"
 const defaultUnivLogo =  "/defaultUnivLogo.png"
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
+const API_OTP = import.meta.env.VITE_API_OTP_URL;
 
 // ─── Field labels ─────────────────────────────────────────────────────────────
 const LABELS = {
@@ -161,7 +162,7 @@ export default function SignupConfirm() {
     try {
       // 1️⃣ Check if email is already registered
       const checkRes = await fetch(
-        `${API_BASE}/${domain}/signup/check_email?email=${encodeURIComponent(userData.email)}`,
+        `${API_OTP}/${domain}/signup/check_email?email=${encodeURIComponent(userData.email)}`,
         { method: "GET" }
       );
       const checkCt   = checkRes.headers.get("content-type") ?? "";
@@ -176,7 +177,7 @@ export default function SignupConfirm() {
 
       // 2️⃣ Email is free — send OTP
       const otpRes = await fetch(
-        `${API_BASE}/otp/send?email=${encodeURIComponent(userData.email)}`,
+        `${API_OTP}/otp/send?email=${encodeURIComponent(userData.email)}`,
         { method: "POST" }
       );
       const otpCt   = otpRes.headers.get("content-type") ?? "";
@@ -295,7 +296,7 @@ export default function SignupConfirm() {
               email={userData.email}
               onVerified={handleOtpVerified}
               onResend={() =>
-                fetch(`${API_BASE}/otp/send?email=${encodeURIComponent(userData.email)}`, { method: "POST" })
+                fetch(`${API_OTP}/otp/send?email=${encodeURIComponent(userData.email)}`, { method: "POST" })
               }
             />
 

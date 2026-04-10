@@ -18,7 +18,7 @@ const OTP_LENGTH  = 6;   // number of digit boxes
 const RESEND_SECS = 60;  // seconds before "Resend OTP" becomes available
 
 export default function OtpVerification({ email, onVerified, onResend }) {
-  const API_BASE = import.meta.env.VITE_API_BASE_URL;
+  const API_OTP = import.meta.env.VITE_API_OTP_URL;
 
   // ── State ──────────────────────────────────────────────────────────────────
 
@@ -66,7 +66,7 @@ export default function OtpVerification({ email, onVerified, onResend }) {
 
     try {
       const res = await fetch(
-        `${API_BASE}/otp/verify?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(code)}`,
+        `${API_OTP}/otp/verify?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(code)}`,
         { method: "POST" }
       );
 
@@ -92,7 +92,7 @@ export default function OtpVerification({ email, onVerified, onResend }) {
     } finally {
       setVerifying(false);
     }
-  }, [API_BASE, email, onVerified]);
+  }, [API_OTP, email, onVerified]);
 
   // ── Auto-submit effect ─────────────────────────────────────────────────────
   // Watches the `otp` array. As soon as every box has a digit AND we are not

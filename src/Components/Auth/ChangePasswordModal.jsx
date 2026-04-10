@@ -15,7 +15,10 @@ import OtpStep from "./OtpStep";
 
 const STEP = { SEND: 1, VERIFY: 2, PASSWORD: 3 };
 
-export default function ChangePasswordModal({ email, apiBase, onChangePassword, onClose, onSuccess }) {
+const apiBase = import.meta.env.VITE_API_OTP_URL;
+
+// export default function ChangePasswordModal({ email, apiBase, onChangePassword, onClose, onSuccess }) {
+export default function ChangePasswordModal({ email, onChangePassword, onClose, onSuccess }) {
   const [step,            setStep]            = useState(STEP.SEND);
   const [sending,         setSending]         = useState(false);
   const [newPassword,     setNewPassword]     = useState("");

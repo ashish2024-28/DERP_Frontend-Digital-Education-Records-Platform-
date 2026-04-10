@@ -637,7 +637,6 @@ export default function DomainAdminDashboard() {
       {showChangePasswordModal && (
         <ChangePasswordModal
           email={admin.email}
-          apiBase={API_BASE}
           onChangePassword={handleChangePassword}
           onClose={() => setShowChangePasswordModal(false)}
           onSuccess={() => { setShowChangePasswordModal(false); setActionMsg("Password updated successfully!"); }}

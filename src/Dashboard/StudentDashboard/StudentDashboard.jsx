@@ -908,7 +908,6 @@ export default function StudentDashboard() {
       {showChangePasswordModal && (
         <ChangePasswordModal
           email={student.email}
-          apiBase={API_BASE}
           onChangePassword={handleChangePassword}
           onClose={() => setShowChangePasswordModal(false)}
           onSuccess={() => {
@@ -923,7 +922,6 @@ export default function StudentDashboard() {
         <DeleteAccountModal
           name={student.name}
           email={student.email}
-          apiBase={API_BASE}
           onDeleteAccount={handleDeleteAccount}
           onClose={() => setShowDeleteAccountModal(false)}
         />

@@ -759,7 +759,7 @@ export default function SubAdminDashboard() {
             >
               <img
                 className="profile-pic-img"
-                src={subAdmin.profilePhotoPath ? `${API_BASE}/${subAdmin.profilePhotoPath}` : "/default.png"}
+                src={subAdmin.profilePic ? `${API_BASE}/${subAdmin.profilePic}` : "/default.png"}
                 alt="Profile"
               />
               <div style={{ position: "absolute", bottom: 0, right: 0, background: "#2563eb", borderRadius: "50%", width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, border: "2px solid #fff" }}>✎</div>
@@ -827,7 +827,7 @@ export default function SubAdminDashboard() {
       {showProfilePicModal && (
         <Modal title="Update Profile Picture" onClose={() => { setShowProfilePicModal(false); clearFeedback(); }}>
           <div style={{ textAlign: "center", marginBottom: 16 }}>
-            <img src={profilePicPreview || (subAdmin.profilePhotoPath ? `${API_BASE}/${subAdmin.profilePhotoPath}` : "/default.png")} alt="Preview" style={{ width: 110, height: 110, borderRadius: "50%", objectFit: "cover", border: "3px solid #e5e7eb" }} />
+            <img src={profilePicPreview || (subAdmin.profilePic ? `${API_BASE}/${subAdmin.profilePic}` : "/default.png")} alt="Preview" style={{ width: 110, height: 110, borderRadius: "50%", objectFit: "cover", border: "3px solid #e5e7eb" }} />
           </div>
           <label style={labelStyle}>Choose New Profile Picture</label>
           <input type="file" accept="image/*" onChange={handleProfilePicChange} style={{ ...fieldStyle, padding: "6px" }} />
@@ -859,7 +859,6 @@ export default function SubAdminDashboard() {
       {showChangePasswordModal && (
         <ChangePasswordModal
           email={subAdmin.email}
-          apiBase={API_BASE}
           onChangePassword={handleChangePassword}
           onClose={() => setShowChangePasswordModal(false)}
           onSuccess={() => { setShowChangePasswordModal(false); setActionMsg("Password updated successfully!"); }}
@@ -870,7 +869,6 @@ export default function SubAdminDashboard() {
         <DeleteAccountModal
           name={subAdmin.name}
           email={subAdmin.email}
-          apiBase={API_BASE}
           onDeleteAccount={handleDeleteAccount}
           onClose={() => setShowDeleteAccountModal(false)}
         />

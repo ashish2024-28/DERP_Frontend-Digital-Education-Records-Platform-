@@ -10,10 +10,12 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 
+const apiBase = import.meta.env.VITE_API_OTP_URL;
 const OTP_LEN    = 6;
 const RESEND_SEC = 60;
 
-export default function OtpStep({ email, apiBase, onVerified }) {
+// export default function OtpStep({ email, apiBase, onVerified }) {
+export default function OtpStep({ email, onVerified }) {
   const [otp,       setOtp]       = useState(Array(OTP_LEN).fill(""));
   const [error,     setError]     = useState("");
   const [verifying, setVerifying] = useState(false);

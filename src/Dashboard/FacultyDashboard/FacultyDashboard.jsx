@@ -1128,7 +1128,6 @@ export default function FacultyDashboard() {
       {showChangePasswordModal && (
         <ChangePasswordModal
           email={faculty.email}
-          apiBase={API_BASE}
           onChangePassword={handleChangePassword}
           onClose={() => setShowChangePasswordModal(false)}
           onSuccess={() => { setShowChangePasswordModal(false); setActionMsg("Password updated successfully!"); }}
@@ -1139,7 +1138,6 @@ export default function FacultyDashboard() {
         <DeleteAccountModal
           name={faculty.name}
           email={faculty.email}
-          apiBase={API_BASE}
           onDeleteAccount={handleDeleteAccount}
           onClose={() => setShowDeleteAccountModal(false)}
         />
