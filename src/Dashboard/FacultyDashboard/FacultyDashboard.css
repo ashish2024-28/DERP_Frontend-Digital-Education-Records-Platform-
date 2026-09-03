@@ -30,3 +30,85 @@
 
 
 
+.faculty-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, .55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.faculty-modal {
+    width: min(500px, 95vw);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+
+.faculty-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 17px 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.faculty-modal-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.faculty-modal-header button {
+    border: 0;
+    background: transparent;
+    font-size: 22px;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+.faculty-modal-body {
+    padding: 20px;
+}
+
+.faculty-modal-body label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 5px;
+}
+
+.faculty-modal-body input {
+    width: 100%;
+    padding: 10px 11px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    margin-bottom: 10px;
+    outline: none;
+}
+
+.faculty-modal-body input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+}
+
+.faculty-primary-button {
+    width: 100%;
+    padding: 11px;
+    border: 0;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.faculty-primary-button:hover {
+    background: #1d4ed8;
+}

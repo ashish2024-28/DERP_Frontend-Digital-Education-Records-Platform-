@@ -1,123 +1,267 @@
-import { BrowserRouter , Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import ThemeToggle from "./Components/DarakNLightMode/ThemToggle";
-import { ThemeProvider } from "./Components/DarakNLightMode/ThemeContext"; // Import the Provider you created
-// NotFound 404 
-import NotFound from './Error/NotFound_404/NotFound';
-// Home Page
-import Home from './HomePage/Home/Home';
+import { ThemeProvider } from "./Components/DarakNLightMode/ThemeContext";
+
+// 404
+import NotFound from "./Error/NotFound_404/NotFound";
+
+// Home
+import Home from "./HomePage/Home/Home";
 import Login from "./HomePage/Login/Login";
 import Signup from "./HomePage/Signup/Signup";
 import SignupConfirm from "./HomePage/Signup/SignupConfirm";
-// About
+
+// Common
 import About from "./Components/About/About";
-// Contact
 import Contact from "./Components/Contact/Contact";
-// university add
 import UniversityRegister from "./HomePage/UniversityRegister/UniversityRegister";
-// common 
+
 import Notes from "./Dashboard/Common/StudentFacultyDashboard/ClassRoom/Notes";
 import TestQuize from "./Dashboard/Common/StudentFacultyDashboard/ClassRoom/TestsQuiz";
 import Assignment from "./Dashboard/Common/StudentFacultyDashboard/ClassRoom/Assignments";
 import Notepad from "./Dashboard/Common/NotePad/Notepad";
+
 import AllStudents from "./Dashboard/Common/GetAllRoleDashbord/AllStudent";
 import AllFaculty from "./Dashboard/Common/GetAllRoleDashbord/AllFaculty";
 import AllSubAdmin from "./Dashboard/Common/GetAllRoleDashbord/AllSubAdmin";
+import AllFeesAdmin from "./Dashboard/Common/GetAllRoleDashbord/AllFeesAdmin";
 
-
-// Student 
+// Student
 import StudentDashboard from "./Dashboard/StudentDashboard/StudentDashboard";
 import Certification from "./Dashboard/StudentDashboard/StudentInfo/Certification";
-import StudentErpAttendence from "./Dashboard/StudentDashboard/StudentInfo/ErpAttendence";
 import Fees from "./Dashboard/Common/AdminStudent/Fees";
 
 // Faculty
 import FacultyDashboard from "./Dashboard/FacultyDashboard/FacultyDashboard";
-import FacultyErpAttendence from "./Dashboard/FacultyDashboard/FacultyInfo/ErpAttendence";
 
-// SubAdminDashboard
+// SubAdmin
 import SubAdminDashboard from "./Dashboard/SubAdminDashboard/SubAdminDashboard";
 
 // DomainAdmin
 import DomainAdminDashboard from "./Dashboard/DomainAdminDashboard/DomainAdminDashboard";
 
 
-
-
+// ERP
+import DomainAdminAttendance from "./Dashboard/DomainAdminDashboard/DomainAdminAttendance";
+import DomainAdminReports from "./Dashboard/DomainAdminDashboard/DomainAdminReports";
+import SubAdminErpAttendance from "./Dashboard/SubAdminDashboard/SubAdminnfo/ErpAttendence";
+import FacultyErpAttendence from "./Dashboard/FacultyDashboard/FacultyInfo/ErpAttendence";
+import StudentErpAttendence from "./Dashboard/StudentDashboard/StudentInfo/ErpAttendence";
 
 function App() {
   return (
-    
-    <ThemeProvider> {/* 1. Wrap the entire app here */}
+    <ThemeProvider>
       <BrowserRouter>
-        <ThemeToggle /> {/* This button now has access to the context */}
+
+        {/* ONE GLOBAL THEME TOGGLE */}
+        <ThemeToggle />
+
         <Routes>
-          {/* Default redirect */}
+
+          {/* ================= HOME ================= */}
+
           <Route path="/" element={<Home />} />
-          {/* About */}
+
           <Route path="/about" element={<About />} />
+
           <Route path="/contact" element={<Contact />} />
-          {/* <Route path="/" element={<Navigate to="/:domain/login" />} /> */}
-          {/* University register */}
-          <Route path="/HomePage/university-register" element={<UniversityRegister />} />
 
-          <Route path="/:domain/login" element={<Login />} />
-          <Route path="/:domain/signup" element={<Signup />} />
-          <Route path="/:domain/signup/confirm" element={<SignupConfirm />} />
+          <Route
+            path="/HomePage/university-register"
+            element={<UniversityRegister />}
+          />
 
 
-          {/*Student Dashboards */}
-          <Route path="/:domain/student/dashboard" element={<StudentDashboard />} >
-            {/* Use index or relative paths */}
-            <Route path="certification" element={<Certification />} />
-            <Route path="erp-attendence" element={<StudentErpAttendence />} />
-            <Route path="fees" element={<Fees />} />
-            {/* common student and faculty */}
-            <Route path="notepad" element={<Notepad />} />
-            <Route path="assignment" element={<Assignment />} />
-            <Route path="test-quize" element={<TestQuize />} />
-            <Route path="notes" element={<Notes />} />
+          {/* ================= AUTH ================= */}
+
+          <Route
+            path="/:domain/login"
+            element={<Login />}
+          />
+
+          <Route
+            path="/:domain/signup"
+            element={<Signup />}
+          />
+
+          <Route
+            path="/:domain/signup/confirm"
+            element={<SignupConfirm />}
+          />
+
+
+          {/* ================= STUDENT ================= */}
+
+          <Route
+            path="/:domain/student/dashboard"
+            element={<StudentDashboard />}
+          >
+
+            <Route
+              path="certification"
+              element={<Certification />}
+            />
+
+            <Route
+              path="erp-attendence"
+              element={<StudentErpAttendence />}
+            />
+
+            <Route
+              path="fees"
+              element={<Fees />}
+            />
+
+            <Route
+              path="notepad"
+              element={<Notepad />}
+            />
+
+            <Route
+              path="assignment"
+              element={<Assignment />}
+            />
+
+            <Route
+              path="test-quize"
+              element={<TestQuize />}
+            />
+
+            <Route
+              path="notes"
+              element={<Notes />}
+            />
 
           </Route>
 
-          {/*Faculty Dashboards */}
-          <Route path="/:domain/faculty/dashboard" element={<FacultyDashboard />} >
-            <Route path="erp-attendence" element={<FacultyErpAttendence />} />
-            <Route path="notepad" element={<Notepad />} />
-            {/* common */}
-            <Route path="all-students" element={<AllStudents />} />
-            <Route path="notes" element={<Notes />} />
-            <Route path="assignment" element={<Assignment />} />
-            <Route path="test-quize" element={<TestQuize />} />
+
+          {/* ================= FACULTY ================= */}
+
+          <Route
+            path="/:domain/faculty/dashboard"
+            element={<FacultyDashboard />}
+          >
+
+            <Route
+              path="erp-attendence"
+              element={<FacultyErpAttendence />}
+            />
+
+            <Route
+              path="notepad"
+              element={<Notepad />}
+            />
+
+            <Route
+              path="all-students"
+              element={<AllStudents />}
+            />
+
+            <Route
+              path="notes"
+              element={<Notes />}
+            />
+
+            <Route
+              path="assignment"
+              element={<Assignment />}
+            />
+
+            <Route
+              path="test-quize"
+              element={<TestQuize />}
+            />
 
           </Route>
 
 
-          {/*SubAdmin Dashboards */}
-          <Route path="/:domain/subadmin/dashboard" element={<SubAdminDashboard />} >
-            {/* common */}
-            <Route path="all-students" element={<AllStudents />} />
-            <Route path="all-faculty" element={<AllFaculty />} />
-            <Route path="notepad" element={<Notepad />} />
+          {/* ================= SUB ADMIN ================= */}
+
+          <Route
+            path="/:domain/subadmin/dashboard"
+            element={<SubAdminDashboard />}
+          >
+
+            <Route
+              path="all-students"
+              element={<AllStudents />}
+            />
+
+            <Route
+              path="all-faculty"
+              element={<AllFaculty />}
+            />
+
+            <Route
+              path="notepad"
+              element={<Notepad />}
+            />
+
+            <Route
+              path="attendance"
+              element={<SubAdminErpAttendance />}
+            />
 
           </Route>
 
 
-          {/*DomainAdmin Dashboards */}
-          <Route path="/:domain/domainAdmin/dashboard" element={<DomainAdminDashboard />} >
-            {/* common */}
-            <Route path="all-students" element={<AllStudents />} />
-            <Route path="all-faculty" element={<AllFaculty />} />
-            <Route path="all-subAdmin" element={<AllSubAdmin />} />
-            <Route path="notepad" element={<Notepad />} />
+          {/* ================= DOMAIN ADMIN ================= */}
+
+          <Route
+            path="/:domain/domainAdmin/dashboard"
+            element={<DomainAdminDashboard />}
+          >
+
+            <Route
+              path="all-students"
+              element={<AllStudents />}
+            />
+
+            <Route
+              path="all-faculty"
+              element={<AllFaculty />}
+            />
+
+            <Route
+              path="all-subAdmin"
+              element={<AllSubAdmin />}
+            />
+
+            <Route
+              path="all-feesAdmin"
+              element={<AllFeesAdmin />}
+            />
+
+            <Route
+              path="notepad"
+              element={<Notepad />}
+            />
+
+            <Route
+              path="attendance"
+              element={<DomainAdminAttendance />}
+            />
+
+            <Route
+              path="reports"
+              element={<DomainAdminReports />}
+            />
+
 
           </Route>
 
 
+          {/* ================= 404 ================= */}
 
-          
-          <Route path="*" element={<NotFound />} />
+          <Route
+            path="*"
+            element={<NotFound />}
+          />
+
         </Routes>
-      </BrowserRouter >
+
+      </BrowserRouter>
     </ThemeProvider>
   );
 }

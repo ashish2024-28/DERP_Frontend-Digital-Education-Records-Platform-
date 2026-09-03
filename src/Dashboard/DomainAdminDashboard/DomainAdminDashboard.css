@@ -1,78 +1,2249 @@
+/* =========================================================
+   DOMAIN ADMIN DASHBOARD
+   Professional responsive UI
+   Existing classes are preserved and enhanced.
+   ========================================================= */
 
-/* ================= TABLE DESIGN ================= */
+.dashboard-container {
+  --da-bg: #f8fafc;
+  --da-surface: #ffffff;
+  --da-surface-2: #f1f5f9;
+  --da-border: #e2e8f0;
+  --da-text: #0f172a;
+  --da-muted: #64748b;
+  --da-primary: #2563eb;
+  --da-primary-hover: #1d4ed8;
+  --da-danger: #dc2626;
+  --da-success: #16a34a;
+  --da-info: #0891b2;
+  --da-sidebar-width: 310px;
 
-table {
+  min-height: 100vh;
+  display: flex;
   width: 100%;
-  border-collapse: collapse;
-  background: var(--bg-card);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  overflow: hidden;
+  background: var(--da-bg);
+  color: var(--da-text);
+  transition: background .25s ease, color .25s ease;
 }
 
-/* Table Header */
-table thead {
-  background: var(--primary-blue);
-  color: white;
+/* Support the dark-mode class used by many Tailwind setups. */
+.dark .dashboard-container,
+[data-theme="dark"] .dashboard-container,
+.dark-mode .dashboard-container {
+  --da-bg: #0b1120;
+  --da-surface: #111827;
+  --da-surface-2: #1e293b;
+  --da-border: #334155;
+  --da-text: #f8fafc;
+  --da-muted: #94a3b8;
 }
 
-table th {
-  padding: 14px 12px;
-  font-size: 0.85rem;
+
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+
+/* =========================================================
+   TABS
+   ========================================================= */
+.domain-admin-tab {
+  min-width: 0;
+  padding: 12px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px 10px 0 0;
+  background: transparent;
+  color: var(--da-muted);
+  font-weight: 600;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.domain-admin-tab:hover {
+  color: var(--da-text);
+  background: var(--da-surface-2);
+}
+
+.domain-admin-tab.active {
+  color: var(--da-primary);
+  background: var(--da-surface);
+  border-color: var(--da-border);
+  border-bottom-color: var(--da-primary);
+}
+
+/* =========================================================
+   SEARCH / TOOLBAR
+   ========================================================= */
+.domain-admin-search {
+  width: min(380px, 100%);
+  min-width: 220px;
+  padding: 11px 14px !important;
+  border: 1px solid var(--da-border) !important;
+  border-radius: 10px !important;
+  background: var(--da-surface) !important;
+  color: var(--da-text) !important;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.domain-admin-search::placeholder {
+  color: var(--da-muted);
+}
+
+.domain-admin-search:focus {
+  outline: none;
+  border-color: var(--da-primary) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+}
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+.shadow.rounded-xl {
+  background: var(--da-surface);
+  border: 1px solid var(--da-border);
+  box-shadow: 0 8px 26px rgba(15, 23, 42, .06);
+}
+
+.table-wrapper {
+  width: 100%;
+  min-width: 1180px;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--da-text);
+}
+
+.table-wrapper th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 13px 12px;
+  background: var(--da-surface-2);
+  color: var(--da-muted);
+  border-bottom: 1px solid var(--da-border);
+  font-size: 11px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-bottom: 2px solid var(--border-color);
+  letter-spacing: .04em;
+  white-space: nowrap;
   text-align: left;
 }
 
-/* Table Body */
-table td {
-  padding: 12px;
-  border-bottom: 1px solid var(--border-color);
-  font-size: 0.9rem;
-  transition: background 0.2s ease;
+.table-wrapper td {
+  padding: 13px 12px;
+  border-bottom: 1px solid var(--da-border);
+  white-space: nowrap;
+  font-size: 13px;
+  vertical-align: middle;
 }
 
-/* Row Hover Effect */
-table tbody tr:hover {
-  background-color: rgba(59, 130, 246, 0.08);
+.table-wrapper tbody tr {
+  transition: background .15s ease;
+}
+
+.table-wrapper tbody tr:hover {
+  background: var(--da-surface-2);
+}
+
+.table-wrapper th:last-child,
+.table-wrapper td:last-child {
+  min-width: 230px;
+}
+
+.table-wrapper td:nth-last-child(2) {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
+.action-btn {
+  border: none;
+  border-radius: 7px;
+  padding: 6px 10px !important;
+  color: #fff !important;
+  cursor: pointer;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  transition: .18s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(.96);
+}
+
+.action-edit {
+  background: #2563eb !important;
+}
+
+.action-password {
+  background: #7c3aed !important;
+}
+
+.action-delete {
+  background: #dc2626 !important;
+}
+
+/* =========================================================
+   INPUTS / SELECTS
+   ========================================================= */
+.dashboard-container input,
+.dashboard-container select,
+.dashboard-container textarea {
+  color: var(--da-text);
+  border-color: var(--da-border);
+  background: var(--da-surface);
+}
+
+.dashboard-container input::placeholder,
+.dashboard-container textarea::placeholder {
+  color: var(--da-muted);
+}
+
+.dashboard-container input:focus,
+.dashboard-container select:focus,
+.dashboard-container textarea:focus {
+  outline: none;
+  border-color: var(--da-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+}
+
+/* =========================================================
+   MODALS
+   ========================================================= */
+.domain-admin-modal-overlay {
+  backdrop-filter: blur(3px);
+}
+
+.domain-admin-modal-box {
+  background: var(--da-surface) !important;
+  color: var(--da-text);
+  border: 1px solid var(--da-border);
+}
+
+.domain-admin-modal-box h3 {
+  color: var(--da-text) !important;
+}
+
+.domain-admin-modal-box > div:last-child {
+  color: var(--da-text);
+}
+
+.modal-error {
+  margin: 0 0 10px;
+  padding: 9px 11px;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+.modal-success {
+  margin: 0 0 10px;
+  padding: 9px 11px;
+  border-radius: 8px;
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+  font-size: 13px;
+}
+
+.security-note {
+  margin: 2px 0 12px;
+  padding: 9px 11px;
+  border: 1px solid var(--da-border);
+  border-radius: 8px;
+  background: var(--da-surface-2);
+  color: var(--da-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.user-password-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding: 12px;
+  border: 1px solid var(--da-border);
+  border-radius: 11px;
+  background: var(--da-surface-2);
+}
+
+.user-password-avatar {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--da-primary);
+  color: #fff;
+  font-weight: 800;
+}
+
+.user-password-summary div:last-child {
+  min-width: 0;
+}
+
+.user-password-summary strong,
+.user-password-summary span {
+  display: block;
+}
+
+.user-password-summary strong {
+  color: var(--da-text);
+  font-size: 14px;
+}
+
+.user-password-summary span {
+  margin-top: 2px;
+  color: var(--da-muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   BACK / CHILD ROUTES
+   ========================================================= */
+.sub-page-container {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.back-btn {
+  border: 1px solid var(--da-border);
+  background: var(--da-surface);
+  color: var(--da-text);
+  padding: 10px 16px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: .2s ease;
+}
+
+.back-btn:hover {
+  border-color: var(--da-primary);
+  color: var(--da-primary);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   SCROLLBARS
+   ========================================================= */
+.sidebar::-webkit-scrollbar,
+.main-content::-webkit-scrollbar,
+.table-wrapper::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.sidebar::-webkit-scrollbar-thumb,
+.main-content::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 20px;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+@media (max-width: 1200px) {
+  .card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sidebar {
+    width: 280px;
+    min-width: 280px;
+  }
+
+  .main-content {
+    padding: 22px;
+  }
+}
+
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* =========================================================
+   DOMAIN ADMIN PROFESSIONAL UI - additive responsive layer
+   ========================================================= */
+:root {
+  --da-bg: #f5f7fb;
+  --da-surface: #ffffff;
+  --da-surface-2: #f8fafc;
+  --da-border: #e2e8f0;
+  --da-text: #0f172a;
+  --da-muted: #64748b;
+  --da-primary: #2563eb;
+  --da-primary-soft: #eff6ff;
+  --da-sidebar: #ffffff;
+  --da-shadow: 0 10px 35px rgba(15, 23, 42, .08);
+}
+
+html.domain-admin-dark {
+  color-scheme: dark;
+  --da-bg: #0b1120;
+  --da-surface: #111827;
+  --da-surface-2: #172033;
+  --da-border: #273449;
+  --da-text: #e5e7eb;
+  --da-muted: #94a3b8;
+  --da-primary: #60a5fa;
+  --da-primary-soft: rgba(37, 99, 235, .14);
+  --da-sidebar: #0f172a;
+  --da-shadow: 0 14px 40px rgba(0, 0, 0, .25);
+}
+
+html.domain-admin-dark body {
+  background: var(--da-bg);
+  color: var(--da-text);
+}
+
+.dashboard-container {
+  min-height: 100vh;
+  background: var(--da-bg);
+  color: var(--da-text);
+  transition: background .2s ease, color .2s ease;
+}
+
+.sidebar {
+  background: var(--da-sidebar) !important;
+  border-right: 1px solid var(--da-border);
+  box-shadow: var(--da-shadow);
+}
+
+.main-content {
+  background: var(--da-bg);
+}
+
+.domain-admin-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 22px;
+  padding: 18px 20px;
+  border: 1px solid var(--da-border);
+  border-radius: 18px;
+  background: var(--da-surface);
+  box-shadow: var(--da-shadow);
+}
+
+.domain-admin-topbar-title {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 14px;
+}
+
+.domain-admin-brand-mark {
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: #fff;
+  font-weight: 900;
+  letter-spacing: .04em;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, .25);
+}
+
+.domain-admin-topbar h1 {
+  margin: 2px 0 3px;
+  color: var(--da-text);
+  font-size: clamp(18px, 2.1vw, 26px);
+  line-height: 1.15;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.domain-admin-topbar p {
+  margin: 0;
+  color: var(--da-muted);
+  font-size: 13px;
+}
+
+.domain-admin-eyebrow {
+  color: var(--da-primary);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+.domain-admin-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-action-btn {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--da-border);
+  border-radius: 11px;
+  background: var(--da-surface-2);
+  color: var(--da-text);
+  cursor: pointer;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+
+.icon-action-btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--da-primary);
+  color: var(--da-primary);
+}
+
+.card-grid {
+  gap: 16px !important;
+}
+
+.main-content-Link .card {
+  position: relative;
+  min-height: 112px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 22px;
+  border: 1px solid var(--da-border);
+  border-radius: 16px;
+  background: var(--da-surface);
+  color: var(--da-text);
+  box-shadow: 0 6px 22px rgba(15, 23, 42, .06);
+  font-weight: 800;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.main-content-Link .card::after {
+  content: "→";
+  position: absolute;
+  right: 18px;
+  color: var(--da-muted);
+  font-size: 20px;
+  transition: transform .18s ease;
+}
+
+.main-content-Link:hover .card {
+  transform: translateY(-3px);
+  border-color: var(--da-primary);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, .11);
+}
+
+.main-content-Link:hover .card::after {
+  transform: translateX(3px);
+}
+
+.domain-admin-overview-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.domain-admin-overview-strip > div {
+  min-width: 0;
+  padding: 13px 15px;
+  border: 1px solid var(--da-border);
+  border-radius: 12px;
+  background: var(--da-surface);
+}
+
+.domain-admin-overview-strip span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--da-muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.domain-admin-overview-strip strong {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--da-text);
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.domain-admin-tab {
+  min-height: 44px;
+  border: 1px solid var(--da-border) !important;
+  border-radius: 11px 11px 0 0;
+  background: var(--da-surface);
+  color: var(--da-muted);
+  transition: background .18s ease, color .18s ease, border-color .18s ease;
+}
+
+.domain-admin-tab.active,
+.domain-admin-tab:hover {
+  color: var(--da-primary);
+  background: var(--da-primary-soft);
+  border-color: rgba(37, 99, 235, .35) !important;
+}
+
+.shadow.rounded-xl {
+  border: 1px solid var(--da-border);
+  background: var(--da-surface);
+  box-shadow: var(--da-shadow) !important;
+}
+
+.domain-admin-search {
+  flex: 1 1 280px;
+  min-height: 42px;
+  border-color: var(--da-border) !important;
+  border-radius: 10px;
+  background: var(--da-surface-2);
+  color: var(--da-text);
+  outline: none;
+}
+
+.domain-admin-search:focus {
+  border-color: var(--da-primary) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+}
+
+.domain-admin-results-count {
+  padding: 8px 12px;
+  border-radius: 9px;
+  background: var(--da-surface-2);
+  color: var(--da-muted);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.table-wrapper {
+  border-collapse: separate !important;
+  border-spacing: 0;
+  color: var(--da-text);
+  background: var(--da-surface);
+}
+
+.table-wrapper th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--da-surface-2) !important;
+  color: var(--da-muted) !important;
+  border-bottom: 1px solid var(--da-border) !important;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+
+.table-wrapper td {
+  border-bottom: 1px solid var(--da-border) !important;
+  background: var(--da-surface) !important;
+  color: var(--da-text) !important;
+  vertical-align: middle;
+}
+
+.table-wrapper tbody tr:hover td {
+  background: var(--da-surface-2) !important;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 31px;
+  margin-right: 5px;
+  border: 0 !important;
+  border-radius: 8px !important;
+  transition: transform .15s ease, filter .15s ease;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(.96);
+}
+
+.action-password {
+  padding: 4px 10px;
+  background: #7c3aed;
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
   cursor: pointer;
 }
 
-/* Row Active (Click) Effect */
-table tbody tr:active {
-  background-color: rgba(59, 130, 246, 0.15);
+.domain-admin-modal-overlay {
+  backdrop-filter: blur(5px);
+  background: rgba(2, 6, 23, .62) !important;
 }
 
-/* Zebra Striping */
-table tbody tr:nth-child(even) {
-  background-color: rgba(0, 0, 0, 0.02);
+.domain-admin-modal-box {
+  border: 1px solid var(--da-border) !important;
+  background: var(--da-surface) !important;
+  color: var(--da-text);
 }
 
-/* Dark Mode Adjustments */
-body.dark table {
-  background: var(--bg-card);
+.domain-admin-modal-box h3,
+.domain-admin-modal-box label {
+  color: var(--da-text) !important;
 }
 
-body.dark table tbody tr:nth-child(even) {
-  background-color: rgba(255, 255, 255, 0.03);
+.domain-admin-modal-box input,
+.domain-admin-modal-box textarea,
+.domain-admin-modal-box select {
+  border-color: var(--da-border) !important;
+  background: var(--da-surface-2) !important;
+  color: var(--da-text) !important;
 }
 
-body.dark table tbody tr:hover {
-  background-color: rgba(59, 130, 246, 0.2);
+.domain-admin-modal-box input::placeholder,
+.domain-admin-modal-box textarea::placeholder {
+  color: var(--da-muted);
 }
 
-/* Table Responsive Scroll */
+.profile-section {
+  color: var(--da-text);
+}
+
+.profile-section p {
+  color: var(--da-text) !important;
+}
+
+.profile-section strong {
+  color: var(--da-muted) !important;
+}
+
+@media (max-width: 900px) {
+  .domain-admin-overview-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-sidebar-btn {
+    display: grid;
+  }
+
+  .domain-admin-topbar {
+    align-items: flex-start;
+    padding: 15px;
+    border-radius: 14px;
+  }
+
+  .domain-admin-topbar-title {
+    align-items: flex-start;
+  }
+
+  .domain-admin-brand-mark {
+    flex-basis: 40px;
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+  }
+
+  .domain-admin-topbar p {
+    font-size: 12px;
+  }
+
+  .domain-admin-overview-strip {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .domain-admin-results-count {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 520px) {
+  .domain-admin-topbar {
+    gap: 10px;
+  }
+
+  .domain-admin-topbar-actions {
+    flex-shrink: 0;
+  }
+
+  .domain-admin-overview-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .domain-admin-tab {
+    font-size: 12px;
+  }
+
+  .domain-admin-modal-box {
+    width: calc(100vw - 20px) !important;
+    max-height: 92vh !important;
+  }
+}
+
+
+
+/* =========================================================
+   DOMAIN ADMIN DASHBOARD
+   FINAL UI POLISH
+   ---------------------------------------------------------
+   IMPORTANT:
+   - Do NOT remove existing CSS above.
+   - This section only overrides visual/layout problems.
+   - Existing JSX, features and class names are preserved.
+   ========================================================= */
+
+
+/* =========================================================
+   1. SAFE GLOBAL BOX SIZING
+   ========================================================= */
+
+.dashboard-container,
+.dashboard-container *,
+.dashboard-container *::before,
+.dashboard-container *::after {
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   2. MAIN DASHBOARD CONTAINER
+   ---------------------------------------------------------
+   Prevents nested scrollbars and unnecessary sticky behavior.
+   ========================================================= */
+
+.dashboard-container {
+  width: 100%;
+  min-height: calc(100vh - 70px);
+
+  display: flex;
+  align-items: stretch;
+
+  gap: 18px;
+
+  padding: 18px;
+
+  background: var(--da-bg);
+  color: var(--da-text);
+
+  overflow: visible;
+
+  transition:
+    background-color .2s ease,
+    color .2s ease;
+}
+
+
+/* =========================================================
+   3. DOMAIN ADMIN PROFILE PANEL
+   ---------------------------------------------------------
+   This is the inner profile sidebar, not the ERPLayout sidebar.
+   ========================================================= */
+
+.dashboard-container > .sidebar {
+  position: relative;
+
+  flex: 0 0 285px;
+  width: 285px;
+  min-width: 285px;
+
+  height: auto;
+  min-height: calc(100vh - 106px);
+  max-height: none;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  margin: 0;
+  padding: 0;
+
+  align-items: stretch;
+
+  background: var(--da-surface) !important;
+
+  color: var(--da-text);
+
+  border: 1px solid var(--da-border);
+  border-radius: 16px;
+
+  box-shadow: 0 8px 28px rgba(15, 23, 42, .07);
+
+  scrollbar-width: thin;
+}
+
+
+/* =========================================================
+   4. PROFILE SECTION
+   ========================================================= */
+
+.dashboard-container > .sidebar .profile-section {
+  width: 100%;
+
+  padding: 26px 20px 18px;
+
+  color: var(--da-text);
+
+  background: var(--da-surface);
+}
+
+
+/* =========================================================
+   5. PROFILE IMAGE
+   ========================================================= */
+
+.dashboard-container > .sidebar .profile-pic {
+  width: 116px;
+  height: 116px;
+
+  margin: 2px auto 22px;
+
+  position: relative;
+
+  flex-shrink: 0;
+}
+
+.dashboard-container > .sidebar .profile-pic-img {
+  width: 116px;
+  height: 116px;
+
+  margin: 0;
+
+  display: block;
+
+  object-fit: cover;
+
+  border: 3px solid var(--da-primary);
+
+  border-radius: 50%;
+
+  background: var(--da-surface-2);
+
+  box-shadow:
+    0 5px 18px rgba(37, 99, 235, .15);
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease;
+}
+
+.dashboard-container > .sidebar .profile-pic:hover .profile-pic-img {
+  transform: scale(1.025);
+
+  box-shadow:
+    0 8px 25px rgba(37, 99, 235, .22);
+}
+
+
+/* =========================================================
+   6. PROFILE INFORMATION
+   ========================================================= */
+
+.dashboard-container > .sidebar .profile-section p {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: 105px minmax(0, 1fr);
+
+  column-gap: 8px;
+
+  margin: 0;
+
+  padding: 10px 0;
+
+  border-bottom: 1px solid var(--da-border);
+
+  color: var(--da-text) !important;
+
+  font-size: 13px;
+
+  line-height: 1.45;
+}
+
+.dashboard-container > .sidebar .profile-section p:last-of-type {
+  border-bottom: none;
+}
+
+.dashboard-container > .sidebar .profile-section strong {
+  color: var(--da-muted) !important;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.dashboard-container > .sidebar .profile-section p {
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   7. UNIVERSITY INFORMATION SEPARATOR
+   ========================================================= */
+
+.dashboard-container > .sidebar .profile-section p:nth-of-type(6) {
+  margin-top: 8px;
+
+  padding-top: 16px;
+
+  border-top: 1px solid var(--da-border);
+}
+
+
+/* =========================================================
+   8. PROFILE ACTION BUTTONS
+   ---------------------------------------------------------
+   Works even for the inline-styled buttons currently in JSX.
+   ========================================================= */
+
+.dashboard-container > .sidebar .sidebar-action-btn,
+.dashboard-container > .sidebar button:not(.toggle-btn) {
+  min-height: 42px;
+
+  width: calc(100% - 32px) !important;
+
+  margin: 0 16px 9px !important;
+
+  padding: 9px 13px !important;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  border-radius: 9px !important;
+
+  font-size: 13px !important;
+
+  font-weight: 700 !important;
+
+  line-height: 1.2;
+
+  cursor: pointer;
+
+  transition:
+    background-color .18s ease,
+    border-color .18s ease,
+    color .18s ease,
+    transform .18s ease,
+    box-shadow .18s ease;
+}
+
+
+/* Edit Profile */
+
+.dashboard-container > .sidebar .sidebar-profile-btn {
+  border: 1px solid var(--da-primary) !important;
+
+  background: var(--da-primary-soft) !important;
+
+  color: var(--da-primary) !important;
+}
+
+.dashboard-container > .sidebar .sidebar-profile-btn:hover {
+  background: var(--da-primary) !important;
+
+  color: #fff !important;
+
+  transform: translateY(-1px);
+}
+
+
+/* Change Password */
+
+.dashboard-container > .sidebar button:nth-last-of-type(4) {
+  border-color: #7c3aed !important;
+
+  background: rgba(124, 58, 237, .07) !important;
+
+  color: #7c3aed !important;
+}
+
+.dashboard-container > .sidebar button:nth-last-of-type(4):hover {
+  background: #7c3aed !important;
+
+  color: #fff !important;
+}
+
+
+/* University Logo */
+
+.dashboard-container > .sidebar button:nth-last-of-type(3) {
+  border-color: #ef4444 !important;
+
+  background: rgba(239, 68, 68, .06) !important;
+
+  color: #dc2626 !important;
+}
+
+.dashboard-container > .sidebar button:nth-last-of-type(3):hover {
+  background: #dc2626 !important;
+
+  color: #fff !important;
+}
+
+
+/* Refresh */
+
+.dashboard-container > .sidebar button:nth-last-of-type(2) {
+  border-color: var(--da-border) !important;
+
+  background: var(--da-surface-2) !important;
+
+  color: var(--da-text) !important;
+}
+
+.dashboard-container > .sidebar button:nth-last-of-type(2):hover {
+  border-color: var(--da-primary) !important;
+
+  color: var(--da-primary) !important;
+
+  background: var(--da-primary-soft) !important;
+}
+
+
+/* =========================================================
+   9. LOGOUT
+   ========================================================= */
+
+.dashboard-container > .sidebar .logout-btn {
+  min-height: 42px;
+
+  margin-top: 4px !important;
+
+  border: 1px solid #ef4444 !important;
+
+  background: rgba(239, 68, 68, .05) !important;
+
+  color: #dc2626 !important;
+}
+
+.dashboard-container > .sidebar .logout-btn:hover {
+  background: #dc2626 !important;
+
+  color: #fff !important;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   10. MAIN CONTENT
+   ---------------------------------------------------------
+   Removes sticky/100vh nested scrolling.
+   ========================================================= */
+
+.dashboard-container > .main-content {
+  flex: 1 1 auto;
+
+  width: auto;
+  min-width: 0;
+
+  min-height: calc(100vh - 106px);
+  height: auto;
+
+  margin: 0 !important;
+
+  padding: 0;
+
+  position: relative;
+
+  top: auto;
+
+  overflow: visible;
+
+  background: transparent;
+
+  border: 0;
+
+  box-shadow: none;
+
+  scrollbar-width: auto;
+}
+
+
+/* =========================================================
+   11. TOP HEADER
+   ========================================================= */
+
+.domain-admin-topbar {
+  width: 100%;
+
+  min-height: 86px;
+
+  margin: 0 0 18px;
+
+  padding: 18px 22px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 18px;
+
+  border: 1px solid var(--da-border);
+
+  border-radius: 15px;
+
+  background: var(--da-surface);
+
+  box-shadow: 0 6px 22px rgba(15, 23, 42, .06);
+}
+
+
+/* Header title */
+
+.domain-admin-topbar-title {
+  min-width: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+}
+
+
+/* DA icon */
+
+.domain-admin-brand-mark {
+  flex: 0 0 44px;
+
+  width: 44px;
+  height: 44px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 11px;
+
+  background: var(--da-primary);
+
+  color: #fff;
+
+  font-size: 14px;
+
+  font-weight: 800;
+
+  box-shadow: 0 5px 14px rgba(37, 99, 235, .20);
+}
+
+
+/* Heading */
+
+.domain-admin-topbar h1 {
+  margin: 2px 0 3px;
+
+  color: var(--da-text);
+
+  font-size: clamp(18px, 2vw, 24px);
+
+  line-height: 1.2;
+
+  font-weight: 800;
+}
+
+.domain-admin-topbar p {
+  margin: 0;
+
+  color: var(--da-muted);
+
+  font-size: 12px;
+}
+
+.domain-admin-eyebrow {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: var(--da-primary);
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing: .1em;
+}
+
+
+/* =========================================================
+   12. SUCCESS / ERROR ALERTS
+   ========================================================= */
+
+.dashboard-container > .main-content > div > div[style*="d1fae5"],
+.dashboard-container > .main-content > div > div[style*="fee2d2"] {
+  min-height: 42px;
+
+  display: flex;
+
+  align-items: center;
+
+  padding: 10px 13px !important;
+
+  border-radius: 9px !important;
+
+  font-size: 13px;
+
+  box-shadow: 0 3px 12px rgba(15, 23, 42, .04);
+}
+
+
+/* =========================================================
+   13. DASHBOARD CARDS
+   ========================================================= */
+
+.card-grid {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 14px !important;
+
+  margin: 0;
+}
+
+
+.main-content-Link {
+  min-width: 0;
+
+  width: 100%;
+
+  text-decoration: none;
+
+  color: inherit;
+}
+
+
+.main-content-Link .card {
+  position: relative;
+
+  width: 100%;
+
+  min-height: 108px;
+
+  padding: 20px 42px 20px 18px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  text-align: center;
+
+  border: 1px solid var(--da-border);
+
+  border-radius: 14px;
+
+  background: var(--da-surface);
+
+  color: var(--da-text);
+
+  font-size: 14px;
+
+  font-weight: 750;
+
+  box-shadow: 0 5px 18px rgba(15, 23, 42, .055);
+
+  transition:
+    transform .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease,
+    background-color .18s ease;
+}
+
+
+.main-content-Link .card::after {
+  content: "→";
+
+  position: absolute;
+
+  right: 16px;
+
+  color: var(--da-muted);
+
+  font-size: 17px;
+
+  transition: transform .18s ease;
+}
+
+
+.main-content-Link:hover .card {
+  transform: translateY(-2px);
+
+  border-color: rgba(37, 99, 235, .45);
+
+  box-shadow: 0 10px 25px rgba(15, 23, 42, .10);
+
+  background: var(--da-surface);
+}
+
+
+.main-content-Link:hover .card::after {
+  color: var(--da-primary);
+
+  transform: translateX(3px);
+}
+
+
+/* =========================================================
+   14. OVERVIEW INFORMATION
+   ========================================================= */
+
+.domain-admin-overview-strip {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 10px;
+
+  margin: 16px 0 18px;
+}
+
+
+.domain-admin-overview-strip > div {
+  min-width: 0;
+
+  min-height: 65px;
+
+  padding: 12px 14px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  border: 1px solid var(--da-border);
+
+  border-radius: 11px;
+
+  background: var(--da-surface);
+
+  box-shadow: 0 3px 12px rgba(15, 23, 42, .035);
+}
+
+
+.domain-admin-overview-strip span {
+  margin-bottom: 4px;
+
+  color: var(--da-muted);
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: .05em;
+
+  text-transform: uppercase;
+}
+
+
+.domain-admin-overview-strip strong {
+  min-width: 0;
+
+  color: var(--da-text);
+
+  font-size: 13px;
+
+  font-weight: 750;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   15. TABS
+   ========================================================= */
+
+.domain-admin-tabs {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 7px;
+
+  margin-bottom: 0;
+}
+
+
+.domain-admin-tab {
+  min-width: 0;
+
+  min-height: 45px;
+
+  padding: 10px 8px !important;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--da-border) !important;
+
+  border-bottom: 0 !important;
+
+  border-radius: 10px 10px 0 0 !important;
+
+  background: var(--da-surface);
+
+  color: var(--da-muted);
+
+  font-size: 13px;
+
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    background-color .18s ease,
+    color .18s ease,
+    border-color .18s ease;
+}
+
+
+.domain-admin-tab:hover {
+  background: var(--da-primary-soft);
+
+  color: var(--da-primary);
+}
+
+
+.domain-admin-tab.active {
+  background: var(--da-primary-soft) !important;
+
+  color: var(--da-primary) !important;
+
+  border-color: rgba(37, 99, 235, .35) !important;
+}
+
+
+/* =========================================================
+   16. TABLE CONTAINER
+   ========================================================= */
+
+.shadow.rounded-xl {
+  width: 100%;
+
+  margin: 0 !important;
+
+  padding: 18px !important;
+
+  border: 1px solid var(--da-border) !important;
+
+  border-radius: 0 12px 12px 12px !important;
+
+  background: var(--da-surface) !important;
+
+  box-shadow: 0 7px 24px rgba(15, 23, 42, .06) !important;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   17. SEARCH AREA
+   ========================================================= */
+
+.domain-admin-search {
+  width: 100%;
+
+  min-width: 0;
+
+  min-height: 42px;
+
+  padding: 10px 13px !important;
+
+  border: 1px solid var(--da-border) !important;
+
+  border-radius: 9px !important;
+
+  background: var(--da-surface-2) !important;
+
+  color: var(--da-text) !important;
+
+  font-size: 13px;
+
+  transition:
+    border-color .18s ease,
+    box-shadow .18s ease;
+}
+
+
+.domain-admin-search:focus {
+  border-color: var(--da-primary) !important;
+
+  background: var(--da-surface) !important;
+
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .10);
+}
+
+
+.domain-admin-results-count {
+  min-height: 38px;
+
+  padding: 8px 12px;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--da-border);
+
+  border-radius: 8px;
+
+  background: var(--da-surface-2);
+
+  color: var(--da-muted);
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   18. TABLE
+   ========================================================= */
+
 .table-wrapper {
-  overflow-x: auto;
-  border-radius: 12px;
+  width: 100%;
+
+  min-width: 1180px;
+
+  margin-top: 14px;
+
+  border-collapse: separate;
+
+  border-spacing: 0;
+
+  background: var(--da-surface);
+
+  color: var(--da-text);
 }
 
 
+.table-wrapper th {
+  position: sticky;
+
+  top: 0;
+
+  z-index: 3;
+
+  height: 42px;
+
+  padding: 10px 12px;
+
+  background: var(--da-surface-2) !important;
+
+  color: var(--da-muted) !important;
+
+  border-bottom: 1px solid var(--da-border) !important;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing: .045em;
+
+  text-transform: uppercase;
+
+  white-space: nowrap;
+
+  text-align: left;
+}
 
 
+.table-wrapper td {
+  height: 48px;
+
+  padding: 10px 12px;
+
+  border-bottom: 1px solid var(--da-border) !important;
+
+  background: var(--da-surface) !important;
+
+  color: var(--da-text) !important;
+
+  font-size: 12px;
+
+  vertical-align: middle;
+
+  white-space: nowrap;
+}
 
 
+.table-wrapper tbody tr {
+  transition: background-color .15s ease;
+}
 
 
+.table-wrapper tbody tr:hover td {
+  background: var(--da-surface-2) !important;
+}
+
+
+/* =========================================================
+   19. ACTION BUTTONS
+   ========================================================= */
+
+.action-btn {
+  min-height: 30px;
+
+  margin-right: 4px !important;
+  margin-bottom: 3px !important;
+
+  padding: 6px 10px !important;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 4px;
+
+  border: 0 !important;
+
+  border-radius: 7px !important;
+
+  color: #fff !important;
+
+  font-size: 11px !important;
+
+  font-weight: 700 !important;
+
+  cursor: pointer;
+
+  transition:
+    transform .15s ease,
+    filter .15s ease,
+    box-shadow .15s ease;
+}
+
+
+.action-btn:hover {
+  transform: translateY(-1px);
+
+  filter: brightness(.97);
+
+  box-shadow: 0 4px 10px rgba(15, 23, 42, .12);
+}
+
+
+.action-edit {
+  background: #2563eb !important;
+}
+
+
+.action-password {
+  background: #7c3aed !important;
+}
+
+
+.action-delete {
+  background: #dc2626 !important;
+}
+
+
+/* =========================================================
+   20. BACK BUTTON
+   ========================================================= */
+
+.back-btn {
+  min-height: 40px;
+
+  margin-bottom: 16px;
+
+  padding: 9px 14px !important;
+
+  border: 1px solid var(--da-border) !important;
+
+  border-radius: 9px !important;
+
+  background: var(--da-surface) !important;
+
+  color: var(--da-text) !important;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    border-color .18s ease,
+    color .18s ease,
+    background-color .18s ease;
+}
+
+
+.back-btn:hover {
+  border-color: var(--da-primary) !important;
+
+  color: var(--da-primary) !important;
+
+  background: var(--da-primary-soft) !important;
+}
+
+
+/* =========================================================
+   21. MODALS
+   ========================================================= */
+
+.domain-admin-modal-overlay {
+  position: fixed !important;
+
+  inset: 0 !important;
+
+  z-index: 9999 !important;
+
+  padding: 16px !important;
+
+  display: flex !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  background: rgba(15, 23, 42, .58) !important;
+
+  backdrop-filter: blur(5px);
+}
+
+
+.domain-admin-modal-box {
+  width: min(520px, calc(100vw - 32px)) !important;
+
+  max-height: min(90vh, 720px) !important;
+
+  overflow-x: hidden;
+
+  overflow-y: auto;
+
+  border: 1px solid var(--da-border) !important;
+
+  border-radius: 14px !important;
+
+  background: var(--da-surface) !important;
+
+  color: var(--da-text) !important;
+
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .25) !important;
+}
+
+
+/* =========================================================
+   22. INPUTS
+   ========================================================= */
+
+.dashboard-container input,
+.dashboard-container select,
+.dashboard-container textarea {
+  min-height: 40px;
+
+  border: 1px solid var(--da-border);
+
+  border-radius: 8px;
+
+  background: var(--da-surface);
+
+  color: var(--da-text);
+
+  font-size: 13px;
+
+  transition:
+    border-color .18s ease,
+    box-shadow .18s ease;
+}
+
+
+.dashboard-container input:focus,
+.dashboard-container select:focus,
+.dashboard-container textarea:focus {
+  border-color: var(--da-primary) !important;
+
+  outline: none;
+
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .10);
+}
+
+
+/* =========================================================
+   23. LOADING / EMPTY TABLE
+   ========================================================= */
+
+.table-wrapper td[colspan] {
+  height: 110px;
+
+  color: var(--da-muted) !important;
+
+  text-align: center;
+}
+
+
+/* =========================================================
+   24. TABLE HORIZONTAL SCROLL
+   ---------------------------------------------------------
+   Keeps the table usable on smaller screens.
+   ========================================================= */
+
+.shadow.rounded-xl {
+  overflow-x: auto;
+}
+
+.shadow.rounded-xl > * {
+  min-width: 0;
+}
+
+
+/* =========================================================
+   25. TABLET
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+  .dashboard-container {
+    gap: 14px;
+
+    padding: 14px;
+  }
+
+  .dashboard-container > .sidebar {
+    flex-basis: 260px;
+
+    width: 260px;
+    min-width: 260px;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .domain-admin-overview-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+/* =========================================================
+   26. TABLET / MOBILE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .dashboard-container {
+    display: block;
+
+    padding: 12px;
+  }
+
+  .dashboard-container > .sidebar {
+    width: 100%;
+    min-width: 0;
+
+    min-height: auto;
+
+    max-height: none;
+
+    margin-bottom: 14px;
+  }
+
+  .dashboard-container > .main-content {
+    width: 100%;
+
+    min-height: auto;
+  }
+
+  .profile-section {
+    padding: 20px 18px 16px;
+  }
+
+  .profile-section p {
+    grid-template-columns: 125px minmax(0, 1fr);
+  }
+
+  .domain-admin-topbar {
+    padding: 15px;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 10px !important;
+  }
+}
+
+
+/* =========================================================
+   27. MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  .dashboard-container {
+    padding: 10px;
+  }
+
+  .dashboard-container > .sidebar {
+    border-radius: 12px;
+  }
+
+  .domain-admin-topbar {
+    min-height: auto;
+
+    padding: 14px;
+
+    border-radius: 12px;
+  }
+
+  .domain-admin-topbar-title {
+    align-items: flex-start;
+  }
+
+  .domain-admin-brand-mark {
+    flex-basis: 38px;
+
+    width: 38px;
+    height: 38px;
+
+    border-radius: 9px;
+
+    font-size: 12px;
+  }
+
+  .domain-admin-topbar h1 {
+    font-size: 18px;
+  }
+
+  .domain-admin-topbar p {
+    font-size: 11px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .domain-admin-overview-strip {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .domain-admin-tab {
+    min-height: 42px;
+
+    padding: 9px 5px !important;
+
+    font-size: 11px;
+  }
+
+  .shadow.rounded-xl {
+    padding: 12px !important;
+
+    border-radius: 0 10px 10px 10px !important;
+  }
+}
+
+
+/* =========================================================
+   28. SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 520px) {
+
+  .dashboard-container {
+    padding: 8px;
+  }
+
+  .dashboard-container > .sidebar .profile-section {
+    padding: 18px 14px 14px;
+  }
+
+  .dashboard-container > .sidebar .profile-section p {
+    grid-template-columns: 100px minmax(0, 1fr);
+
+    font-size: 12px;
+  }
+
+  .dashboard-container > .sidebar .profile-section strong {
+    font-size: 11px;
+  }
+
+  .domain-admin-topbar {
+    margin-bottom: 12px;
+
+    padding: 13px;
+
+    border-radius: 11px;
+  }
+
+  .domain-admin-topbar-title {
+    gap: 9px;
+  }
+
+  .domain-admin-brand-mark {
+    flex-basis: 34px;
+
+    width: 34px;
+    height: 34px;
+  }
+
+  .domain-admin-topbar h1 {
+    font-size: 16px;
+  }
+
+  .domain-admin-topbar p {
+    font-size: 10px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .main-content-Link .card {
+    min-height: 72px;
+
+    padding: 15px 40px 15px 15px;
+
+    font-size: 13px;
+  }
+
+  .domain-admin-overview-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .domain-admin-tab {
+    min-height: 40px;
+
+    font-size: 10px;
+  }
+
+  .domain-admin-results-count {
+    width: 100%;
+  }
+
+  .domain-admin-modal-box {
+    width: calc(100vw - 20px) !important;
+
+    max-height: 92vh !important;
+  }
+}
+
+
+/* =========================================================
+   29. VERY SMALL SCREEN
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+  .dashboard-container > .sidebar .profile-section p {
+    grid-template-columns: 88px minmax(0, 1fr);
+  }
+
+  .domain-admin-tab {
+    font-size: 9px;
+  }
+
+  .main-content-Link .card {
+    font-size: 12px;
+  }
+}
+
+
+/* =========================================================
+   30. ACCESSIBILITY
+   ========================================================= */
+
+.dashboard-container button:focus-visible,
+.dashboard-container a:focus-visible,
+.dashboard-container input:focus-visible,
+.dashboard-container select:focus-visible,
+.dashboard-container textarea:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, .22);
+
+  outline-offset: 2px;
+}
+  
+
+/* =========================================================
+   31. REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .dashboard-container *,
+  .dashboard-container *::before,
+  .dashboard-container *::after {
+    animation-duration: .01ms !important;
+
+    animation-iteration-count: 1 !important;
+
+    transition-duration: .01ms !important;
+  }
+}
+
+
+.excel-example-table {
+  min-width: 850px;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.excel-example-table th,
+.excel-example-table td {
+  padding: 10px 14px;
+  white-space: nowrap;
+}
+
+.excel-example-table th:nth-child(1) {
+  min-width: 100px;
+}
+
+.excel-example-table th:nth-child(1) {
+  min-width: 100px;
+}
+
+.excel-example-table th:nth-child(1) {
+  min-width: 100px;
+}
+
+.excel-example-table th:nth-child(1) {
+  min-width: 100px;
+}
+
+.excel-example-table th:nth-child(1) {
+  min-width: 100px;
+}

@@ -7,6 +7,24 @@
     --text-muted: #64748b;
     --border-color: #e2e8f0;
     --primary-blue: #3b82f6;
+     --da-bg: #f8fafc;
+  --da-surface: #ffffff;
+  --da-surface-2: #f1f5f9;
+  --da-border: #e2e8f0;
+  --da-text: #0f172a;
+  --da-muted: #64748b;
+  --da-primary: #2563eb;
+  --da-primary-hover: #1d4ed8;
+  --da-danger: #dc2626;
+  --da-success: #16a34a;
+  --da-info: #0891b2;
+   --da-bg: #0b1120;
+  --da-surface: #111827;
+  --da-surface-2: #1e293b;
+  --da-border: #334155;
+  --da-text: #f8fafc;
+  --da-muted: #94a3b8;
+
 }
 
 body.dark {
@@ -32,7 +50,7 @@ body.dark {
     /* top: 20px;
   left: 20px; */
     width: 50px;
-    z-index: 1;
+    z-index: 100;
     color: white;
     border: none;
     cursor: pointer;
@@ -41,16 +59,25 @@ body.dark {
 
 /* Sidebar */
 .sidebar {
-    width: 60vw;
+height: 100vh;
+  overflow-y: auto;
+  position: sticky;
+  z-index: 1;
+
+  
     background: var(--bg-sidebar);
     color: white;
     margin: 0;
     padding: 0px 20px;
     display: flex;
     flex-direction: column;
-    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1); */
+  box-shadow: 5px 0 24px rgba(15, 23, 42, .06);
+
     transition: all 0.3s ease;
     align-items: center;
+scrollbar-width: thin;
+
 
 }
 
@@ -58,14 +85,12 @@ body.dark {
 .profile-section {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding-top: 3vh;
+      padding: 26px 18px 18px;
 }
 
 .profile-pic {
     width: 120px;
     height: 120px;
-    background: #94a3b8;
     border-radius: 50%;
     margin: 0 auto 15px auto;
 }
@@ -98,38 +123,96 @@ body.dark {
     padding-bottom: 4px;
 }
 
+.profile-upload-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 18px;
+  
+}
+
+.profile-upload-preview img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border: 3px solid var(--da-primary);
+  background: var(--da-surface-2);
+  
+}
+
+
+/* =========================================================
+   SIDEBAR ACTIONS
+   ========================================================= */
+.sidebar-action-btn {
+  width: calc(100% - 32px);
+  margin: 0 16px 10px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: transparent;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.sidebar-action-btn:hover {
+  transform: translateY(-1px);
+  background: var(--da-surface-2);
+}
+
+.sidebar-profile-btn {
+  border: 1px solid var(--da-primary);
+  color: var(--da-primary);
+}
+
+
+
 /* Professional Logout Button */
 .logout-btn {
-    /* margin-top: 30px; */
-    padding: 10px;
-    background: #ef4444;
-    border: none;
-    color: white;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    width: 100%;
-    transition: background 0.2s;
+  width: calc(100% - 32px);
+  margin: 0 16px 20px;
+  padding: 10px 12px;
+  border: 1px solid #ef4444;
+  border-radius: 9px;
+  background: rgba(239, 68, 68, .05);
+  color: #dc2626;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .2s ease;
 }
 
 .logout-btn:hover {
-    background: #b91c1c;
+  background: #dc2626;
+  color: #fff;
+  transform: translateY(-1px);
 }
 
 /* Main Content Area */
 .main-content {
-    /* flex: 1; */
-    padding: 20px;
-    overflow-y: auto;
+    flex: 1;
+     min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 30px;
+
+  position: sticky;
+  top: 0;
+  background: var(--da-surface);
+  border-right: 1px solid var(--da-border);
+  box-shadow: 5px 0 24px rgba(15, 23, 42, .06);
+  scrollbar-width: thin;
+  margin-left: 15px;
 }
 
-/* delte */
+/* =========================================================
+   DASHBOARD CARDS
+   ========================================================= */
 /* Grid & Cards */
 .card-grid {
-    display: flex;
-    /* old */
-    flex-wrap: wrap;
-    gap: 50px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
 }
 
 .main-content-Link {
@@ -140,21 +223,20 @@ body.dark {
 }
 
 .card {
-    background: var(--bg-card);
-    padding: 40px 20px;
-    text-align: center;
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
-    font-weight: 600;
-    /* old */
-    transition: all 0.2s ease-in-out;
-    /* Smooth transition for the 'click' effect */
-    cursor: pointer;
-    user-select: none;
-    /* Prevents text highlighting on double clicks */
-
+  min-height: 110px;
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: var(--da-surface);
+  border: 1px solid var(--da-border);
+  border-radius: 16px;
+  color: var(--da-text);
+  font-size: 16px;
+  font-weight: 800;
+  box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
 
 .card:hover {
@@ -175,7 +257,6 @@ body.dark {
     /* Inner shadow for depth */
 }
 
-/* delte */
 
 /* Sub-page Transitions */
 .sub-page-container {
@@ -195,6 +276,13 @@ body.dark {
     /* gap: 8px; */
 }
 
+
+.main-content-Link {
+  color: inherit;
+  text-decoration: none;
+  min-width: 0;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -207,41 +295,231 @@ body.dark {
     }
 }
 
-/* Responsive */
+/* =========================================================
+   MOBILE SIDEBAR
+   ========================================================= */
+
 @media (max-width: 768px) {
     .dashboard-container {
         flex-direction: column;
     }
 
-    .sidebar {
-        width: 100%;
-        padding-top: 60px;
-    }
+   
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(90vw, 320px);
+    height: 100vh;
+    box-shadow: 10px 0 35px rgba(15, 23, 42, .25);
+  }
 
     .toggle-btn {
         top: 10px;
         left: 10px;
     }
+
+    
+  .main-content {
+    padding: 70px 14px 20px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .card {
+    min-height: 86px;
+    padding: 18px;
+    font-size: 15px;
+  }
+
+  .domain-admin-tabs,
+  .grid.grid-cols-4.gap-6.mt-8 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+  }
+
+  .domain-admin-tab {
+    font-size: 13px;
+    padding: 10px 7px;
+  }
+
+  .domain-admin-search {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .table-wrapper {
+    min-width: 1180px;
+  }
+
+  .shadow.rounded-xl {
+    padding: 14px !important;
+    border-radius: 12px;
+  }
 }
 
 
-/* Responsive */
-@media (max-width: 768px) {
-    .dashboard-container {
-        flex-direction: column;
-    }
 
-    .sidebar {
-        width: 100%;
-    }
 
-    /* .toggle-btn {
-    display: none; /* remove toggle on mobile */
-    /* }  */
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+@media (max-width: 480px) {
+  .main-content {
+    padding-left: 9px;
+    padding-right: 9px;
+  }
 
-    .sub-page-container {
-        padding: 20px;
-        width: 100%;
-        animation: fadeIn 0.3s ease-in;
-    }
+  .profile-section {
+    padding: 20px 14px 14px;
+  }
+
+  .profile-pic {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 15px auto;
+}
+
+  .table-wrapper {
+    min-width: 1120px;
+  }
+
+  .main-content-Link .card {
+    border-radius: 13px;
+  }
+
+  .domain-admin-modal-box {
+    width: min(560px, calc(100vw - 20px)) !important;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   COMMON UI SAFETY
+   ---------------------------------------------------------
+   Safe global rules.
+   Does not change existing component functionality.
+   ========================================================= */
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+
+/* Prevent accidental horizontal page overflow */
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+
+/* Consistent sizing */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+
+/* Buttons and form controls */
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+
+/* Prevent images from breaking layouts */
+
+img {
+  max-width: 100%;
+}
+
+
+/* Better clickable controls */
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+/* Smooth scrolling */
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+/* =========================================================
+   DOMAIN ADMIN PAGE ONLY
+   ---------------------------------------------------------
+   These rules are scoped so other pages are not affected.
+   ========================================================= */
+
+.domain-admin-page,
+.domain-admin-page * {
+  box-sizing: border-box;
+}
+
+.domain-admin-page {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+
+/* Better scrollbar */
+
+.domain-admin-page ::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.domain-admin-page ::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 20px;
+}
+
+.domain-admin-page ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+/* Keyboard accessibility */
+
+.domain-admin-page button:focus-visible,
+.domain-admin-page a:focus-visible,
+.domain-admin-page input:focus-visible,
+.domain-admin-page select:focus-visible,
+.domain-admin-page textarea:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, .20);
+  outline-offset: 2px;
 }
