@@ -132,10 +132,11 @@ export default function AllSubAdmin() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wide border-b border-gray-100">
-                        <th className="px-4 py-2 text-left">#</th>
+                        <th className="px-4 py-2 text-left"> S.No</th>
                         <th className="px-4 py-2 text-left">Sub Admin ID</th>
                         <th className="px-4 py-2 text-left">Name</th>
                         <th className="px-4 py-2 text-left">Course</th>
+                        <th className="px-4 py-2 text-left">Teaching Assignments</th>
                         <th className="px-4 py-2 text-left">Email</th>
                         <th className="px-4 py-2 text-left">Mobile</th>
                         {/* {role === "DOMAIN_ADMIN" && (
@@ -165,6 +166,21 @@ export default function AllSubAdmin() {
                           <td className="px-4 py-2 font-mono font-medium text-gray-700 dark:text-gray-200">{s.subAdminId}</td>
                           <td className="px-4 py-2 font-medium text-gray-800 dark:text-gray-100">{s.name}</td>
                           <td className="px-4 py-2 text-gray-500">{s.course}</td>
+
+                          {/* <td className="px-4 py-2 text-gray-500">{s.teachingAssignments}</td> */}
+                          <td className="px-4 py-2 text-gray-500">
+                            {s.teachingAssignments
+                              ?.split(";")
+                              .map((assignment) => {
+                                const [batch, subjects] = assignment.split(":");
+
+                                return `${batch?.trim()} : ${subjects
+                                  ?.split(",")
+                                  .map((subject) => subject.trim())
+                                  .join(" , ")}`;
+                              })
+                              .join(" | ")}
+                          </td>
                           <td className="px-4 py-2 text-gray-500">{s.email}</td>
                           <td className="px-4 py-2 text-gray-500">{s.mobileNumber}</td>
                           {/* {role === "DOMAIN_ADMIN" && (

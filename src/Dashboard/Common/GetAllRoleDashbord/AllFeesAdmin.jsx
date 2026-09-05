@@ -25,6 +25,7 @@ export default function AllFeesAdmin() {
   const [isUniversityOpen, setIsUniversityOpen] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
 
   // ─────────────────────────────────────────────────────────────
   // FETCH FEES ADMINS
@@ -34,9 +35,10 @@ export default function AllFeesAdmin() {
   }, [domain]);
 
   const fetchAllFeesAdmins = async () => {
-    try {
-      setLoading(true);
+    setLoading(true);
+    setLoadError("");
 
+    try {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
@@ -50,6 +52,16 @@ export default function AllFeesAdmin() {
         }
       );
 
+      // Only a genuine auth failure should log the user out.
+      // Any other failure (network blip, 500, etc.) should NOT wipe
+      // the session - it should just be reported as an error.
+      if (response.status === 401 || response.status === 403) {
+        alert("Session expired. Please login again.");
+        localStorage.clear();
+        navigate(`/${domain}/login`);
+        return;
+      }
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
@@ -59,17 +71,13 @@ export default function AllFeesAdmin() {
       const list = Array.isArray(data)
         ? data
         : Array.isArray(data?.data)
-        ? data.data
-        : [];
+          ? data.data
+          : [];
 
       setFeesAdmins(list);
     } catch (error) {
       console.error("Error fetching Fees Admins:", error);
-
-      alert("Session expired. Please login again.");
-
-      localStorage.clear();
-      // navigate(`/${domain}/login`);
+      setLoadError("Unable to load Fees Admins right now. Please try refreshing.");
     } finally {
       setLoading(false);
     }
@@ -86,12 +94,15 @@ export default function AllFeesAdmin() {
     }
 
     return feesAdmins.filter((admin) => {
+      // Wrap every field in String(...) first - some backends can
+      // send mobileNumber (or other fields) back as a number rather
+      // than a string, and calling .toLowerCase() on a number throws.
       return (
-        admin.name?.toLowerCase().includes(query) ||
-        admin.feesAdminId?.toLowerCase().includes(query) ||
-        admin.email?.toLowerCase().includes(query) ||
-        admin.mobileNumber?.toLowerCase().includes(query) ||
-        admin.universityName?.toLowerCase().includes(query)
+        String(admin.name ?? "").toLowerCase().includes(query) ||
+        String(admin.feesAdminId ?? "").toLowerCase().includes(query) ||
+        String(admin.email ?? "").toLowerCase().includes(query) ||
+        String(admin.mobileNumber ?? "").toLowerCase().includes(query) ||
+        String(admin.universityName ?? "").toLowerCase().includes(query)
       );
     });
   }, [feesAdmins, searchQuery]);
@@ -114,7 +125,7 @@ export default function AllFeesAdmin() {
   }, [filteredFeesAdmins]);
 
   // ─────────────────────────────────────────────────────────────
-  // EMPTY / LOADING
+  // LOADING
   // ─────────────────────────────────────────────────────────────
   if (loading) {
     return (
@@ -181,9 +192,18 @@ export default function AllFeesAdmin() {
       </div>
 
       {/* =========================================================
+          ERROR STATE
+      ========================================================= */}
+      {loadError && (
+        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-300">
+          {loadError}
+        </div>
+      )}
+
+      {/* =========================================================
           EMPTY STATE
       ========================================================= */}
-      {filteredFeesAdmins.length === 0 ? (
+      {!loadError && filteredFeesAdmins.length === 0 ? (
         <div
           className="
             rounded-2xl border border-dashed border-gray-300
@@ -206,7 +226,7 @@ export default function AllFeesAdmin() {
               : "There are no Fees Admins available."}
           </p>
         </div>
-      ) : (
+      ) : !loadError && (
         /* =======================================================
            ONE UNIVERSITY PANEL
         ======================================================= */
@@ -316,14 +336,17 @@ export default function AllFeesAdmin() {
                     {role === "DOMAIN_ADMIN" && (
                       <>
                         <th className="px-4 py-3 text-left">
-                          Created
+                          Created At
+                        </th>
+                        <th className="px-4 py-3 text-left">
+                          Updated At
                         </th>
 
                         <th className="px-4 py-3 text-left">
                           Last Login
                         </th>
 
-                        <th className="px-4 py-3 text-left">
+                        {/* <th className="px-4 py-3 text-left">
                           Password
                           <button
                             type="button"
@@ -351,7 +374,7 @@ export default function AllFeesAdmin() {
                               <Eye size={14} />
                             )}
                           </button>
-                        </th>
+                        </th> */}
                       </>
                     )}
                   </tr>
@@ -455,26 +478,33 @@ export default function AllFeesAdmin() {
                           <td className="px-4 py-4 text-xs text-gray-500 dark:text-gray-400">
                             {feesAdmin.createdDateTime
                               ? FormatDate(
-                                  feesAdmin.createdDateTime
-                                )
+                                feesAdmin.createdDateTime
+                              )
                               : "-"}
                           </td>
 
+                          <td className="px-4 py-4 text-xs text-gray-500 dark:text-gray-400">
+                            {feesAdmin.lastUpdateDateTime
+                              ? FormatDate(
+                                feesAdmin.lastUpdateDateTime
+                              )
+                              : "-"}
+                          </td>
                           {/* LAST LOGIN */}
                           <td className="px-4 py-4 text-xs text-gray-500 dark:text-gray-400">
                             {feesAdmin.lastLoginDateTime
                               ? FormatDate(
-                                  feesAdmin.lastLoginDateTime
-                                )
+                                feesAdmin.lastLoginDateTime
+                              )
                               : "Never"}
                           </td>
 
                           {/* PASSWORD */}
-                          <td className="px-4 py-4 font-mono text-xs text-gray-500 dark:text-gray-400">
+                          {/* <td className="px-4 py-4 font-mono text-xs text-gray-500 dark:text-gray-400">
                             {showPassword
                               ? feesAdmin.password || "-"
                               : "••••••••"}
-                          </td>
+                          </td> */}
                         </>
                       )}
                     </tr>

@@ -274,7 +274,7 @@ export default function AllFaculty() {
                         <th className="px-4 py-2 text-left">Faculty ID</th>
                         <th className="px-4 py-2 text-left">Name</th>
                         <th className="px-4 py-2 text-left">Course</th>
-                        <th className="px-4 py-2 text-left">Teaching Batch</th>
+                        <th className="px-4 py-2 text-left">Teaching Assignments</th>
                         <th className="px-4 py-2 text-left">Email</th>
                         <th className="px-4 py-2 text-left">Mobile</th>
                         {/* {role === "DOMAIN_ADMIN" && (
@@ -304,7 +304,20 @@ export default function AllFaculty() {
                           <td className="px-4 py-2 font-mono font-medium text-gray-700 dark:text-gray-200">{f.facultyId}</td>
                           <td className="px-4 py-2 font-medium text-gray-800 dark:text-gray-100">{f.name}</td>
                           <td className="px-4 py-2 text-gray-500">{f.course}</td>
-                          <td className="px-4 py-2 text-gray-500">{f.teachingBatch || "—"}</td>
+                          {/* <td className="px-4 py-2 text-gray-500">{f.teachingAssignments}</td> */}
+                          <td className="px-4 py-2 text-gray-500">
+                            {f.teachingAssignments
+                              ?.split(";")
+                              .map((assignment) => {
+                                const [batch, subjects] = assignment.split(":");
+
+                                return `${batch?.trim()} : ${subjects
+                                  ?.split(",")
+                                  .map((subject) => subject.trim())
+                                  .join(" , ")}`;
+                              })
+                              .join(" | ")}
+                          </td>
                           <td className="px-4 py-2 text-gray-500">{f.email}</td>
                           <td className="px-4 py-2 text-gray-500">{f.mobileNumber}</td>
                           {/* {role === "DOMAIN_ADMIN" && (

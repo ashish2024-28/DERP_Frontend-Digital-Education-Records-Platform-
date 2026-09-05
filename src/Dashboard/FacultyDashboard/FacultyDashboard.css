@@ -1,74 +1,1056 @@
+/* =========================================================
+   DOMAIN ADMIN DASHBOARD
+   Clean + Consolidated Professional CSS
+
+   Notes:
+   - Duplicate styles removed.
+   - Existing class names preserved.
+   - Existing functionality preserved.
+   - Responsive behavior preserved.
+   - Invalid CSS selectors/properties corrected.
+   ========================================================= */
 
 
+/* =========================================================
+   1. GLOBAL / VARIABLES
+   ========================================================= */
+
+:root {
+    --da-bg: #f5f7fb;
+    --da-surface: #ffffff;
+    --da-surface-2: #f8fafc;
+    --da-border: #e2e8f0;
+    --da-text: #0f172a;
+    --da-muted: #64748b;
+
+    --da-primary: #2563eb;
+    --da-primary-hover: #1d4ed8;
+    --da-primary-soft: #eff6ff;
+
+    --da-danger: #dc2626;
+    --da-success: #16a34a;
+    --da-info: #0891b2;
+
+    --da-sidebar: #ffffff;
+    --da-sidebar-width: 310px;
+
+    --da-shadow:
+        0 10px 35px rgba(15, 23, 42, 0.08);
+}
 
 
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+html.domain-admin-dark {
+    color-scheme: dark;
+
+    --da-bg: #0b1120;
+    --da-surface: #111827;
+    --da-surface-2: #172033;
+    --da-border: #273449;
+    --da-text: #e5e7eb;
+    --da-muted: #94a3b8;
+
+    --da-primary: #60a5fa;
+    --da-primary-hover: #3b82f6;
+    --da-primary-soft: rgba(37, 99, 235, 0.14);
+
+    --da-sidebar: #0f172a;
+
+    --da-shadow:
+        0 14px 40px rgba(0, 0, 0, 0.25);
+}
+
+html.domain-admin-dark body {
+    background: var(--da-bg);
+    color: var(--da-text);
+}
 
 
+/* Support other dark-mode implementations */
+.dark .dashboard-container,
+[data-theme="dark"] .dashboard-container,
+.dark-mode .dashboard-container {
+    --da-bg: #0b1120;
+    --da-surface: #111827;
+    --da-surface-2: #1e293b;
+    --da-border: #334155;
+    --da-text: #f8fafc;
+    --da-muted: #94a3b8;
+}
 
 
+/* =========================================================
+   2. SAFE BOX SIZING
+   ========================================================= */
+
+.dashboard-container,
+.dashboard-container *,
+.dashboard-container *::before,
+.dashboard-container *::after {
+    box-sizing: border-box;
+}
 
 
+/* =========================================================
+   3. MAIN DASHBOARD CONTAINER
+   ========================================================= */
+
+.dashboard-container {
+    width: 100%;
+    min-height: calc(100vh - 70px);
+
+    display: flex;
+    align-items: stretch;
+    gap: 18px;
+
+    padding: 18px;
+
+    background: var(--da-bg);
+    color: var(--da-text);
+
+    overflow: visible;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
 
 
+/* =========================================================
+   4. SUB PAGE
+   ========================================================= */
 
 .sub-page-container {
-    padding: 20px;
     width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 20px;
+
     animation: fadeIn 0.3s ease-in;
 }
 
 
+/* =========================================================
+   5. SIDEBAR / PROFILE PANEL
+   ========================================================= */
+
+.dashboard-container > .sidebar {
+    position: relative;
+
+    flex: 0 0 285px;
+    width: 285px;
+    min-width: 285px;
+
+    min-height: calc(100vh - 106px);
+    max-height: none;
+
+    margin: 0;
+    padding: 0;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    align-items: stretch;
+
+    background: var(--da-surface) !important;
+    color: var(--da-text);
+
+    border: 1px solid var(--da-border);
+    border-radius: 16px;
+
+    box-shadow:
+        0 8px 28px rgba(15, 23, 42, 0.07);
+
+    scrollbar-width: thin;
+}
+
+.sidebar {
+    background: var(--da-sidebar) !important;
+    border-right: 1px solid var(--da-border);
+    box-shadow: var(--da-shadow);
+}
 
 
+/* =========================================================
+   6. PROFILE SECTION
+   ========================================================= */
+
+.dashboard-container > .sidebar .profile-section {
+    width: 100%;
+    padding: 26px 20px 18px;
+
+    background: var(--da-surface);
+    color: var(--da-text);
+}
+
+.profile-section {
+    color: var(--da-text);
+}
+
+.profile-section p {
+    color: var(--da-text) !important;
+}
+
+.profile-section strong {
+    color: var(--da-muted) !important;
+}
 
 
+/* =========================================================
+   7. PROFILE IMAGE
+   ========================================================= */
+
+.dashboard-container > .sidebar .profile-pic {
+    position: relative;
+
+    width: 116px;
+    height: 116px;
+
+    margin: 2px auto 22px;
+
+    flex-shrink: 0;
+}
+
+.dashboard-container > .sidebar .profile-pic-img {
+    width: 116px;
+    height: 116px;
+
+    display: block;
+    margin: 0;
+
+    object-fit: cover;
+
+    border: 3px solid var(--da-primary);
+    border-radius: 50%;
+
+    background: var(--da-surface-2);
+
+    box-shadow:
+        0 5px 18px rgba(37, 99, 235, 0.15);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.dashboard-container > .sidebar .profile-pic:hover .profile-pic-img {
+    transform: scale(1.025);
+
+    box-shadow:
+        0 8px 25px rgba(37, 99, 235, 0.22);
+}
 
 
+/* =========================================================
+   8. PROFILE INFORMATION
+   ========================================================= */
+
+.dashboard-container > .sidebar .profile-section p {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: 105px minmax(0, 1fr);
+    column-gap: 8px;
+
+    margin: 0;
+    padding: 10px 0;
+
+    border-bottom: 1px solid var(--da-border);
+
+    color: var(--da-text) !important;
+
+    font-size: 13px;
+    line-height: 1.45;
+
+    overflow-wrap: anywhere;
+}
+
+.dashboard-container > .sidebar .profile-section p:last-of-type {
+    border-bottom: none;
+}
+
+.dashboard-container > .sidebar .profile-section strong {
+    color: var(--da-muted) !important;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
 
 
+/* University information separator */
+.dashboard-container > .sidebar .profile-section p:nth-of-type(6) {
+    margin-top: 8px;
+    padding-top: 16px;
+
+    border-top: 1px solid var(--da-border);
+}
 
 
+/* =========================================================
+   9. SIDEBAR ACTION BUTTONS
+   ========================================================= */
 
+.dashboard-container > .sidebar .sidebar-action-btn,
+.dashboard-container > .sidebar button:not(.toggle-btn) {
+    width: calc(100% - 32px) !important;
+    min-height: 42px;
 
-.faculty-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, .55);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
-    padding: 20px;
+    gap: 7px;
+
+    margin: 0 16px 9px !important;
+    padding: 9px 13px !important;
+
+    border-radius: 9px !important;
+
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    line-height: 1.2;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease,
+        transform 0.18s ease,
+        box-shadow 0.18s ease;
 }
 
+
+/* Edit profile */
+.dashboard-container > .sidebar .sidebar-profile-btn {
+    border: 1px solid var(--da-primary) !important;
+    background: var(--da-primary-soft) !important;
+    color: var(--da-primary) !important;
+}
+
+.dashboard-container > .sidebar .sidebar-profile-btn:hover {
+    background: var(--da-primary) !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+}
+
+
+/* Change password */
+.dashboard-container > .sidebar button:nth-last-of-type(4) {
+    border-color: #7c3aed !important;
+    background: rgba(124, 58, 237, 0.07) !important;
+    color: #7c3aed !important;
+}
+
+.dashboard-container > .sidebar button:nth-last-of-type(4):hover {
+    background: #7c3aed !important;
+    color: #fff !important;
+}
+
+
+/* University logo */
+.dashboard-container > .sidebar button:nth-last-of-type(3) {
+    border-color: #ef4444 !important;
+    background: rgba(239, 68, 68, 0.06) !important;
+    color: #dc2626 !important;
+}
+
+.dashboard-container > .sidebar button:nth-last-of-type(3):hover {
+    background: #dc2626 !important;
+    color: #fff !important;
+}
+
+
+/* Refresh */
+.dashboard-container > .sidebar button:nth-last-of-type(2) {
+    border-color: var(--da-border) !important;
+    background: var(--da-surface-2) !important;
+    color: var(--da-text) !important;
+}
+
+.dashboard-container > .sidebar button:nth-last-of-type(2):hover {
+    border-color: var(--da-primary) !important;
+    background: var(--da-primary-soft) !important;
+    color: var(--da-primary) !important;
+}
+
+
+/* Logout */
+.dashboard-container > .sidebar .logout-btn {
+    min-height: 42px;
+    margin-top: 4px !important;
+
+    border: 1px solid #ef4444 !important;
+    background: rgba(239, 68, 68, 0.05) !important;
+    color: #dc2626 !important;
+}
+
+.dashboard-container > .sidebar .logout-btn:hover {
+    background: #dc2626 !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   10. MAIN CONTENT
+   ========================================================= */
+
+.dashboard-container > .main-content {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+}
+
+
+/* =========================================================
+   11. TOPBAR
+   ========================================================= */
+
+.domain-admin-topbar {
+    width: 100%;
+}
+
+.domain-admin-topbar-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.domain-admin-topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.domain-admin-brand-mark {
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   12. ICON ACTION BUTTON
+   ========================================================= */
+
+.icon-action-btn {
+    width: 40px;
+    height: 40px;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid var(--da-border);
+    border-radius: 11px;
+
+    background: var(--da-surface-2);
+    color: var(--da-text);
+
+    cursor: pointer;
+
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        background-color 0.18s ease;
+}
+
+.icon-action-btn:hover {
+    transform: translateY(-1px);
+
+    border-color: var(--da-primary);
+    color: var(--da-primary);
+}
+
+
+/* =========================================================
+   13. DASHBOARD CARDS
+   ========================================================= */
+
+.card-grid {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: 14px !important;
+    margin: 0;
+}
+
+.main-content-Link {
+    width: 100%;
+    min-width: 0;
+
+    text-decoration: none;
+    color: inherit;
+}
+
+.main-content-Link .card {
+    position: relative;
+
+    width: 100%;
+    min-height: 108px;
+
+    padding: 20px 42px 20px 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    text-align: center;
+
+    border: 1px solid var(--da-border);
+    border-radius: 14px;
+
+    background: var(--da-surface);
+    color: var(--da-text);
+
+    font-size: 14px;
+    font-weight: 750;
+
+    box-shadow:
+        0 5px 18px rgba(15, 23, 42, 0.055);
+
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        background-color 0.18s ease;
+}
+
+.main-content-Link .card::after {
+    content: "→";
+
+    position: absolute;
+    right: 16px;
+
+    color: var(--da-muted);
+    font-size: 17px;
+
+    transition:
+        transform 0.18s ease,
+        color 0.18s ease;
+}
+
+.main-content-Link:hover .card {
+    transform: translateY(-2px);
+
+    border-color: rgba(37, 99, 235, 0.45);
+
+    background: var(--da-surface);
+
+    box-shadow:
+        0 10px 25px rgba(15, 23, 42, 0.10);
+}
+
+.main-content-Link:hover .card::after {
+    color: var(--da-primary);
+    transform: translateX(3px);
+}
+
+
+/* =========================================================
+   14. OVERVIEW INFORMATION
+   ========================================================= */
+
+.domain-admin-overview-strip {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: 10px;
+
+    margin: 16px 0 18px;
+}
+
+.domain-admin-overview-strip > div {
+    min-width: 0;
+    min-height: 65px;
+
+    padding: 12px 14px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    border: 1px solid var(--da-border);
+    border-radius: 11px;
+
+    background: var(--da-surface);
+
+    box-shadow:
+        0 3px 12px rgba(15, 23, 42, 0.035);
+}
+
+.domain-admin-overview-strip span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--da-muted);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.domain-admin-overview-strip strong {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    color: var(--da-text);
+
+    font-size: 13px;
+    font-weight: 750;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   15. TABS
+   ========================================================= */
+
+.domain-admin-tabs {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: 7px;
+
+    margin-bottom: 0;
+}
+
+.domain-admin-tab {
+    min-width: 0;
+    min-height: 45px;
+
+    padding: 10px 8px !important;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--da-border) !important;
+    border-bottom: 0 !important;
+    border-radius: 10px 10px 0 0 !important;
+
+    background: var(--da-surface);
+    color: var(--da-muted);
+
+    font-size: 13px;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.18s ease,
+        color 0.18s ease,
+        border-color 0.18s ease;
+}
+
+.domain-admin-tab:hover,
+.domain-admin-tab.active {
+    color: var(--da-primary);
+
+    background: var(--da-primary-soft);
+
+    border-color:
+        rgba(37, 99, 235, 0.35) !important;
+}
+
+.domain-admin-tab.active {
+    color: var(--da-primary) !important;
+    background: var(--da-primary-soft) !important;
+}
+
+
+/* =========================================================
+   16. TABLE CONTAINER
+   ========================================================= */
+
+.shadow\.rounded-xl {
+    width: 100%;
+
+    margin: 0 !important;
+    padding: 18px !important;
+
+    border: 1px solid var(--da-border) !important;
+    border-radius: 0 12px 12px 12px !important;
+
+    background: var(--da-surface) !important;
+
+    box-shadow:
+        0 7px 24px rgba(15, 23, 42, 0.06) !important;
+
+    overflow-x: auto;
+}
+
+
+/* =========================================================
+   17. SEARCH / TOOLBAR
+   ========================================================= */
+
+.domain-admin-search {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+
+    padding: 10px 13px !important;
+
+    border: 1px solid var(--da-border) !important;
+    border-radius: 9px !important;
+
+    background: var(--da-surface-2) !important;
+    color: var(--da-text) !important;
+
+    font-size: 13px;
+
+    transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        background-color 0.18s ease;
+}
+
+.domain-admin-search::placeholder {
+    color: var(--da-muted);
+}
+
+.domain-admin-search:focus {
+    outline: none;
+
+    border-color: var(--da-primary) !important;
+
+    background: var(--da-surface) !important;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+.domain-admin-results-count {
+    min-height: 38px;
+
+    padding: 8px 12px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--da-border);
+    border-radius: 8px;
+
+    background: var(--da-surface-2);
+    color: var(--da-muted);
+
+    font-size: 11px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   18. TABLE
+   ========================================================= */
+
+.table-wrapper {
+    width: 100%;
+    min-width: 1180px;
+
+    margin-top: 14px;
+
+    border-collapse: separate;
+    border-spacing: 0;
+
+    background: var(--da-surface);
+    color: var(--da-text);
+}
+
+.table-wrapper th {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+
+    height: 42px;
+
+    padding: 10px 12px;
+
+    background: var(--da-surface-2) !important;
+    color: var(--da-muted) !important;
+
+    border-bottom: 1px solid var(--da-border) !important;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+
+    white-space: nowrap;
+    text-align: left;
+}
+
+.table-wrapper td {
+    height: 48px;
+
+    padding: 10px 12px;
+
+    border-bottom: 1px solid var(--da-border) !important;
+
+    background: var(--da-surface) !important;
+    color: var(--da-text) !important;
+
+    font-size: 12px;
+
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.table-wrapper tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.table-wrapper tbody tr:hover td {
+    background: var(--da-surface-2) !important;
+}
+
+.table-wrapper th:last-child,
+.table-wrapper td:last-child {
+    min-width: 230px;
+}
+
+.table-wrapper td:nth-last-child(2) {
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        monospace;
+}
+
+.table-wrapper td[colspan] {
+    height: 110px;
+
+    color: var(--da-muted) !important;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   19. ACTION BUTTONS
+   ========================================================= */
+
+.action-btn {
+    min-height: 30px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+
+    margin-right: 4px !important;
+    margin-bottom: 3px !important;
+
+    padding: 6px 10px !important;
+
+    border: 0 !important;
+    border-radius: 7px !important;
+
+    color: #fff !important;
+
+    font-size: 11px !important;
+    font-weight: 700 !important;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        filter 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-1px);
+
+    filter: brightness(0.97);
+
+    box-shadow:
+        0 4px 10px rgba(15, 23, 42, 0.12);
+}
+
+.action-edit {
+    background: #2563eb !important;
+}
+
+.action-password {
+    background: #7c3aed !important;
+}
+
+.action-delete {
+    background: #dc2626 !important;
+}
+
+
+/* =========================================================
+   20. GENERAL INPUTS / SELECTS / TEXTAREAS
+   ========================================================= */
+
+.dashboard-container input,
+.dashboard-container select,
+.dashboard-container textarea {
+    width: 100%;
+    min-height: 40px;
+
+    border: 1px solid var(--da-border);
+    border-radius: 8px;
+
+    background: var(--da-surface);
+    color: var(--da-text);
+
+    font-size: 13px;
+
+    transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.dashboard-container input::placeholder,
+.dashboard-container textarea::placeholder {
+    color: var(--da-muted);
+}
+
+.dashboard-container input:focus,
+.dashboard-container select:focus,
+.dashboard-container textarea:focus {
+    outline: none;
+
+    border-color: var(--da-primary) !important;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+
+/* =========================================================
+   21. MODALS
+   ========================================================= */
+
+.domain-admin-modal-overlay,
+.faculty-modal-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 16px;
+
+    z-index: 9999;
+
+    background: rgba(15, 23, 42, 0.58);
+
+    backdrop-filter: blur(5px);
+}
+
+
+/* Domain Admin Modal */
+.domain-admin-modal-box {
+    width: min(520px, calc(100vw - 32px));
+
+    max-height: min(90vh, 720px);
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    border: 1px solid var(--da-border) !important;
+    border-radius: 14px !important;
+
+    background: var(--da-surface) !important;
+    color: var(--da-text) !important;
+
+    box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.25) !important;
+}
+
+.domain-admin-modal-box h3,
+.domain-admin-modal-box label {
+    color: var(--da-text) !important;
+}
+
+.domain-admin-modal-box input,
+.domain-admin-modal-box textarea,
+.domain-admin-modal-box select {
+    border-color: var(--da-border) !important;
+
+    background: var(--da-surface-2) !important;
+
+    color: var(--da-text) !important;
+}
+
+.domain-admin-modal-box input::placeholder,
+.domain-admin-modal-box textarea::placeholder {
+    color: var(--da-muted);
+}
+
+
+/* Faculty Modal */
 .faculty-modal {
     width: min(500px, 95vw);
+
     max-height: 90vh;
+
     overflow-y: auto;
-    background: white;
+
+    background: var(--da-surface);
+
     border-radius: 14px;
-    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.25);
 }
 
 .faculty-modal-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     padding: 17px 20px;
-    border-bottom: 1px solid #e5e7eb;
+
+    border-bottom: 1px solid var(--da-border);
 }
 
 .faculty-modal-header h3 {
     margin: 0;
+
+    color: var(--da-text);
+
     font-size: 16px;
 }
 
 .faculty-modal-header button {
     border: 0;
+
     background: transparent;
+
+    color: var(--da-muted);
+
     font-size: 22px;
+
     cursor: pointer;
-    color: #6b7280;
 }
 
 .faculty-modal-body {
@@ -77,38 +1059,658 @@
 
 .faculty-modal-body label {
     display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--da-text);
+
     font-size: 12px;
     font-weight: 700;
-    color: #374151;
-    margin-bottom: 5px;
 }
 
 .faculty-modal-body input {
     width: 100%;
+
     padding: 10px 11px;
-    border: 1px solid #d1d5db;
-    border-radius: 7px;
+
     margin-bottom: 10px;
+
+    border: 1px solid var(--da-border);
+
+    border-radius: 7px;
+
+    background: var(--da-surface);
+
+    color: var(--da-text);
+
     outline: none;
 }
 
 .faculty-modal-body input:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+    border-color: var(--da-primary);
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.10);
 }
 
 .faculty-primary-button {
     width: 100%;
+
     padding: 11px;
+
+    margin-top: 5px;
+
     border: 0;
     border-radius: 8px;
-    background: #2563eb;
-    color: white;
+
+    background: var(--da-primary);
+
+    color: #fff;
+
     font-weight: 700;
+
     cursor: pointer;
-    margin-top: 5px;
 }
 
 .faculty-primary-button:hover {
-    background: #1d4ed8;
+    background: var(--da-primary-hover);
+}
+
+
+/* =========================================================
+   22. MODAL MESSAGES
+   ========================================================= */
+
+.modal-error {
+    margin: 0 0 10px;
+
+    padding: 9px 11px;
+
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+
+    background: #fef2f2;
+    color: #b91c1c;
+
+    font-size: 13px;
+}
+
+.modal-success {
+    margin: 0 0 10px;
+
+    padding: 9px 11px;
+
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+
+    background: #f0fdf4;
+    color: #15803d;
+
+    font-size: 13px;
+}
+
+.security-note {
+    margin: 2px 0 12px;
+
+    padding: 9px 11px;
+
+    border: 1px solid var(--da-border);
+    border-radius: 8px;
+
+    background: var(--da-surface-2);
+    color: var(--da-muted);
+
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   23. PASSWORD USER SUMMARY
+   ========================================================= */
+
+.user-password-summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin-bottom: 18px;
+    padding: 12px;
+
+    border: 1px solid var(--da-border);
+    border-radius: 11px;
+
+    background: var(--da-surface-2);
+}
+
+.user-password-avatar {
+    width: 42px;
+    height: 42px;
+
+    flex: 0 0 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: var(--da-primary);
+    color: #fff;
+
+    font-weight: 800;
+}
+
+.user-password-summary div:last-child {
+    min-width: 0;
+}
+
+.user-password-summary strong,
+.user-password-summary span {
+    display: block;
+}
+
+.user-password-summary strong {
+    color: var(--da-text);
+
+    font-size: 14px;
+}
+
+.user-password-summary span {
+    margin-top: 2px;
+
+    color: var(--da-muted);
+
+    font-size: 12px;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   24. BACK BUTTON
+   ========================================================= */
+
+.back-btn {
+    min-height: 40px;
+
+    margin-bottom: 16px;
+    padding: 9px 14px !important;
+
+    border: 1px solid var(--da-border) !important;
+    border-radius: 9px !important;
+
+    background: var(--da-surface) !important;
+    color: var(--da-text) !important;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.18s ease,
+        color 0.18s ease,
+        background-color 0.18s ease;
+}
+
+.back-btn:hover {
+    border-color: var(--da-primary) !important;
+
+    background: var(--da-primary-soft) !important;
+
+    color: var(--da-primary) !important;
+}
+
+
+/* =========================================================
+   25. SUCCESS / ERROR ALERTS
+   ========================================================= */
+
+.dashboard-container > .main-content > div > div[style*="d1fae5"],
+.dashboard-container > .main-content > div > div[style*="fee2d2"] {
+    min-height: 42px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 10px 13px !important;
+
+    border-radius: 9px !important;
+
+    font-size: 13px;
+
+    box-shadow:
+        0 3px 12px rgba(15, 23, 42, 0.04);
+}
+
+
+/* =========================================================
+   26. EXCEL EXAMPLE TABLE
+   ========================================================= */
+
+.excel-example-table {
+    width: 100%;
+    min-width: 850px;
+
+    border-collapse: collapse;
+}
+
+.excel-example-table th,
+.excel-example-table td {
+    padding: 10px 14px;
+
+    white-space: nowrap;
+}
+
+.excel-example-table th:nth-child(1) {
+    min-width: 100px;
+}
+
+
+/* =========================================================
+   27. LONG INPUT PLACEHOLDER
+   ========================================================= */
+
+.input-scroll-wrapper {
+    position: relative;
+
+    width: 100%;
+
+    overflow: hidden;
+}
+
+.input-scroll-placeholder {
+    position: absolute;
+
+    left: 12px;
+    right: 12px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    pointer-events: none;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    color: #9ca3af;
+
+    font-size: 14px;
+}
+
+.input-scroll-placeholder span {
+    display: inline-block;
+}
+
+
+/* Animate only while input is focused */
+.input-scroll-wrapper:focus-within
+.input-scroll-placeholder span {
+    animation:
+        placeholderScroll 10s linear infinite;
+}
+
+@keyframes placeholderScroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    15% {
+        transform: translateX(0);
+    }
+
+    85% {
+        transform: translateX(calc(-100% + 100px));
+    }
+
+    100% {
+        transform: translateX(calc(-100% + 100px));
+    }
+}
+
+
+/* =========================================================
+   28. SCROLLBARS
+   ========================================================= */
+
+.sidebar::-webkit-scrollbar,
+.main-content::-webkit-scrollbar,
+.shadow\.rounded-xl::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+.sidebar::-webkit-scrollbar-thumb,
+.main-content::-webkit-scrollbar-thumb,
+.shadow\.rounded-xl::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+
+    border-radius: 20px;
+}
+
+
+/* =========================================================
+   29. TABLET - 1200px
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+    .dashboard-container {
+        gap: 14px;
+        padding: 14px;
+    }
+
+    .dashboard-container > .sidebar {
+        flex-basis: 260px;
+
+        width: 260px;
+        min-width: 260px;
+    }
+
+    .card-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .domain-admin-overview-strip {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+/* =========================================================
+   30. TABLET - 900px
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .dashboard-container {
+        display: block;
+
+        padding: 12px;
+    }
+
+    .dashboard-container > .sidebar {
+        width: 100%;
+        min-width: 0;
+
+        min-height: auto;
+        max-height: none;
+
+        margin-bottom: 14px;
+
+        border-radius: 12px;
+    }
+
+    .dashboard-container > .main-content {
+        width: 100%;
+
+        min-height: auto;
+    }
+
+    .profile-section {
+        padding: 20px 18px 16px;
+    }
+
+    .profile-section p {
+        grid-template-columns:
+            125px minmax(0, 1fr);
+    }
+
+    .domain-admin-topbar {
+        padding: 15px;
+    }
+
+    .card-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 10px !important;
+    }
+
+    .domain-admin-overview-strip {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+/* =========================================================
+   31. MOBILE - 768px
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .dashboard-container {
+        padding: 10px;
+    }
+
+    .dashboard-container > .sidebar {
+        border-radius: 12px;
+    }
+
+    .domain-admin-topbar {
+        min-height: auto;
+
+        padding: 14px;
+
+        border-radius: 12px;
+    }
+
+    .domain-admin-topbar-title {
+        align-items: flex-start;
+    }
+
+    .domain-admin-brand-mark {
+        flex-basis: 38px;
+
+        width: 38px;
+        height: 38px;
+
+        border-radius: 9px;
+    }
+
+    .domain-admin-topbar h1 {
+        font-size: 18px;
+    }
+
+    .domain-admin-topbar p {
+        font-size: 11px;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .domain-admin-overview-strip {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .domain-admin-tab {
+        min-height: 42px;
+
+        padding: 9px 5px !important;
+
+        font-size: 11px;
+    }
+
+    .shadow\.rounded-xl {
+        padding: 12px !important;
+
+        border-radius: 0 10px 10px 10px !important;
+    }
+}
+
+
+/* =========================================================
+   32. SMALL MOBILE - 520px
+   ========================================================= */
+
+@media (max-width: 520px) {
+
+    .dashboard-container {
+        padding: 8px;
+    }
+
+    .dashboard-container > .sidebar .profile-section {
+        padding: 18px 14px 14px;
+    }
+
+    .dashboard-container > .sidebar .profile-section p {
+        grid-template-columns:
+            100px minmax(0, 1fr);
+
+        font-size: 12px;
+    }
+
+    .dashboard-container > .sidebar .profile-section strong {
+        font-size: 11px;
+    }
+
+    .domain-admin-topbar {
+        margin-bottom: 12px;
+
+        padding: 13px;
+
+        border-radius: 11px;
+    }
+
+    .domain-admin-topbar-title {
+        gap: 9px;
+    }
+
+    .domain-admin-brand-mark {
+        flex-basis: 34px;
+
+        width: 34px;
+        height: 34px;
+    }
+
+    .domain-admin-topbar h1 {
+        font-size: 16px;
+    }
+
+    .domain-admin-topbar p {
+        font-size: 10px;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .main-content-Link .card {
+        min-height: 72px;
+
+        padding: 15px 40px 15px 15px;
+
+        font-size: 13px;
+    }
+
+    .domain-admin-overview-strip {
+        grid-template-columns: 1fr;
+    }
+
+    .domain-admin-tab {
+        min-height: 40px;
+
+        font-size: 10px;
+    }
+
+    .domain-admin-results-count {
+        width: 100%;
+
+        text-align: center;
+    }
+
+    .domain-admin-modal-box {
+        width: calc(100vw - 20px) !important;
+
+        max-height: 92vh !important;
+    }
+}
+
+
+/* =========================================================
+   33. VERY SMALL SCREEN - 380px
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    .dashboard-container > .sidebar .profile-section p {
+        grid-template-columns:
+            88px minmax(0, 1fr);
+    }
+
+    .domain-admin-tab {
+        font-size: 9px;
+    }
+
+    .main-content-Link .card {
+        font-size: 12px;
+    }
+}
+
+
+/* =========================================================
+   34. ACCESSIBILITY
+   ========================================================= */
+
+.dashboard-container button:focus-visible,
+.dashboard-container a:focus-visible,
+.dashboard-container input:focus-visible,
+.dashboard-container select:focus-visible,
+.dashboard-container textarea:focus-visible {
+    outline:
+        3px solid rgba(37, 99, 235, 0.22);
+
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   35. REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .dashboard-container *,
+    .dashboard-container *::before,
+    .dashboard-container *::after {
+        scroll-behavior: auto !important;
+
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+
+        transition-duration: 0.01ms !important;
+    }
+}
+
+
+/* =========================================================
+   36. FADE IN
+   ========================================================= */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* ============================================================
+   Teaching Assignments
+   ============================================================ */
+
+.teaching-assignment-cell {
+    min-width: 280px;
+    max-width: 450px;
+    line-height: 1.6;
+    white-space: normal;
+    word-break: break-word;
 }

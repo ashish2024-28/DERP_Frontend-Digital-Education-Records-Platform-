@@ -1,0 +1,206 @@
+/* =========================================================
+   FEES ADMIN DASHBOARD
+   ---------------------------------------------------------
+   Shared layout, buttons, cards and tables are in common.css.
+   This file contains only Fees Admin specific presentation.
+   ========================================================= */
+
+.fees-admin-dashboard {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.fees-admin-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.fees-admin-eyebrow {
+  margin-bottom: 7px;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+}
+
+.fees-admin-account {
+  margin-bottom: 18px;
+}
+
+.fees-admin-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 20px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.fees-admin-section-header h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.fees-admin-section-header p {
+  margin: 5px 0 0;
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.fees-admin-account-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.fees-admin-account-grid > div {
+  min-width: 0;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.fees-admin-account-grid span {
+  display: block;
+  margin-bottom: 5px;
+  color: #9ca3af;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.fees-admin-account-grid strong {
+  display: block;
+  overflow: hidden;
+  color: #111827;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fees-admin-preview-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.fees-admin-count {
+  display: inline-flex;
+  min-width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.fees-admin-data-card {
+  margin-bottom: 18px;
+}
+
+.fees-admin-search {
+  width: min(320px, 100%);
+  box-sizing: border-box;
+  padding: 9px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+  color: #111827;
+  background: #fff;
+  outline: none;
+}
+
+.fees-admin-search:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .10);
+}
+
+.fees-admin-result-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  padding: 18px;
+}
+
+.fees-admin-subheading {
+  margin-bottom: 8px;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.fees-admin-readonly-note {
+  margin-top: 4px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.fees-admin-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 18px;
+}
+
+.fees-admin-account-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+@media (max-width: 1050px) {
+  .fees-admin-preview-grid,
+  .fees-admin-result-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .fees-admin-account-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .fees-admin-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .fees-admin-heading .erp-primary-btn {
+    width: 100%;
+  }
+
+  .fees-admin-account-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fees-admin-section-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .fees-admin-search {
+    width: 100%;
+  }
+
+  .fees-admin-account-actions {
+    flex-direction: column;
+  }
+
+  .fees-admin-account-actions button {
+    width: 100%;
+  }
+}

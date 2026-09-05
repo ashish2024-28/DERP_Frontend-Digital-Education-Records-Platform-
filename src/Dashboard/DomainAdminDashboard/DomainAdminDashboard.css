@@ -2247,3 +2247,189 @@ html.domain-admin-dark body {
 .excel-example-table th:nth-child(1) {
   min-width: 100px;
 }
+
+
+
+
+
+
+/* ─────────────────────────────────────────────
+   Long input placeholder animation
+   ───────────────────────────────────────────── */
+
+.input-scroll-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.input-scroll-placeholder {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.input-scroll-placeholder span {
+  display: inline-block;
+}
+
+/* Only animate when input is focused */
+.input-scroll-wrapper:focus-within
+.input-scroll-placeholder span {
+  animation: placeholderScroll 10s linear infinite;
+}
+
+@keyframes placeholderScroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  15% {
+    transform: translateX(0);
+  }
+
+  85% {
+    transform: translateX(
+      calc(-100% + 100px)
+    );
+  }
+
+  100% {
+    transform: translateX(
+      calc(-100% + 100px)
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+.study-subjects {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.study-subject {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border: 1px solid var(--da-border);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   Teaching Assignments
+   ========================================================= */
+
+.teaching-assignment-display {
+  display: grid;
+
+  /* Maximum 2 rows */
+  grid-template-rows: repeat(2, auto);
+
+  /* Create as many columns as required */
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+
+  column-gap: 18px;
+  row-gap: 6px;
+
+  min-width: 260px;
+  max-width: 100%;
+
+  font-size: 13px;
+  line-height: 1.5;
+
+  white-space: nowrap;
+}
+
+/* Individual assignment */
+.teaching-assignment-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  padding: 4px 7px;
+
+    border: 1px solid var(--da-border);
+
+  border-radius: 6px;
+
+  box-sizing: border-box;
+}
+
+/* Batch */
+.teaching-assignment-batch {
+  font-weight: 700;
+  /* color: #111827; */
+}
+
+/* Arrow */
+.teaching-assignment-arrow {
+  color: #6b7280;
+  font-weight: 600;
+}
+
+/* Subjects */
+.teaching-assignment-subjects {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+
+/* Empty */
+.table-empty-value {
+  color: #9ca3af;
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .teaching-assignment-display {
+    column-gap: 10px;
+    row-gap: 5px;
+    font-size: 12px;
+  }
+
+  .teaching-assignment-item {
+    padding: 3px 6px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+

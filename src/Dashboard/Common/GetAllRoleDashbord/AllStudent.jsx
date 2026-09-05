@@ -18,16 +18,40 @@ export default function AllStudents() {
   const [openBatches, setOpenBatches] = useState({});
   const [openCourses, setOpenCourses] = useState({});
 
+  // Loading / error state so the empty-state message never flashes
+  // before the first fetch has actually completed.
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+
   // ── Fetch ──────────────────────────────────────────────────────────────────
   useEffect(() => { fetchAllData(); }, [domain]);
 
   const fetchAllData = async () => {
+    setLoading(true);
+    setLoadError("");
+
     try {
       const headers = {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json",
       };
+
       const res = await fetch(`${API_BASE}/${domain}/${role}/allStudent`, { headers });
+
+      // Only a genuine auth failure should log the user out.
+      // Any other failure (network blip, 500, etc.) should NOT wipe
+      // the session - it should just be reported as an error.
+      if (res.status === 401 || res.status === 403) {
+        alert("Session expired. Please login again.");
+        localStorage.clear();
+        navigate(`/${domain}/login`);
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error(`Failed to load students (status ${res.status}).`);
+      }
+
       const data = await res.json();
       const list = data?.data || data || [];
       setStudents(list);
@@ -44,10 +68,10 @@ export default function AllStudents() {
       setOpenBatches(batchMap);
       setOpenCourses(courseMap);
     } catch (err) {
-      console.error("Error:", err);
-      alert(`Session expired. Please login again.`);
-      localStorage.clear();
-      // navigate(`/${domain}/login`);
+      console.error("Error fetching students:", err);
+      setLoadError("Unable to load students right now. Please try refreshing.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -124,144 +148,162 @@ export default function AllStudents() {
         />
       </div>
 
-      {filtered.length === 0 && (
+      {/* ── Loading ── */}
+      {loading && (
+        <div className="text-center py-16 text-gray-400 text-sm">Loading students…</div>
+      )}
+
+      {/* ── Error ── */}
+      {!loading && loadError && (
+        <div className="text-center py-4 px-4 mb-6 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg">
+          {loadError}
+        </div>
+      )}
+
+      {/* ── Empty ── */}
+      {!loading && !loadError && filtered.length === 0 && (
         <div className="text-center py-16 text-gray-400 text-sm">No students found.</div>
       )}
 
       {/* ── Batch Panels ── */}
-      <div className="space-y-6">
-        {grouped.sortedBatches.map((batch, bi) => {
-          const color = batchColors[bi % batchColors.length];
-          const batchStudents = Object.values(grouped.map[batch]).flat();
-          const courses = Object.keys(grouped.map[batch]).sort();
-          const isOpen = openBatches[batch] !== false; // default open
+      {!loading && !loadError && (
+        <div className="space-y-6">
+          {grouped.sortedBatches.map((batch, bi) => {
+            const color = batchColors[bi % batchColors.length];
+            const batchStudents = Object.values(grouped.map[batch]).flat();
+            const courses = Object.keys(grouped.map[batch]).sort();
+            const isOpen = openBatches[batch] !== false; // default open
 
-          return (
-            <div key={batch} className={`border-2 rounded-2xl overflow-hidden ${color.bg}`}>
-              {/* Batch Header */}
-              <button
-                onClick={() => toggleBatch(batch)}
-                className={`w-full flex items-center justify-between px-5 py-4 ${color.header} transition-colors`}
-              >
-                <div className="flex items-center gap-3">
-                  <ChevronDown
-                    size={18}
-                    className={`${color.accent} transition-transform duration-200 ${isOpen ? "" : "-rotate-90"}`}
-                  />
-                  <span className={`font-bold text-base ${color.accent}`}>
-                    🎓 Batch {batch}
-                  </span>
-                  <span className={`text-xs text-white px-2.5 py-0.5 rounded-full font-semibold ${color.badge}`}>
-                    {batchStudents.length} students
-                  </span>
-                  <span className="text-xs text-gray-500">{courses.length} courses</span>
-                </div>
-              </button>
+            return (
+              <div key={batch} className={`border-2 rounded-2xl overflow-hidden ${color.bg}`}>
+                {/* Batch Header */}
+                <button
+                  onClick={() => toggleBatch(batch)}
+                  className={`w-full flex items-center justify-between px-5 py-4 ${color.header} transition-colors`}
+                >
+                  <div className="flex items-center gap-3">
+                    <ChevronDown
+                      size={18}
+                      className={`${color.accent} transition-transform duration-200 ${isOpen ? "" : "-rotate-90"}`}
+                    />
+                    <span className={`font-bold text-base ${color.accent}`}>
+                      🎓 Batch {batch}
+                    </span>
+                    <span className={`text-xs text-white px-2.5 py-0.5 rounded-full font-semibold ${color.badge}`}>
+                      {batchStudents.length} students
+                    </span>
+                    <span className="text-xs text-gray-500">{courses.length} courses</span>
+                  </div>
+                </button>
 
-              {/* Batch Body */}
-              {isOpen && (
-                <div className="p-4 space-y-4">
-                  {courses.map((course) => {
-                    const courseKey = `${batch}__${course}`;
-                    const courseStudents = grouped.map[batch][course];
-                    const isCourseOpen = openCourses[courseKey] !== false;
+                {/* Batch Body */}
+                {isOpen && (
+                  <div className="p-4 space-y-4">
+                    {courses.map((course) => {
+                      const courseKey = `${batch}__${course}`;
+                      const courseStudents = grouped.map[batch][course];
+                      const isCourseOpen = openCourses[courseKey] !== false;
 
-                    return (
-                      <div key={courseKey} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm">
-                        {/* Course Header */}
-                        <button
-                          onClick={() => toggleCourse(courseKey)}
-                          className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                        >
-                          <div className="flex items-center gap-2">
-                            {isCourseOpen
-                              ? <ChevronDown size={15} className="text-gray-500" />
-                              : <ChevronRight size={15} className="text-gray-500" />}
-                            <BookOpen size={15} className={color.accent} />
-                            <span className="font-semibold text-sm text-gray-700 dark:text-gray-200">
-                              {course}
-                            </span>
-                            <span className={`text-xs px-2 py-0.5 rounded-full font-semibold text-white ${color.badge}`}>
-                              {courseStudents.length}
-                            </span>
-                          </div>
-                        </button>
+                      return (
+                        <div key={courseKey} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm">
+                          {/* Course Header */}
+                          <button
+                            onClick={() => toggleCourse(courseKey)}
+                            className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                          >
+                            <div className="flex items-center gap-2">
+                              {isCourseOpen
+                                ? <ChevronDown size={15} className="text-gray-500" />
+                                : <ChevronRight size={15} className="text-gray-500" />}
+                              <BookOpen size={15} className={color.accent} />
+                              <span className="font-semibold text-sm text-gray-700 dark:text-gray-200">
+                                {course}
+                              </span>
+                              <span className={`text-xs px-2 py-0.5 rounded-full font-semibold text-white ${color.badge}`}>
+                                {courseStudents.length}
+                              </span>
+                            </div>
+                          </button>
 
-                        {/* Students Table */}
-                        {isCourseOpen && (
-                          <div className="overflow-x-auto">
-                            <table className="w-full text-sm">
-                              <thead>
-                                <tr className="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wide">
-                                  <th className="px-3 py-2 text-left">S.No</th>
-                                  <th className="px-3 py-2 text-left">Roll No</th>
-                                  <th className="px-3 py-2 text-left">Name</th>
-                                  <th className="px-3 py-2 text-left">Course</th>
-                                  <th className="px-3 py-2 text-left">Branch</th>
-                                  <th className="px-3 py-2 text-left">Batch</th>
-                                  <th className="px-3 py-2 text-left">Study Batch</th>
-                                  <th className="px-3 py-2 text-left">Email</th>
-                                  <th className="px-3 py-2 text-left">Mobile</th>
-                                  <th className="px-3 py-2 text-left">Father Name</th>
-                                  <th className="px-3 py-2 text-left">Father No.</th>
-                                  {role === "DOMAIN_ADMIN" && (
-                                    <>
-                                      <th className="px-3 py-2 text-left">Created At</th>
-                                      <th className="px-3 py-2 text-left">Last Login</th>
-                                      <th className="px-3 py-2 text-left">
-                                        Password
-                                        <button
-                                          className="ml-1 inline-flex"
-                                          onClick={(e) => { e.stopPropagation(); setShowPassword((v) => !v); }}
-                                        >
-                                          {showPassword ? <EyeOff size={13} /> : <Eye size={13} />}
-                                        </button>
-                                      </th>
-                                    </>
-                                  )}
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {courseStudents.map((s, idx) => (
-                                  <tr
-                                    key={s.rollNumber || idx}
-                                    className="border-t border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                                  >
-                                    <td className="px-3 py-2 text-gray-400">{idx + 1}.</td>
-                                    <td className="px-3 py-2 font-mono font-medium text-gray-700 dark:text-gray-200">{s.rollNumber}</td>
-                                    <td className="px-3 py-2 font-medium text-gray-800 dark:text-gray-100">{s.name}</td>
-                                    <td className="px-3 py-2 text-gray-500">{s.course || "—"}</td>
-                                    <td className="px-3 py-2 text-gray-500">{s.branch || "—"}</td>
-                                    <td className="px-3 py-2 text-gray-500">{s.batch || "—"}</td>
-                                    <td className="px-3 py-2 text-gray-500">{s.studyBatch || "—"}</td>
-                                    <td className="px-3 py-2 text-gray-500">{s.email}</td>
-                                    <td className="px-3 py-2 text-gray-500">{s.mobileNumber}</td>
-                                    <td className="px-3 py-2 text-gray-500">{s.fatherName}</td>
-                                    <td className="px-3 py-2 text-gray-500">{s.fatherMobNo}</td>
+                          {/* Students Table */}
+                          {isCourseOpen && (
+                            <div className="overflow-x-auto">
+                              <table className="w-full text-sm">
+                                <thead>
+                                  <tr className="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wide">
+                                    <th className="px-3 py-2 text-left">S.No</th>
+                                    <th className="px-3 py-2 text-left">Roll No</th>
+                                    <th className="px-3 py-2 text-left">Name</th>
+                                    <th className="px-3 py-2 text-left">Course</th>
+                                    <th className="px-3 py-2 text-left">Branch</th>
+                                    <th className="px-3 py-2 text-left">Batch</th>
+                                    <th className="px-3 py-2 text-left"> Study Batch <br /><small>(YearSection)</small></th>
+                                    <th className="px-3 py-2 text-left">Study Subject<br /><small>(All Subjects)</small></th>
+                                    <th className="px-3 py-2 text-left">Email</th>
+                                    <th className="px-3 py-2 text-left">Mobile</th>
+                                    <th className="px-3 py-2 text-left">Father Name</th>
+                                    <th className="px-3 py-2 text-left">Father No.</th>
                                     {role === "DOMAIN_ADMIN" && (
                                       <>
-                                        <td className="px-3 py-2 text-gray-400 text-xs">{FormatDate(s.createdDateTime)}</td>
-                                        <td className="px-3 py-2 text-gray-400 text-xs">{FormatDate(s.lastLoginDateTime)}</td>
-                                        <td className="px-3 py-2 font-mono text-xs text-gray-500">
-                                          {showPassword ? s.password : "••••••••"}
-                                        </td>
+                                        <th className="px-3 py-2 text-left">Created At</th>
+                                        <th className="px-3 py-2 text-left">Updated At</th>
+                                        <th className="px-3 py-2 text-left">Last Login</th>
+                                        {/* <th className="px-3 py-2 text-left">  Password
+                                          <button
+                                            className="ml-1 inline-flex"
+                                            onClick={(e) => { e.stopPropagation(); setShowPassword((v) => !v); }}
+                                          >
+                                            {showPassword ? <EyeOff size={13} /> : <Eye size={13} />}
+                                          </button>
+                                        </th> */}
                                       </>
                                     )}
                                   </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+                                </thead>
+                                <tbody>
+                                  {courseStudents.map((s, idx) => (
+                                    <tr
+                                      key={s.rollNumber || idx}
+                                      className="border-t border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                    >
+                                      <td className="px-3 py-2 text-gray-400">{idx + 1}.</td>
+                                      <td className="px-3 py-2 font-mono font-medium text-gray-700 dark:text-gray-200">{s.rollNumber}</td>
+                                      <td className="px-3 py-2 font-medium text-gray-800 dark:text-gray-100">{s.name}</td>
+                                      <td className="px-3 py-2 text-gray-500">{s.course || "—"}</td>
+                                      <td className="px-3 py-2 text-gray-500">{s.branch || "—"}</td>
+                                      <td className="px-3 py-2 text-gray-500">{s.batch || "—"}</td>
+                                      <td className="px-3 py-2 text-gray-500">{s.studyBatch || "—"}</td>
+                                      <td className="px-3 py-2 text-gray-500">{s.studySubjects || "—"}</td>
+                                      <td className="px-3 py-2 text-gray-500">{s.email}</td>
+                                      <td className="px-3 py-2 text-gray-500">{s.mobileNumber}</td>
+                                      <td className="px-3 py-2 text-gray-500">{s.fatherName}</td>
+                                      <td className="px-3 py-2 text-gray-500">{s.fatherMobNo}</td>
+                                      {role === "DOMAIN_ADMIN" && (
+                                        <>
+                                          <td className="px-3 py-2 text-gray-400 text-xs">{FormatDate(s.createdDateTime)}</td>
+                                          <td className="px-3 py-2 text-gray-400 text-xs">{FormatDate(s.lastUpdateDateTime)}</td>
+                                          <td className="px-3 py-2 text-gray-400 text-xs">{FormatDate(s.lastLoginDateTime) }</td>
+                                          {/* <td className="px-3 py-2 font-mono text-xs text-gray-500">
+                                            {showPassword ? s.password : "••••••••"}
+                                          </td> */}
+                                        </>
+                                      )}
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

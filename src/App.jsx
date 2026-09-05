@@ -38,16 +38,20 @@ import FacultyDashboard from "./Dashboard/FacultyDashboard/FacultyDashboard";
 // SubAdmin
 import SubAdminDashboard from "./Dashboard/SubAdminDashboard/SubAdminDashboard";
 
+// FeesAdmin
+import FeesAdminDashboard from "./Dashboard/FeesAdminDashboard/FeesAdminDashboard";
+
 // DomainAdmin
 import DomainAdminDashboard from "./Dashboard/DomainAdminDashboard/DomainAdminDashboard";
 
 
 // ERP
+import DomainAdminErpAttendence from "./Dashboard/DomainAdminDashboard/DomainAdminInfo/Erp/ErpAttendence";
 import DomainAdminAttendance from "./Dashboard/DomainAdminDashboard/DomainAdminAttendance";
 import DomainAdminReports from "./Dashboard/DomainAdminDashboard/DomainAdminReports";
 import SubAdminErpAttendance from "./Dashboard/SubAdminDashboard/SubAdminnfo/ErpAttendence";
-import FacultyErpAttendence from "./Dashboard/FacultyDashboard/FacultyInfo/ErpAttendence";
-import StudentErpAttendence from "./Dashboard/StudentDashboard/StudentInfo/ErpAttendence";
+import FacultyErpAttendence from "./Dashboard/FacultyDashboard/FacultyInfo/Erp/ErpAttendence";
+import StudentErpAttendence from "./Dashboard/StudentDashboard/StudentInfo/Erp/ErpAttendence";
 
 function App() {
   return (
@@ -104,7 +108,7 @@ function App() {
             />
 
             <Route
-              path="erp-attendence"
+              path="student-erp-attendence"
               element={<StudentErpAttendence />}
             />
 
@@ -144,7 +148,7 @@ function App() {
           >
 
             <Route
-              path="erp-attendence"
+              path="faculty-erp-attendence"
               element={<FacultyErpAttendence />}
             />
 
@@ -206,6 +210,36 @@ function App() {
           </Route>
 
 
+          {/* ================= FEES ADMIN ================= */}
+
+          <Route
+            path="/:domain/feesadmin/dashboard"
+            element={<FeesAdminDashboard />}
+          >
+
+            <Route
+              path="all-students"
+              element={<AllStudents />}
+            />
+
+            {/* <Route
+              path="all-faculty"
+              element={<AllFaculty />}
+            /> */}
+
+            <Route
+              path="notepad"
+              element={<Notepad />}
+            />
+
+            {/* <Route
+              path="attendance"
+              element={<SubAdminErpAttendance />}
+            /> */}
+
+          </Route>
+
+
           {/* ================= DOMAIN ADMIN ================= */}
 
           <Route
@@ -248,6 +282,10 @@ function App() {
               element={<DomainAdminReports />}
             />
 
+            <Route
+              path="admin-erp-attendence"
+              element={<DomainAdminErpAttendence />}
+            />
 
           </Route>
 
