@@ -167,6 +167,7 @@ export default function FacultyDashboard() {
             {/* ── Sidebar ── */}
             {showSidebar && (
                 <div className="sidebar">
+
                     <div className="profile-section">
                         <div
                             className="profile-pic"
@@ -182,20 +183,60 @@ export default function FacultyDashboard() {
                             <div style={{ position: "absolute", bottom: 0, right: 0, background: "#2563eb", borderRadius: "50%", width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, border: "2px solid #fff" }}>✎</div>
                         </div>
 
-                        <p><strong>Faculty ID:</strong>     {faculty.facultyId}</p>
-                        <p><strong>Name:</strong>           {faculty.name}</p>
-                        <p><strong>Email:</strong>          {faculty.email}</p>
-                        <p><strong>Mobile:</strong>         {faculty.mobileNumber}</p>
-                        <p><strong>Course:</strong>         {faculty.course}</p>
-                        <p>
-                            <strong>Teaching Assignments:</strong>{" "}
-                            {faculty?.teachingAssignments
-                                ? Object.entries(faculty.teachingAssignments)
-                                    .map(([batch, subjects]) => `${batch}: ${subjects.join(", ")}`)
-                                    .join(" | ")
-                                : "-"}
-                        </p>                        
+                        <p><strong>Faculty ID:</strong>                   {faculty.facultyId}</p>
+                        <p><strong>Name:</strong>                         {faculty.name}</p>
+                        <p><strong>Email:</strong>                        {faculty.email}</p>
+                        <p><strong>Mobile:</strong>                       {faculty.mobileNumber}</p>
+                        <p><strong>Course:</strong>                       {faculty.course}</p>
+
+                        <div className="profile-row teaching-assignment-row">
+                            <strong className="profile-label">
+                                Teaching Assignments:
+                            </strong>
+
+                            <div className="teaching-assignments-list">
+                                {faculty.teachingAssignments
+                                    ?.split(";")
+                                    .map((assignment) => assignment.trim())
+                                    .filter(Boolean)
+                                    .map((assignment, index) => {
+                                        const [batch, subjects] = assignment.split(":", 2);
+
+                                        return (
+                                            <div
+                                                key={`${batch}-${index}`}
+                                                className="teaching-assignment-item"
+                                            >
+                                                <span className="assignment-batch">
+                                                    {batch?.trim() || "-"}
+                                                </span>
+
+                                                <span className="assignment-arrow">
+                                                    →
+                                                </span>
+
+                                                <span className="assignment-subjects">
+                                                    {subjects
+                                                        ?.split(",")
+                                                        .map((subject) => subject.trim())
+                                                        .filter(Boolean)
+                                                        .join(", ") || "-"}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
+
+                                {!faculty.teachingAssignments?.trim() && (
+                                    <span className="assignment-empty">
+                                        No teaching assignments
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+
+
                         <p><strong>Account Created:</strong>{FormatDate(faculty.createdDateTime)}</p>
+                        <p><strong>Updated At:</strong>{FormatDate(faculty.lastUpdateDateTime)}</p>
                         <p><strong>Last Login:</strong>     {FormatDate(faculty.lastLoginDateTime)}</p>
                     </div>
 
@@ -267,7 +308,7 @@ export default function FacultyDashboard() {
                     <div className="card-grid">
                         <Link className="main-content-Link" to={"all-students"} state={{ students }}><div className="card">All Students: {students.length}</div></Link>
                         <Link className="main-content-Link" to={"notepad"}><div className="card">Notepad</div></Link>
-                        <Link className="main-content-Link" to={"erp-attendence"}><div className="card">ERP / Attendance</div></Link>
+                        <Link className="main-content-Link" to={"faculty-erp-attendence"}><div className="card">ERP / Attendance</div></Link>
                         <Link className="main-content-Link" to={"assignment"}><div className="card">Assignments</div></Link>
                         <Link className="main-content-Link" to={"test-quize"}><div className="card">Tests / Quiz</div></Link>
                         <Link className="main-content-Link" to={"notes"}><div className="card">Notes</div></Link>

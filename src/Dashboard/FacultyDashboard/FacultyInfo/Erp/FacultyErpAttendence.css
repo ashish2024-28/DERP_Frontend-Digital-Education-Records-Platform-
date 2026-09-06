@@ -77,13 +77,13 @@
 }
 
 .attendance-alert.success {
-    background: #f0fdf4;
+    /* background: #f0fdf4; */
     border-color: #bbf7d0;
     color: #166534;
 }
 
 .attendance-alert.error {
-    background: #fef2f2;
+    /* background: #fef2f2; */
     border-color: #fecaca;
     color: #b91c1c;
 }
@@ -91,13 +91,13 @@
 .alert-icon {
     width: 24px;
     height: 24px;
-    display: flex;
+    /* display: flex; */
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    border-radius: 50%;
-    background: currentColor;
-    color: white;
+    /* border-radius: 50%; */
+    /* background: currentColor; */
+    /* color: white; */
     font-size: 13px;
 }
 

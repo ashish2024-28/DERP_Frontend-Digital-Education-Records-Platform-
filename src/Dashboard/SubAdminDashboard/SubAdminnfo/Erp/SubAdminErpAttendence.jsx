@@ -1,151 +1,85 @@
 import { useMemo, useState } from "react";
 
-import { attendanceApi } from "../../../api/attendanceApi";
+import "../../../Common/css/common.css";
+import "./SubAdminErpAttendence.css";
 
-import "./erpAttendence.css";
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 
+function getDomain() {
+  return window.location.pathname.split("/")[1];
+}
 
-/*
- * =========================================================
- * ERP ATTENDANCE
- * =========================================================
- *
- * SubAdmin attendance monitoring page.
- *
- * Flow:
- *
- * SubAdmin
- *    ↓
- * Select Batch
- *    ↓
- * Select Academic Session
- *    ↓
- * Search
- *    ↓
- * Backend returns student + subject attendance
- *    ↓
- * Dashboard summary + attendance table
- *
- * This page does NOT mark or delete attendance.
- * It is intended for monitoring and reviewing attendance.
- * =========================================================
- */
+function authHeaders() {
+  return {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+    "Content-Type": "application/json",
+  };
+}
 
-export default function ErpAttendence() {
+async function readJson(response) {
+  const text = await response.text();
+  let data = {};
+  try { data = text ? JSON.parse(text) : {}; } catch { data = { message: text }; }
+  if (!response.ok) throw new Error(data?.message || "Request failed");
+  return data;
+}
 
-    // =====================================================
-    // FILTER STATE
-    // =====================================================
+// GET /{domain}/erp/attendance/subadmin/batch?batch=
+// NOTE: backend does not support an academic-session filter — the session
+// dropdown is kept for future use but is NOT sent to the API.
+async function getSubAdminBatchAttendance(batch) {
+  const domain = getDomain();
+  const query = new URLSearchParams({ batch });
+  const response = await fetch(
+    `${API_BASE}/${domain}/erp/attendance/subadmin/batch?${query}`,
+    { headers: authHeaders() }
+  );
+  return readJson(response); // -> { success, message, data: AttendanceSummaryResponse[] }
+}
 
-    const [batch, setBatch] = useState("");
+export default function SubAdminErpAttendence() {
+  const [batch, setBatch] = useState("");
+  const [session, setSession] = useState("2026-27"); // display-only, not sent to backend
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [searched, setSearched] = useState(false);
+  const [searchText, setSearchText] = useState("");
 
-    const [session, setSession] =
-        useState("2026-27");
+  async function searchAttendance() {
+    const requestedBatch = batch.trim();
 
-
-    // =====================================================
-    // DATA STATE
-    // =====================================================
-
-    const [data, setData] = useState([]);
-
-
-    // =====================================================
-    // UI STATE
-    // =====================================================
-
-    const [loading, setLoading] =
-        useState(false);
-
-    const [error, setError] =
-        useState("");
-
-    const [searched, setSearched] =
-        useState(false);
-
-    const [searchText, setSearchText] =
-        useState("");
-
-
-    // =====================================================
-    // LOAD BATCH ATTENDANCE
-    // =====================================================
-
-    async function searchAttendance() {
-
-        const requestedBatch =
-            batch.trim();
-
-        if (!requestedBatch) {
-
-            setError(
-                "Please enter a batch before searching."
-            );
-
-            setData([]);
-            setSearched(false);
-
-            return;
-        }
-
-
-        try {
-
-            setLoading(true);
-            setError("");
-
-            const result =
-                await attendanceApi
-                    .getSubAdminBatchAttendance(
-                        requestedBatch,
-                        session
-                    );
-
-
-            setData(
-                Array.isArray(result)
-                    ? result
-                    : []
-            );
-
-            setSearched(true);
-
-        } catch (err) {
-
-            setData([]);
-
-            setSearched(true);
-
-            setError(
-                err?.message ||
-                "Unable to load attendance."
-            );
-
-        } finally {
-
-            setLoading(false);
-        }
+    if (!requestedBatch) {
+      setError("Please enter a batch before searching.");
+      setData([]);
+      setSearched(false);
+      return;
     }
 
+    try {
+      setLoading(true);
+      setError("");
 
-    // =====================================================
-    // CLEAR FILTERS / DATA
-    // =====================================================
-
-    function clearSearch() {
-
-        setBatch("");
-
-        setSession("2026-27");
-
-        setSearchText("");
-
-        setData([]);
-
-        setError("");
-
-        setSearched(false);
+      const result = await getSubAdminBatchAttendance(requestedBatch);
+      setData(Array.isArray(result?.data) ? result.data : []);
+      setSearched(true);
+    } catch (err) {
+      setData([]);
+      setSearched(true);
+      setError(err?.message || "Unable to load attendance.");
+    } finally {
+      setLoading(false);
     }
+  }
+
+  function clearSearch() {
+    setBatch("");
+    setSession("2026-27");
+    setSearchText("");
+    setData([]);
+    setError("");
+    setSearched(false);
+  }
 
 
     // =====================================================

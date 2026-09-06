@@ -1,0 +1,209 @@
+/* =========================================================
+   VIEWPORT — fixed positioning container
+   ========================================================= */
+
+.toast-viewport {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: none;
+  width: auto;
+}
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.toast-card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 360px;
+  max-width: calc(100vw - 40px);
+  padding: 14px 40px 14px 14px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 12px 28px rgba(15, 23, 42, 0.16),
+    0 0 0 1px rgba(15, 23, 42, 0.04);
+  overflow: hidden;
+  pointer-events: auto;
+
+  opacity: 0;
+  transform: translateY(-12px) scale(0.98);
+  transition:
+    opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast-card.toast-enter {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.toast-card.toast-leave {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+
+/* =========================================================
+   ICON
+   ========================================================= */
+
+.toast-icon-wrap {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-top: 1px;
+}
+
+.toast-icon {
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  color: #ffffff;
+}
+
+.toast-success .toast-icon-wrap { background: #16a34a; }
+.toast-error   .toast-icon-wrap { background: #dc2626; }
+.toast-info    .toast-icon-wrap { background: #2563eb; }
+.toast-warning .toast-icon-wrap { background: #d97706; }
+
+/* =========================================================
+   BODY
+   ========================================================= */
+
+.toast-body {
+  flex: 1;
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.toast-message {
+  margin: 0;
+  color: #1e293b;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+/* =========================================================
+   DISMISS BUTTON
+   ========================================================= */
+
+.toast-dismiss {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 18px;
+  line-height: 1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.toast-dismiss:hover {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+/* =========================================================
+   PROGRESS BAR
+   ========================================================= */
+
+.toast-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.toast-progress-bar {
+  height: 100%;
+  width: 100%;
+  transform-origin: left;
+  animation: toast-shrink 4s linear forwards;
+}
+
+.toast-success .toast-progress-bar { background: #16a34a; }
+.toast-error   .toast-progress-bar { background: #dc2626; }
+.toast-info    .toast-progress-bar { background: #2563eb; }
+.toast-warning .toast-progress-bar { background: #d97706; }
+
+@keyframes toast-shrink {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+/* =========================================================
+   RESPONSIVE — mobile
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .toast-viewport {
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    justify-content: stretch;
+  }
+
+  .toast-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 13px 36px 13px 12px;
+    border-radius: 10px;
+  }
+
+  .toast-message {
+    font-size: 13px;
+  }
+
+  .toast-dismiss {
+    top: 8px;
+    right: 8px;
+  }
+
+}
+
+/* Slightly tighter on very small phones */
+@media (max-width: 360px) {
+
+  .toast-card {
+    gap: 10px;
+    padding: 12px 32px 12px 10px;
+  }
+
+  .toast-icon-wrap {
+    width: 22px;
+    height: 22px;
+  }
+
+  .toast-icon {
+    font-size: 12px;
+  }
+
+}

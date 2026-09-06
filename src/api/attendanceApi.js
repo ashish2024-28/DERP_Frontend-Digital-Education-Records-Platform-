@@ -1,102 +1,61 @@
-import { apiRequest } from "./apiClient";
+// // src/api/attendanceApi.js
+// const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 
-export const attendanceApi = {
+// function getDomain() {
+//   // adjust if you store domain differently (e.g. from useParams elsewhere)
+//   return window.location.pathname.split("/")[1];
+// }
 
-    // ============================================
-    // FACULTY
-    // ============================================
+// function authHeaders(json = true) {
+//   const headers = { Authorization: `Bearer ${localStorage.getItem("token")}` };
+//   if (json) headers["Content-Type"] = "application/json";
+//   return headers;
+// }
 
-    getFacultyAssignments() {
-        return apiRequest(
-            "/api/erp/attendance/faculty/assignments"
-        );
-    },
+// async function readJson(response) {
+//   const text = await response.text();
+//   let data = {};
+//   try { data = text ? JSON.parse(text) : {}; } catch { data = { message: text }; }
+//   if (!response.ok) throw new Error(data?.message || "Request failed");
+//   return data;
+// }
 
-    getFacultyStudents(batch, subject) {
-        const params = new URLSearchParams({
-            batch,
-            subject,
-        });
+// export const attendanceApi = {
+//   async getFacultySetup() {
+//     const domain = getDomain();
+//     const res = await fetch(`${API_BASE}/${domain}/erp/attendance/faculty/setup`, {
+//       headers: authHeaders(false),
+//     });
+//     return readJson(res);
+//   },
+//   async getFacultyAssignments() {
+//     const domain = getDomain();
+//     const res = await fetch(`${API_BASE}/${domain}/erp/attendance/faculty/assignments`, {
+//       headers: authHeaders(false),
+//     });
+//     // NOTE: backend returns a raw text/plain string, not JSON — don't call res.json()
+//     const text = await res.text();
+//     if (!res.ok) throw new Error(text || "Unable to load assignments");
+//     return text; // pass raw "1A:JAVA,C,DSA;2A:AI,ML" to parseTeachingAssignments
+//   },
 
-        return apiRequest(
-            `/api/erp/attendance/faculty/students?${params}`
-        );
-    },
+//   async getFacultyStudents(batch, subject) {
+//     const domain = getDomain();
+//     const query = new URLSearchParams({ batch, subject });
+//     const res = await fetch(
+//       `${API_BASE}/${domain}/erp/attendance/faculty/students?${query}`,
+//       { headers: authHeaders(false) }
+//     );
+//     return readJson(res);
+//   },
 
-    markAttendance(data) {
-        return apiRequest(
-            "/api/erp/attendance/faculty/mark",
-            {
-                method: "POST",
-                body: JSON.stringify(data),
-            }
-        );
-    },
-
-
-    // ============================================
-    // STUDENT
-    // ============================================
-
-    getMyAttendance(academicSession) {
-
-        const params = new URLSearchParams({
-            academicSession,
-        });
-
-        return apiRequest(
-            `/api/erp/attendance/student/me?${params}`
-        );
-    },
-
-
-    // ============================================
-    // SUB ADMIN
-    // ============================================
-
-    getSubAdminBatchAttendance(
-        batch,
-        academicSession
-    ) {
-
-        const params = new URLSearchParams({
-            batch,
-            academicSession,
-        });
-
-        return apiRequest(
-            `/api/erp/attendance/subadmin/batch?${params}`
-        );
-    },
-
-
-    // ============================================
-    // DOMAIN ADMIN
-    // ============================================
-
-    getAdminBatchAttendance(
-        batch,
-        academicSession
-    ) {
-
-        const params = new URLSearchParams({
-            batch,
-            academicSession,
-        });
-
-        return apiRequest(
-            `/api/erp/attendance/admin/batch?${params}`
-        );
-    },
-
-
-    deleteAttendance(attendanceId) {
-
-        return apiRequest(
-            `/api/erp/attendance/admin/${attendanceId}`,
-            {
-                method: "DELETE",
-            }
-        );
-    },
-};
+//   async markAttendance(payload) {
+//     const domain = getDomain();
+//     const res = await fetch(`${API_BASE}/${domain}/erp/attendance/faculty/mark`, {
+//       method: "POST",
+//       headers: authHeaders(),
+//       body: JSON.stringify(payload),
+//     });
+//     return readJson(res);
+//   },
+// };

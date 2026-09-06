@@ -2,19 +2,19 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import "../../../Common/css/common.css";
-import "./ErpAttendence.css";
+import "./StudentErpAttendence.css";
 
 /*
  * Student Attendance ERP Page
  * ---------------------------------------------------------
  * Backend API:
- * GET /{domain}/erp/attendance/student/me?academicSession=...
+ * GET /{domain}/erp/attendance/student/me
  *
  * Response:
  * StudentAttendanceResponse
  *   - studentName
  *   - rollNumber
- *   - cource
+ *   - course
  *   - branch
  *   - batch
  *   - studyBatch
@@ -22,20 +22,10 @@ import "./ErpAttendence.css";
  *   - summaries
  *   - last7Days
  */
-export default function ErpAttendence() {
+export default function StudentErpAttendence() {
   const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
   const { domain } = useParams();
 
-  const getInitialSession = () => {
-    const params = new URLSearchParams(window.location.search);
-    return (
-      params.get("academicSession") ||
-      localStorage.getItem("academicSession") ||
-      `${new Date().getFullYear()}-${String(new Date().getFullYear() + 1).slice(-2)}`
-    );
-  };
-
-  const [academicSession, setAcademicSession] = useState(getInitialSession);
   const [attendance, setAttendance] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -58,23 +48,12 @@ export default function ErpAttendence() {
   };
 
   const fetchAttendance = useCallback(async () => {
-    if (!academicSession?.trim()) {
-      setError("Academic session is required.");
-      setLoading(false);
-      return;
-    }
-
     setLoading(true);
     setError("");
 
     try {
-      const query = new URLSearchParams({
-        academicSession: academicSession.trim(),
-      });
-
-      // Keep the URL exactly aligned with AttendenceErpController.
       const response = await fetch(
-        `${API_BASE}/${domain}/erp/attendance/student/me?${query.toString()}`,
+        `${API_BASE}/${domain}/erp/attendance/student/me`,
         {
           method: "GET",
           headers: authHeaders(),
@@ -88,7 +67,6 @@ export default function ErpAttendence() {
       }
 
       setAttendance(data || null);
-      localStorage.setItem("academicSession", academicSession.trim());
     } catch (err) {
       console.error("Student attendance error:", err);
       setAttendance(null);
@@ -96,7 +74,7 @@ export default function ErpAttendence() {
     } finally {
       setLoading(false);
     }
-  }, [API_BASE, domain, academicSession]);
+  }, [API_BASE, domain]);
 
   useEffect(() => {
     fetchAttendance();
@@ -247,16 +225,6 @@ export default function ErpAttendence() {
         </div>
 
         <div className="attendance-header-actions">
-          <div className="attendance-session-field">
-            <label htmlFor="academic-session">Academic Session</label>
-            <input
-              id="academic-session"
-              value={academicSession}
-              onChange={(event) => setAcademicSession(event.target.value)}
-              placeholder="2026-27"
-            />
-          </div>
-
           <button
             type="button"
             className="attendance-refresh-btn"
@@ -299,7 +267,7 @@ export default function ErpAttendence() {
               <h2>{attendance?.studentName || "Student"}</h2>
               <div className="attendance-student-meta">
                 <span><strong>Roll No:</strong> {attendance?.rollNumber || "—"}</span>
-                <span><strong>Course:</strong> {attendance?.cource || "—"}</span>
+                <span><strong>Course:</strong> {attendance?.course || "—"}</span>
                 <span><strong>Branch:</strong> {attendance?.branch || "—"}</span>
                 <span><strong>Batch:</strong> {attendance?.batch || "—"}</span>
                 <span><strong>Study Batch:</strong> {attendance?.studyBatch || "—"}</span>
@@ -350,7 +318,7 @@ export default function ErpAttendence() {
               <div>
                 <span className="attendance-section-kicker">SUBJECT SUMMARY</span>
                 <h2>Attendance by Subject</h2>
-                <p>Your complete attendance totals for {academicSession}.</p>
+                <p>Your attendance totals, separated by semester.</p>
               </div>
 
               <select
@@ -387,9 +355,8 @@ export default function ErpAttendence() {
                           <td>
                             <strong>{summary?.subject || "—"}</strong>
                             <small>
-                              {summary?.teachingBatch || summary?.studyBatch
-                                ? `${summary?.teachingBatch || ""}${summary?.teachingBatch && summary?.studyBatch ? " • " : ""}${summary?.studyBatch || ""}`
-                                : "Subject record"}
+                              {summary?.semesterKey ? `Semester ${summary.semesterKey}` : "Semester record"}
+                              {summary?.studyBatch ? ` • ${summary.studyBatch}` : ""}
                             </small>
                           </td>
                           <td>{summary?.totalClasses ?? 0}</td>
@@ -418,7 +385,7 @@ export default function ErpAttendence() {
               <div className="attendance-empty-state">
                 <div>📊</div>
                 <h3>No subject attendance found</h3>
-                <p>No attendance summary is available for the selected session or subject.</p>
+                <p>No attendance summary is available for this subject.</p>
               </div>
             )}
           </section>
@@ -431,7 +398,7 @@ export default function ErpAttendence() {
               <div>
                 <span className="attendance-section-kicker">RECENT HISTORY</span>
                 <h2>Last 7 Days</h2>
-                <p>Every attendance record returned by the backend for the latest seven-day period.</p>
+                <p>Every attendance record returned for the latest seven-day period.</p>
               </div>
 
               <span className="attendance-record-count">
@@ -494,7 +461,7 @@ export default function ErpAttendence() {
               <div className="attendance-empty-state">
                 <div>🗓️</div>
                 <h3>No recent attendance history</h3>
-                <p>The backend has not returned any attendance records for the latest seven-day period.</p>
+                <p>No attendance records were returned for the latest seven-day period.</p>
               </div>
             )}
           </section>

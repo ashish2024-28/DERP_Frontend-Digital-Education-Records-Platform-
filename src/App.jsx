@@ -46,12 +46,11 @@ import DomainAdminDashboard from "./Dashboard/DomainAdminDashboard/DomainAdminDa
 
 
 // ERP
-import DomainAdminErpAttendence from "./Dashboard/DomainAdminDashboard/DomainAdminInfo/Erp/ErpAttendence";
-import DomainAdminAttendance from "./Dashboard/DomainAdminDashboard/DomainAdminAttendance";
+import DomainAdminErpAttendence from "./Dashboard/DomainAdminDashboard/DomainAdminInfo/Erp/DomainAdminErpAttendence";
 import DomainAdminReports from "./Dashboard/DomainAdminDashboard/DomainAdminReports";
-import SubAdminErpAttendance from "./Dashboard/SubAdminDashboard/SubAdminnfo/ErpAttendence";
-import FacultyErpAttendence from "./Dashboard/FacultyDashboard/FacultyInfo/Erp/ErpAttendence";
-import StudentErpAttendence from "./Dashboard/StudentDashboard/StudentInfo/Erp/ErpAttendence";
+import SubAdminErpAttendance from "./Dashboard/SubAdminDashboard/SubAdminnfo/Erp/SubAdminErpAttendence";
+import FacultyErpAttendence from "./Dashboard/FacultyDashboard/FacultyInfo/Erp/FacultyErpAttendence";
+import StudentErpAttendence from "./Dashboard/StudentDashboard/StudentInfo/Erp/StudentErpAttendence";
 
 function App() {
   return (
@@ -272,10 +271,6 @@ function App() {
               element={<Notepad />}
             />
 
-            <Route
-              path="attendance"
-              element={<DomainAdminAttendance />}
-            />
 
             <Route
               path="reports"

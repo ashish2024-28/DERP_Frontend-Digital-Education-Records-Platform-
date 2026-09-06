@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 export default function Notepad(){
-    const API_BASE = "http://localhost:8080";
+    const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
     const { domain } = useParams();
     const [message, setMessage] = useState("");

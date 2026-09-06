@@ -59,16 +59,6 @@
   flex-shrink: 0;
 }
 
-.attendance-session-field label {
-  display: block;
-  margin-bottom: 5px;
-  color: var(--da-muted, #64748b);
-  font-size: 10px;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.attendance-session-field input,
 .attendance-subject-filter {
   min-width: 150px;
   height: 40px;
@@ -82,7 +72,6 @@
   transition: .2s ease;
 }
 
-.attendance-session-field input:focus,
 .attendance-subject-filter:focus {
   border-color: var(--da-primary, #2563eb);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
@@ -508,8 +497,6 @@
 
   .attendance-page-header { padding: 17px; }
   .attendance-header-actions { width: 100%; align-items: flex-end; }
-  .attendance-session-field { flex: 1; }
-  .attendance-session-field input { width: 100%; }
   .attendance-refresh-btn { flex-shrink: 0; }
   .attendance-student-card { padding: 17px; }
   .attendance-overall-badge { width: 100%; }
