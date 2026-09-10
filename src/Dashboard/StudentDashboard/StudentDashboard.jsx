@@ -195,11 +195,13 @@ export default function StudentDashboard() {
             <p><strong>Mobile:</strong>{" "}            {student.mobileNumber || "-"}</p>
             <p><strong>Course:</strong>{" "}            {student.course || "-"}</p>
             <p><strong>Branch:</strong>{" "}            {student.branch || "-"}</p>
-            <p><strong>Batch:</strong>{" "}             {student.batch || student.studyBatch || "-"}</p>
-            <p><strong>Study Subjects:</strong>{" "}    {Array.isArray(student.studySubjects) ? student.studySubjects.join(", ") : "-"}</p>
+            <p><strong>Batch:</strong>{" "}             {student.batch ||  "-"}</p>
+            <p><strong>Study Batch: <br /><span>yearSection</span></strong>{" "}             {student.studyBatch || "-"}</p>
+            <p><strong>Study Subjects:</strong>{" "}    {student.studySubjects || "-"}</p>
             <p><strong>Father Name:</strong>{" "}       {student.fatherName || "-"} </p>
             <p><strong>Father Mobile:</strong>{" "}     {student.fatherMobNo || "-"} </p>
             <p><strong>Account Created:</strong>{" "}   {student.createdDateTime ? FormatDate(student.createdDateTime) : "-"} </p>
+            <p><strong>Updated At:</strong>{" "}        {student.lastUpdateDateTime ? FormatDate(student.lastLoginDateTime) : "-"}</p>
             <p><strong>Last Login:</strong>{" "}        {student.lastLoginDateTime ? FormatDate(student.lastLoginDateTime) : "-"}</p>
           </div>
 
