@@ -10,7 +10,6 @@ export default function AllStudents() {
   const role = localStorage.getItem("role");
 
   const [students, setStudents] = useState([]);
-  const [showPassword, setShowPassword] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Track which batch-panels and course-panels are open
@@ -36,7 +35,7 @@ export default function AllStudents() {
         "Content-Type": "application/json",
       };
 
-      const res = await fetch(`${API_BASE}/${domain}/${role}/allStudent`, { headers });
+      const res = await fetch(`${API_BASE}/${domain}/${role}/all_student`, { headers });
 
       // Only a genuine auth failure should log the user out.
       // Any other failure (network blip, 500, etc.) should NOT wipe
@@ -84,7 +83,6 @@ export default function AllStudents() {
         s.name?.toLowerCase().includes(q) ||
         s.rollNumber?.toLowerCase().includes(q) ||
         s.course?.toLowerCase().includes(q) ||
-        s.branch?.toLowerCase().includes(q) ||
         s.batch?.toLowerCase().includes(q) ||
         s.email?.toLowerCase().includes(q)
     );
@@ -129,14 +127,15 @@ export default function AllStudents() {
       {/* ── Page Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center">
-            <GraduationCap size={20} className="text-white" />
+          <div className="w-16 h-12 rounded-xl bg-blue-600 flex items-center justify-center">
+            <GraduationCap size={25} className="text-white" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">All Students</h1>
-            <p className="text-xs text-gray-400">{filtered.length} students • {grouped.sortedBatches.length} batches</p>
+            <p className="text-xm text-gray-400">{filtered.length} students • {grouped.sortedBatches.length} batches</p>
           </div>
         </div>
+
 
         {/* Search */}
         <input
@@ -144,8 +143,22 @@ export default function AllStudents() {
           placeholder="Search by name, roll no, course, batch…"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="border border-gray-300 rounded-lg px-4 py-2 text-sm w-full sm:w-72 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+          className="border border-gray-300 rounded-lg px-8 py-2  w-full  focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
         />
+      </div>
+      <div
+        style={{
+          marginBottom: 16,
+          padding: "10px 14px",
+          borderRadius: 8,
+          background: "#eff6ff",
+          border: "1px solid #bfdbfe",
+          color: "#1d4ed8",
+          fontSize: 13,
+          fontWeight: 600,
+        }}
+      >
+        💡 Click on any student row to open the complete student profile.
       </div>
 
       {/* ── Loading ── */}
@@ -235,7 +248,6 @@ export default function AllStudents() {
                                     <th className="px-3 py-2 text-left">Roll No</th>
                                     <th className="px-3 py-2 text-left">Name</th>
                                     <th className="px-3 py-2 text-left">Course</th>
-                                    <th className="px-3 py-2 text-left">Branch</th>
                                     <th className="px-3 py-2 text-left">Batch</th>
                                     <th className="px-3 py-2 text-left"> Study Batch <br /><small>(YearSection)</small></th>
                                     <th className="px-3 py-2 text-left">Study Subject<br /><small>(All Subjects)</small></th>
@@ -264,13 +276,23 @@ export default function AllStudents() {
                                   {courseStudents.map((s, idx) => (
                                     <tr
                                       key={s.rollNumber || idx}
-                                      className="border-t border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                      onClick={() => {
+                                        navigate(
+                                          `/${domain}/${role}/student/${encodeURIComponent(s.rollNumber)}`,
+                                          {
+                                            state: {
+                                              email: s.email,
+                                            },
+                                          }
+                                        );
+                                      }}
+                                      title="Click to open student profile"
+                                      className="border-t border-gray-100 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors "
                                     >
                                       <td className="px-3 py-2 text-gray-400">{idx + 1}.</td>
                                       <td className="px-3 py-2 font-mono font-medium text-gray-700 dark:text-gray-200">{s.rollNumber}</td>
                                       <td className="px-3 py-2 font-medium text-gray-800 dark:text-gray-100">{s.name}</td>
                                       <td className="px-3 py-2 text-gray-500">{s.course || "—"}</td>
-                                      <td className="px-3 py-2 text-gray-500">{s.branch || "—"}</td>
                                       <td className="px-3 py-2 text-gray-500">{s.batch || "—"}</td>
                                       <td className="px-3 py-2 text-gray-500">{s.studyBatch || "—"}</td>
                                       <td className="px-3 py-2 text-gray-500">{s.studySubjects || "—"}</td>
@@ -282,7 +304,7 @@ export default function AllStudents() {
                                         <>
                                           <td className="px-3 py-2 text-gray-400 text-xs">{FormatDate(s.createdDateTime)}</td>
                                           <td className="px-3 py-2 text-gray-400 text-xs">{FormatDate(s.lastUpdateDateTime)}</td>
-                                          <td className="px-3 py-2 text-gray-400 text-xs">{FormatDate(s.lastLoginDateTime) }</td>
+                                          <td className="px-3 py-2 text-gray-400 text-xs">{FormatDate(s.lastLoginDateTime)}</td>
                                           {/* <td className="px-3 py-2 font-mono text-xs text-gray-500">
                                             {showPassword ? s.password : "••••••••"}
                                           </td> */}

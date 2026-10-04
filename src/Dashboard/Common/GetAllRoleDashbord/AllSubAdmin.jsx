@@ -11,7 +11,6 @@ export default function AllSubAdmin() {
   const role = localStorage.getItem("role");
 
   const [subAdmins, setSubAdmins] = useState([]);
-  const [showPassword, setShowPassword] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [openCourses, setOpenCourses] = useState({});
 
@@ -136,7 +135,6 @@ export default function AllSubAdmin() {
                         <th className="px-4 py-2 text-left">Sub Admin ID</th>
                         <th className="px-4 py-2 text-left">Name</th>
                         <th className="px-4 py-2 text-left">Course</th>
-                        <th className="px-4 py-2 text-left">Teaching Assignments</th>
                         <th className="px-4 py-2 text-left">Email</th>
                         <th className="px-4 py-2 text-left">Mobile</th>
                         {/* {role === "DOMAIN_ADMIN" && (
@@ -160,27 +158,25 @@ export default function AllSubAdmin() {
                       {members.map((s, idx) => (
                         <tr
                           key={s.subAdminId || idx}
-                          className="border-t border-gray-100 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 bg-white dark:bg-gray-900 transition-colors"
+                          onClick={() => {
+                            const currentRole = localStorage.getItem("role") || s.role;
+                            if (!s.subAdminId || !currentRole) {
+                              console.error("Unable to open Sub Admin profile:", s);
+                              return;
+                            }
+                            navigate(
+                              `/${domain}/${currentRole}/subAdmin/${encodeURIComponent(s.subAdminId)}`,
+                              { state: { email: s.email } }
+                            );
+                          }}
+                          title="Click to open Sub Admin profile"
+                          className="border-t border-gray-100 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
                         >
                           <td className="px-4 py-2 text-gray-400">{idx + 1}.</td>
                           <td className="px-4 py-2 font-mono font-medium text-gray-700 dark:text-gray-200">{s.subAdminId}</td>
                           <td className="px-4 py-2 font-medium text-gray-800 dark:text-gray-100">{s.name}</td>
                           <td className="px-4 py-2 text-gray-500">{s.course}</td>
 
-                          {/* <td className="px-4 py-2 text-gray-500">{s.teachingAssignments}</td> */}
-                          <td className="px-4 py-2 text-gray-500">
-                            {s.teachingAssignments
-                              ?.split(";")
-                              .map((assignment) => {
-                                const [batch, subjects] = assignment.split(":");
-
-                                return `${batch?.trim()} : ${subjects
-                                  ?.split(",")
-                                  .map((subject) => subject.trim())
-                                  .join(" , ")}`;
-                              })
-                              .join(" | ")}
-                          </td>
                           <td className="px-4 py-2 text-gray-500">{s.email}</td>
                           <td className="px-4 py-2 text-gray-500">{s.mobileNumber}</td>
                           {/* {role === "DOMAIN_ADMIN" && (

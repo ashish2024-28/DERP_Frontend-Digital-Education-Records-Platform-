@@ -7,6 +7,30 @@ const UNI_CACHE_KEY = "universities_cache";
 const platformLogo  = "/Logo.png";
 const defaultUnivLogo = "/defaultUnivLogo.png";
 
+function getCachedUniversity(domain) {
+  try {
+    const cached = JSON.parse(localStorage.getItem(UNI_CACHE_KEY) || "[]");
+    return Array.isArray(cached)
+      ? cached.find((university) => university?.domain === domain) || null
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function EyeBtn({ show, toggle }) {
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      className="text-gray-400 hover:text-gray-600 transition text-base leading-none"
+      tabIndex={-1}
+    >
+      {show ? "🙈" : "👁️"}
+    </button>
+  );
+}
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 /**
@@ -274,52 +298,55 @@ export default function Signup() {
   const navigate   = useNavigate();
   const location   = useLocation();
 
-  const [step,            setStep]            = useState(1);
-  const [universityName,  setUniversityName]  = useState("");
-  const [universityLogo,  setUniversityLogo]  = useState("");
-  const [role,            setRole]            = useState("");
+  const cachedUniversity = getCachedUniversity(domain);
+  const [step,            setStep]            = useState(location.state?.userData ? 2 : 1);
+  const [universityName,  setUniversityName]  = useState(cachedUniversity?.universityName || "");
+  const [universityLogo,  setUniversityLogo]  = useState(cachedUniversity?.universityLogoPath || "");
+  const [role,            setRole]            = useState(location.state?.role || "");
   const [confirmPwd,      setConfirmPwd]      = useState("");
   const [showPwd,         setShowPwd]         = useState(false);
   const [showCPwd,        setShowCPwd]        = useState(false);
   const [fieldErrors,     setFieldErrors]     = useState({});
   const [globalError,     setGlobalError]     = useState("");
 
-  const [userData, setUserData] = useState({
+  const [userData, setUserData] = useState(() => ({
     name: "", email: "", password: "", mobileNumber: "",
     rollNumber: "", course: "", branch: "", batch: "",
     fatherName: "", fatherMobNo: "",
     facultyId: "", teachingBatch: "",
     subAdminId: "",
-  });
+    ...location.state?.userData,
+  }));
 
   const pwdStrength = getStrength(userData.password);
 
   // ── Load university ────────────────────────────────────────────────────────
   useEffect(() => {
     if (!domain) return;
-    try {
-      const cached = JSON.parse(localStorage.getItem(UNI_CACHE_KEY) || "[]");
-      const uni    = cached.find(u => u.domain === domain);
-      if (uni) {
-        setUniversityName(uni.universityName || "");
-        setUniversityLogo(uni.universityLogoPath || "");
-        return;
-      }
-    } catch {}
-    fetch(`${API_BASE}/${domain}/signup`)
-      .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-      .then(d => { setUniversityName(d.universityName || ""); setUniversityLogo(d.universityLogoPath || ""); })
-      .catch(() => navigate("/"));
-  }, [domain, navigate]);
+    if (getCachedUniversity(domain)) return;
+    let active = true;
 
-  // ── Restore on back-nav ────────────────────────────────────────────────────
-  useEffect(() => {
-    if (location.state?.userData) {
-      setUserData(location.state.userData);
-      setRole(location.state.role || "");
-      setStep(2);
-    }
-  }, [location.state]);
+    fetch(`${API_BASE}/home_page`)
+      .then(async response => {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data?.message || "Unable to load universities.");
+        const universities = data;
+        if (!Array.isArray(universities)) throw new Error("Unexpected university list response.");
+        const university = universities.find(item => item?.domain === domain);
+        if (!university) throw new Error("This university could not be found.");
+        return university;
+      })
+      .then(university => {
+        if (!active) return;
+        setUniversityName(university.universityName || "");
+        setUniversityLogo(university.universityLogoPath || "");
+      })
+      .catch(error => {
+        if (active) setGlobalError(error.message || "Unable to load university details.");
+      });
+
+    return () => { active = false; };
+  }, [domain]);
 
   const set = (e) => {
     setUserData(p => ({ ...p, [e.target.name]: e.target.value }));
@@ -396,14 +423,6 @@ export default function Signup() {
   };
 
   const fe = fieldErrors;
-
-  const EyeBtn = ({ show, toggle }) => (
-    <button type="button" onClick={toggle}
-      className="text-gray-400 hover:text-gray-600 transition text-base leading-none"
-      tabIndex={-1}>
-      {show ? "🙈" : "👁️"}
-    </button>
-  );
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start px-4 py-10">

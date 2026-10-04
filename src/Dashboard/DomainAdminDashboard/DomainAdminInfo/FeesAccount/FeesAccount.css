@@ -1,0 +1,458 @@
+.fees-account {
+  --fees-bg: #f8fafc;
+  --fees-surface: #fff;
+  --fees-surface-muted: #f1f5f9;
+  --fees-border: #e2e8f0;
+  --fees-text: #172033;
+  --fees-muted: #64748b;
+  --fees-input: #fff;
+  display: grid;
+  gap: 1rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background: var(--fees-bg);
+  color: var(--fees-text);
+  color-scheme: light;
+}
+
+body.dark .fees-account,
+.dark .fees-account,
+[data-theme="dark"] .fees-account,
+.dark-mode .fees-account {
+  --fees-bg: #0b1120;
+  --fees-surface: #111827;
+  --fees-surface-muted: #1e293b;
+  --fees-border: #334155;
+  --fees-text: #f1f5f9;
+  --fees-muted: #94a3b8;
+  --fees-input: #0f172a;
+  color-scheme: dark;
+}
+
+.fees-account__header,
+.fees-account__section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.fees-account__header h1,
+.fees-account__section-heading h2,
+.fees-account__method-list h3 {
+  margin: 0;
+}
+
+.fees-account__header p,
+.fees-account__section-heading p,
+.fees-account__method-list p {
+  margin: 0.35rem 0 0;
+  color: var(--fees-muted);
+}
+
+.fees-account__eyebrow {
+  margin: 0 0 0.4rem !important;
+  color: #4f46e5;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.fees-account__summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 0.8rem;
+}
+
+.fees-account__summary article,
+.fees-account__panel {
+  border: 1px solid var(--fees-border);
+  border-radius: 0.85rem;
+  background: var(--fees-surface);
+  box-shadow: 0 4px 16px rgb(15 23 42 / 5%);
+}
+
+.fees-account__summary article {
+  position: relative;
+  overflow: hidden;
+}
+
+.fees-account__summary article {
+  display: grid;
+  gap: 0.45rem;
+  padding: 1rem;
+}
+
+.fees-account__summary span,
+.fees-account__empty {
+  color: var(--fees-muted);
+}
+
+.fees-account__summary strong {
+  font-size: 1.35rem;
+}
+
+.fees-account__panel h2 {
+  color: var(--fees-text);
+  font-size: 1.05rem;
+}
+
+.fees-account__panel {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1rem;
+}
+
+.fees-account__button {
+  min-height: 42px;
+  border: 0;
+  border-radius: 0.6rem;
+  padding: 0.7rem 0.95rem;
+  background: #4f46e5;
+  color: white;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.fees-account__button:hover:not(:disabled) {
+  background: #4338ca;
+}
+
+.fees-account__button:focus-visible,
+.fees-account__section-heading input:focus-visible {
+  outline: 3px solid rgb(99 102 241 / 35%);
+  outline-offset: 2px;
+}
+
+.fees-account__button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.fees-account__notice {
+  padding: 0.8rem 1rem;
+  border-radius: 0.6rem;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.fees-account__section-heading input {
+  width: min(100%, 320px);
+  min-width: 0;
+  flex: 0 1 320px;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--fees-border);
+  border-radius: 0.55rem;
+  background: var(--fees-input);
+  color: var(--fees-text);
+  font: inherit;
+}
+
+.fees-account__section-heading input::placeholder {
+  color: var(--fees-muted);
+}
+
+.fees-account__filters {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.fees-account__filter-group {
+  display: grid;
+  gap: 0.35rem;
+  width: min(100%, 720px);
+}
+
+.fees-account__filter-label {
+  color: var(--fees-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.fees-account__course-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  width: 100%;
+  gap: 0.55rem;
+  padding: 0.2rem 0;
+}
+
+.fees-account__course-filters button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+  min-width: 0;
+  min-height: 38px;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--fees-border);
+  border-radius: 999px;
+  background: var(--fees-surface);
+  color: var(--fees-muted);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+
+.fees-account__course-filters button:hover {
+  border-color: #818cf8;
+  color: var(--fees-text);
+}
+
+.fees-account__course-filters button.is-selected {
+  border-color: #4f46e5;
+  background: #4f46e5;
+  color: #fff;
+}
+
+.fees-account__course-filters button:focus-visible {
+  outline: 3px solid rgb(99 102 241 / 35%);
+  outline-offset: 2px;
+}
+
+.fees-account__course-filters button span {
+  display: inline-grid;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  place-items: center;
+  padding: 0 0.25rem;
+  border-radius: 999px;
+  background: var(--fees-surface-muted);
+  color: var(--fees-muted);
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+.fees-account__course-filters button.is-selected span {
+  background: rgb(255 255 255 / 20%);
+  color: #fff;
+}
+
+.fees-account__table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--fees-border);
+  border-radius: 0.65rem;
+}
+
+.fees-account table {
+  width: 100%;
+  min-width: 840px;
+  border-collapse: collapse;
+  background: var(--fees-surface);
+}
+
+.fees-account th,
+.fees-account td {
+  padding: 0.7rem;
+  border-bottom: 1px solid var(--fees-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.fees-account th {
+  position: sticky;
+  top: 0;
+  background: var(--fees-surface-muted);
+  color: var(--fees-muted);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.fees-account td {
+  color: var(--fees-text);
+}
+
+.fees-account tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.fees-account tbody tr:hover {
+  background: var(--fees-surface-muted);
+}
+
+.fees-account td small {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--fees-muted);
+}
+
+.fees-account__course-list,
+.fees-account__method-list,
+.fees-account__activity-list {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.fees-account__course-list {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.fees-account__course-list article,
+.fees-account__method-list article,
+.fees-account__activity-list article {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem;
+  border: 1px solid var(--fees-border);
+  border-radius: 0.7rem;
+  background: var(--fees-surface);
+}
+
+.fees-account__course-list article > span,
+.fees-account__course-list article > strong,
+.fees-account__activity-list article strong,
+.fees-account__method-list h3 {
+  color: var(--fees-text);
+}
+
+.fees-account__method-list article > div {
+  min-width: 0;
+}
+
+.fees-account__method-qr {
+  display: block;
+  width: min(100%, 180px);
+  max-height: 180px;
+  flex: 0 0 auto;
+  object-fit: contain;
+  border: 1px solid var(--fees-border);
+  border-radius: 0.55rem;
+  background: #fff;
+}
+
+.fees-account__status {
+  display: inline-flex;
+  margin-bottom: 0.35rem;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.fees-account__status--active,
+.fees-account__status--success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.fees-account__status--pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.fees-account__status--rejected,
+.fees-account__status--inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.fees-account__activity-list article > div:last-child {
+  display: grid;
+  gap: 0.3rem;
+  flex: 0 0 auto;
+  text-align: right;
+  color: var(--fees-muted);
+  font-size: 0.8rem;
+}
+
+.fees-account__activity-list p {
+  margin: 0.3rem 0 0;
+  color: var(--fees-muted);
+}
+
+body.dark .fees-account__eyebrow,
+.dark .fees-account__eyebrow,
+[data-theme="dark"] .fees-account__eyebrow,
+.dark-mode .fees-account__eyebrow {
+  color: #a5b4fc;
+}
+
+body.dark .fees-account__notice,
+.dark .fees-account__notice,
+[data-theme="dark"] .fees-account__notice,
+.dark-mode .fees-account__notice {
+  border: 1px solid #7f1d1d;
+  background: #450a0a;
+  color: #fecaca;
+}
+
+body.dark .fees-account__status,
+.dark .fees-account__status,
+[data-theme="dark"] .fees-account__status,
+.dark-mode .fees-account__status {
+  background: #334155;
+  color: #e2e8f0;
+}
+
+body.dark .fees-account__status--active,
+body.dark .fees-account__status--success,
+.dark .fees-account__status--active,
+.dark .fees-account__status--success,
+[data-theme="dark"] .fees-account__status--active,
+[data-theme="dark"] .fees-account__status--success,
+.dark-mode .fees-account__status--active,
+.dark-mode .fees-account__status--success {
+  background: #052e2b;
+  color: #6ee7b7;
+}
+
+body.dark .fees-account__status--pending,
+.dark .fees-account__status--pending,
+[data-theme="dark"] .fees-account__status--pending,
+.dark-mode .fees-account__status--pending {
+  background: #422006;
+  color: #fcd34d;
+}
+
+body.dark .fees-account__status--rejected,
+body.dark .fees-account__status--inactive,
+.dark .fees-account__status--rejected,
+.dark .fees-account__status--inactive,
+[data-theme="dark"] .fees-account__status--rejected,
+[data-theme="dark"] .fees-account__status--inactive,
+.dark-mode .fees-account__status--rejected,
+.dark-mode .fees-account__status--inactive {
+  background: #450a0a;
+  color: #fca5a5;
+}
+
+@media (max-width: 760px) {
+  .fees-account__header,
+  .fees-account__section-heading,
+  .fees-account__activity-list article,
+  .fees-account__method-list article {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .fees-account__summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fees-account__section-heading input {
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  .fees-account__activity-list article > div:last-child {
+    text-align: left;
+  }
+}
+
+
+@media (max-width: 440px) {
+  .fees-account__summary {
+    grid-template-columns: 1fr;
+  }
+}

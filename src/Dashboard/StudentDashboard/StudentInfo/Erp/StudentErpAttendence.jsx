@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import "../../../Common/css/common.css";
 import "./StudentErpAttendence.css";
 
+const EMPTY_SUMMARIES = [];
+
 /*
  * Student Attendance ERP Page
  * ---------------------------------------------------------
@@ -20,13 +22,13 @@ import "./StudentErpAttendence.css";
  *   - studyBatch
  *   - subjects
  *   - summaries
- *   - last7Days
+ *   - lastDays
  */
 export default function StudentErpAttendence() {
   const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
   const { domain } = useParams();
 
-  const [attendance, setAttendance] = useState(null);
+  const [attendance, setAttendance] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedSubject, setSelectedSubject] = useState("ALL");
@@ -50,7 +52,6 @@ export default function StudentErpAttendence() {
   const fetchAttendance = useCallback(async () => {
     setLoading(true);
     setError("");
-
     try {
       const response = await fetch(
         `${API_BASE}/${domain}/erp/attendance/student/me`,
@@ -66,7 +67,8 @@ export default function StudentErpAttendence() {
         throw new Error(data?.message || "Unable to load attendance.");
       }
 
-      setAttendance(data || null);
+      
+      setAttendance(data.data|| null);
     } catch (err) {
       console.error("Student attendance error:", err);
       setAttendance(null);
@@ -82,7 +84,7 @@ export default function StudentErpAttendence() {
 
   const summaries = Array.isArray(attendance?.summaries)
     ? attendance.summaries
-    : [];
+    : EMPTY_SUMMARIES;
 
   const subjects = useMemo(() => {
     const fromResponse = Array.isArray(attendance?.subjects)
@@ -104,23 +106,43 @@ export default function StudentErpAttendence() {
     );
   }, [summaries, selectedSubject]);
 
-  const recentRecords = useMemo(() => {
+  const attendanceRecords = useMemo(() => {
     const records = Array.isArray(attendance?.last7Days)
       ? [...attendance.last7Days]
       : [];
 
-    return records
-      .sort((a, b) => {
-        const dateCompare = String(b?.date || "").localeCompare(String(a?.date || ""));
-        if (dateCompare !== 0) return dateCompare;
-        return Number(b?.periodNumber || 0) - Number(a?.periodNumber || 0);
-      })
-      .filter((item) =>
-        selectedSubject === "ALL"
-          ? true
-          : String(item?.subject || "") === selectedSubject
-      );
-  }, [attendance?.last7Days, selectedSubject]);
+    return records.filter((item) => item?.date && item?.subject);
+  }, [attendance?.last7Days]);
+
+  const attendanceDates = useMemo(
+    () => [...new Set(attendanceRecords.map((record) => record.date))]
+      .sort((left, right) => String(left).localeCompare(String(right))),
+    [attendanceRecords]
+  );
+
+  const matrixSubjects = useMemo(
+    () => (selectedSubject === "ALL"
+      ? subjects
+      : subjects.filter((subject) => subject === selectedSubject)),
+    [selectedSubject, subjects]
+  );
+
+  const attendanceMatrix = useMemo(() => {
+    const matrix = new Map();
+
+    attendanceRecords.forEach((record) => {
+      const key = `${record.subject}\u0000${record.date}`;
+      const entries = matrix.get(key) || [];
+      entries.push(record);
+      matrix.set(key, entries);
+    });
+
+    matrix.forEach((records) => {
+      records.sort((left, right) => Number(left.periodNumber || 0) - Number(right.periodNumber || 0));
+    });
+
+    return matrix;
+  }, [attendanceRecords]);
 
   const totals = useMemo(() => {
     return filteredSummaries.reduce(
@@ -146,71 +168,19 @@ export default function StudentErpAttendence() {
         ? "average"
         : "danger";
 
-  const formatDate = (value) => {
-    if (!value) return "—";
-
-    const date = new Date(`${value}T00:00:00`);
-    if (Number.isNaN(date.getTime())) return value;
-
-    return new Intl.DateTimeFormat("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    }).format(date);
-  };
-
-  const formatDay = (value) => {
-    if (!value) return "—";
-
-    const date = new Date(`${value}T00:00:00`);
-    if (Number.isNaN(date.getTime())) return value;
-
-    return new Intl.DateTimeFormat("en-IN", {
-      weekday: "short",
-      day: "2-digit",
-      month: "short",
-    }).format(date);
-  };
-
   const getStatus = (status) => String(status || "UNKNOWN").toUpperCase();
 
-  const getStatusClass = (status) => {
-    const normalized = getStatus(status);
+  const formatMatrixDate = (value) => {
+    if (!value) return "—";
+    const date = new Date(`${value}T00:00:00`);
+    if (Number.isNaN(date.getTime())) return value;
 
-    if (normalized === "PRESENT" || normalized === "P") return "attendance-status present";
-    if (normalized === "ABSENT" || normalized === "A") return "attendance-status absent";
-    return "attendance-status unknown";
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "2-digit",
+    }).format(date);
   };
-
-  const groupedDays = useMemo(() => {
-    const groups = new Map();
-
-    recentRecords.forEach((record) => {
-      const key = record?.date || "unknown";
-
-      if (!groups.has(key)) {
-        groups.set(key, {
-          date: key,
-          records: [],
-          present: 0,
-          absent: 0,
-        });
-      }
-
-      const group = groups.get(key);
-      group.records.push(record);
-
-      if (["PRESENT", "P"].includes(getStatus(record?.status))) {
-        group.present += 1;
-      } else if (["ABSENT", "A"].includes(getStatus(record?.status))) {
-        group.absent += 1;
-      }
-    });
-
-    return Array.from(groups.values()).sort((a, b) =>
-      String(b.date).localeCompare(String(a.date))
-    );
-  }, [recentRecords]);
 
   return (
     <div className="attendance-page">
@@ -221,7 +191,7 @@ export default function StudentErpAttendence() {
         <div>
           <span className="attendance-eyebrow">ACADEMIC RECORD</span>
           <h1>My Attendance</h1>
-          <p>Track subject-wise attendance and your latest 7-day class history.</p>
+          <p>Track subject summaries and view your attendance by subject and date.</p>
         </div>
 
         <div className="attendance-header-actions">
@@ -316,9 +286,9 @@ export default function StudentErpAttendence() {
           <section className="attendance-section-card">
             <div className="attendance-section-heading">
               <div>
-                <span className="attendance-section-kicker">SUBJECT SUMMARY</span>
-                <h2>Attendance by Subject</h2>
-                <p>Your attendance totals, separated by semester.</p>
+                <span className="attendance-section-kicker">DATE-WISE ATTENDANCE</span>
+                <h2>Attendance by Subject and Date</h2>
+                <p>Each row is a subject and each date column shows your attendance status.</p>
               </div>
 
               <select
@@ -333,166 +303,69 @@ export default function StudentErpAttendence() {
               </select>
             </div>
 
-            {filteredSummaries.length > 0 ? (
-              <div className="attendance-table-wrapper">
-                <table className="attendance-table">
+            {attendanceDates.length > 0 && matrixSubjects.length > 0 ? (
+              <>
+              <div className="attendance-matrix-legend" aria-label="Attendance status legend">
+                <span><strong className="present">P</strong> Present</span>
+                <span><strong className="absent">A</strong> Absent</span>
+                <span>— No record</span>
+                <span className="attendance-matrix-scroll-hint">Scroll horizontally to see all dates</span>
+              </div>
+              <div className="attendance-matrix-wrapper" role="region" aria-label="Date-wise attendance table" tabIndex={0}>
+                <table className="attendance-matrix">
                   <thead>
                     <tr>
-                      <th>Subject</th>
-                      <th>Total Classes</th>
-                      <th>Present</th>
-                      <th>Absent</th>
-                      <th>Attendance</th>
+                      <th scope="col" className="attendance-matrix-subject-heading">Subject</th>
+                      {attendanceDates.map((date) => (
+                        <th scope="col" key={date}>{formatMatrixDate(date)}</th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredSummaries.map((summary, index) => {
-                      const percentage = Math.max(0, Math.min(100, Number(summary?.percentage || 0)));
-                      const tone = percentage >= 75 ? "good" : percentage >= 60 ? "average" : "danger";
+                    {matrixSubjects.map((subject) => (
+                      <tr key={subject}>
+                        <th scope="row" className="attendance-matrix-subject">{subject}</th>
+                        {attendanceDates.map((date) => {
+                          const records = attendanceMatrix.get(`${subject}\u0000${date}`) || [];
 
-                      return (
-                        <tr key={`${summary?.subject || "subject"}-${index}`}>
-                          <td>
-                            <strong>{summary?.subject || "—"}</strong>
-                            <small>
-                              {summary?.semesterKey ? `Semester ${summary.semesterKey}` : "Semester record"}
-                              {summary?.studyBatch ? ` • ${summary.studyBatch}` : ""}
-                            </small>
-                          </td>
-                          <td>{summary?.totalClasses ?? 0}</td>
-                          <td className="attendance-present-text">{summary?.present ?? 0}</td>
-                          <td className="attendance-absent-text">{summary?.absent ?? 0}</td>
-                          <td>
-                            <div className="attendance-progress-row">
-                              <div className="attendance-progress-track">
-                                <div
-                                  className={`attendance-progress-fill ${tone}`}
-                                  style={{ width: `${percentage}%` }}
-                                />
-                              </div>
-                              <strong className={`attendance-percentage ${tone}`}>
-                                {percentage}%
-                              </strong>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
+                          return (
+                            <td key={`${subject}-${date}`}>
+                              {records.length > 0 ? (
+                                <div className="attendance-matrix-statuses">
+                                  {records.map((record, index) => {
+                                    const status = getStatus(record.status);
+                                    const isPresent = status === "PRESENT" || status === "P";
+                                    const isAbsent = status === "ABSENT" || status === "A";
+
+                                    return (
+                                      <span
+                                        key={`${record.periodNumber ?? "period"}-${index}`}
+                                        className={`attendance-matrix-status ${isPresent ? "present" : isAbsent ? "absent" : "unknown"}`}
+                                        title={`Period ${record.periodNumber ?? "—"}: ${status}`}
+                                      >
+                                        {isPresent ? "P" : isAbsent ? "A" : status.charAt(0)}
+                                      </span>
+                                    );
+                                  })}
+                                </div>
+                              ) : (
+                                <span className="attendance-matrix-no-record" aria-label="No attendance record">—</span>
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
-            ) : (
-              <div className="attendance-empty-state">
-                <div>📊</div>
-                <h3>No subject attendance found</h3>
-                <p>No attendance summary is available for this subject.</p>
-              </div>
-            )}
-          </section>
-
-          {/* =====================================================
-              LAST 7 DAYS
-          ===================================================== */}
-          <section className="attendance-section-card">
-            <div className="attendance-section-heading">
-              <div>
-                <span className="attendance-section-kicker">RECENT HISTORY</span>
-                <h2>Last 7 Days</h2>
-                <p>Every attendance record returned for the latest seven-day period.</p>
-              </div>
-
-              <span className="attendance-record-count">
-                {recentRecords.length} record{recentRecords.length === 1 ? "" : "s"}
-              </span>
-            </div>
-
-            {groupedDays.length > 0 ? (
-              <>
-                <div className="attendance-day-grid">
-                  {groupedDays.map((day) => (
-                    <div className="attendance-day-card" key={day.date}>
-                      <div>
-                        <strong>{formatDay(day.date)}</strong>
-                        <small>{formatDate(day.date)}</small>
-                      </div>
-                      <div className="attendance-day-counts">
-                        <span className="day-present">{day.present} Present</span>
-                        <span className="day-absent">{day.absent} Absent</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="attendance-history-table-wrapper">
-                  <table className="attendance-table attendance-history-table">
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Period</th>
-                        <th>Subject</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {recentRecords.map((record, index) => {
-                        const status = getStatus(record?.status);
-
-                        return (
-                          <tr key={`${record?.date || "date"}-${record?.periodNumber || "period"}-${index}`}>
-                            <td>
-                              <strong>{formatDate(record?.date)}</strong>
-                            </td>
-                            <td>Period {record?.periodNumber ?? "—"}</td>
-                            <td>{record?.subject || "—"}</td>
-                            <td>
-                              <span className={getStatusClass(status)}>
-                                <span className="attendance-status-dot" />
-                                {status}
-                              </span>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
               </>
             ) : (
               <div className="attendance-empty-state">
-                <div>🗓️</div>
-                <h3>No recent attendance history</h3>
-                <p>No attendance records were returned for the latest seven-day period.</p>
+              <div>🗓️</div>
+              <h3>No date-wise attendance found</h3>
+              <p>No dated attendance records are available for this subject yet.</p>
               </div>
-            )}
-          </section>
-
-          {/* =====================================================
-              SUBJECT LIST
-          ===================================================== */}
-          <section className="attendance-section-card attendance-subject-list-card">
-            <div className="attendance-section-heading">
-              <div>
-                <span className="attendance-section-kicker">ACADEMICS</span>
-                <h2>All Subjects</h2>
-                <p>Subjects included in your attendance response.</p>
-              </div>
-            </div>
-
-            {subjects.length > 0 ? (
-              <div className="attendance-subject-chips">
-                {subjects.map((subject) => (
-                  <button
-                    type="button"
-                    className={`attendance-subject-chip ${selectedSubject === subject ? "active" : ""}`}
-                    key={subject}
-                    onClick={() => setSelectedSubject(subject)}
-                  >
-                    {subject}
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <p className="attendance-muted">No subjects available.</p>
             )}
           </section>
         </>

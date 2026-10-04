@@ -32,7 +32,8 @@ const Home = () => {
                 return res.json();
             })
             .then((data) => {
-                const sorted = [...data].sort((a, b) =>
+                const universities = data || [];
+                const sorted = [...universities].sort((a, b) =>
                     (a.universityName || "").localeCompare(b.universityName || "")
                 );
                 setUniversities(sorted);

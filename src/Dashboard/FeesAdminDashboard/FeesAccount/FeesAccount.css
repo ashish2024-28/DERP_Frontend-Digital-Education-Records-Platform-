@@ -1,0 +1,853 @@
+.fees-management {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 1180px;
+  margin: 0 auto;
+  color: #172033;
+}
+
+.fees-management__header,
+.fees-management__section-heading,
+.fees-management__method,
+.fees-management__payment-details,
+.fees-management__review-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.fees-management__header h1,
+.fees-management__section-heading h2,
+.fees-management__method h3 {
+  margin: 0;
+}
+
+.fees-management__header p,
+.fees-management__section-heading p,
+.fees-management__method p {
+  margin: 0.35rem 0 0;
+  color: #64748b;
+}
+
+.fees-management__eyebrow {
+  color: #4f46e5 !important;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.fees-management__summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.fees-management__summary article,
+.fees-management__panel {
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  background: white;
+  box-shadow: 0 4px 16px rgb(15 23 42 / 5%);
+}
+
+.fees-management__summary article {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.fees-management__summary span {
+  color: #64748b;
+}
+
+.fees-management__summary strong {
+  font-size: 1.45rem;
+}
+
+.fees-management__panel {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.fees-management__forms {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.fees-management__forms form,
+.fees-management__cash-form {
+  display: grid;
+  align-content: start;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+}
+
+.fees-management__forms h3 {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.fees-management label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.fees-management input,
+.fees-management textarea {
+  min-width: 0;
+  padding: 0.65rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.55rem;
+  font: inherit;
+}
+
+.fees-management textarea {
+  min-height: 2.6rem;
+  resize: vertical;
+}
+
+.fees-management__forms button,
+.fees-management__cash-form button,
+.fees-management__review-actions button {
+  align-self: end;
+  border: 0;
+  border-radius: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  background: #4f46e5;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.fees-management__forms button {
+  grid-column: 1 / -1;
+}
+
+.fees-management button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.fees-management__secondary {
+  border: 1px solid #cbd5e1;
+  border-radius: 0.6rem;
+  padding: 0.65rem 0.85rem;
+  background: white;
+  color: #334155;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.fees-management__method-list,
+.fees-management__queue {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.fees-management__table-wrap {
+  overflow-x: auto;
+}
+
+.fees-management__table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+}
+
+.fees-management__table th,
+.fees-management__table td {
+  padding: 0.7rem;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+.fees-management__table th {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.fees-management__history {
+  min-width: 220px;
+  padding-left: 1rem;
+}
+
+.fees-management__table small {
+  display: block;
+  color: #64748b;
+}
+
+.fees-management__course-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.fees-management__course-list article {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.65rem;
+}
+
+.fees-management__method,
+.fees-management__payment {
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+}
+
+.fees-management__method-details {
+  min-width: 0;
+}
+
+.fees-management__qr {
+  display: block;
+  width: min(100%, 180px);
+  max-height: 180px;
+  flex: 0 0 auto;
+  object-fit: contain;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.55rem;
+  background: #fff;
+}
+
+.fees-management__pill {
+  display: inline-flex;
+  margin: 8px;
+  border-radius: 20px;
+  padding: 10px 20px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.fees-management__pill.is-active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.fees-management__search {
+  width: min(100%, 320px);
+}
+
+.fees-management__payment-details {
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.fees-management__payment-details > div {
+  display: grid;
+  gap: 0.3rem;
+  overflow-wrap: anywhere;
+}
+
+.fees-management__payment-details span {
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+.fees-management__review-actions {
+  margin-top: 1rem;
+  align-items: end;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.fees-management__review-actions label {
+  flex: 1 1 240px;
+}
+
+.fees-management__review-actions button.is-danger {
+  background: #b91c1c;
+}
+
+.fees-management__cash-form {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.fees-management__notice {
+  border-radius: 0.65rem;
+  padding: 0.8rem 1rem;
+}
+
+.fees-management__notice--error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.fees-management__notice--success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.fees-management__empty {
+  color: #64748b;
+}
+
+.fees-management__activity-list {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.fees-management__activity-list article {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.7rem;
+}
+
+.fees-management__activity-list p {
+  margin: 0.3rem 0 0;
+  color: #64748b;
+}
+
+.fees-management__activity-meta {
+  display: grid;
+  gap: 0.3rem;
+  text-align: right;
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 760px) {
+  .fees-management__header,
+  .fees-management__section-heading,
+  .fees-management__activity-list article {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .fees-management__activity-meta {
+    text-align: left;
+  }
+
+  .fees-management__forms,
+  .fees-management__cash-form {
+    grid-template-columns: 1fr;
+  }
+
+  .fees-management__method {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    flex-direction: column;
+  }
+
+  .fees-management__cash-form button {
+    grid-column: 1;
+  }
+}
+
+.fees-management {
+  --fees-bg: #f8fafc;
+  --fees-surface: #fff;
+  --fees-surface-muted: #f1f5f9;
+  --fees-border: #e2e8f0;
+  --fees-text: #172033;
+  --fees-muted: #64748b;
+  --fees-input: #fff;
+  width: 100%;
+  max-width: 1280px;
+  padding: 0;
+  color: var(--fees-text);
+  color-scheme: light;
+}
+
+body.dark .fees-management,
+.dark .fees-management,
+[data-theme="dark"] .fees-management,
+.dark-mode .fees-management {
+  --fees-bg: #0b1120;
+  --fees-surface: #111827;
+  --fees-surface-muted: #1e293b;
+  --fees-border: #334155;
+  --fees-text: #f1f5f9;
+  --fees-muted: #94a3b8;
+  --fees-input: #0f172a;
+  color-scheme: dark;
+}
+
+.fees-management__header {
+  min-height: 118px;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--fees-border);
+  border-radius: 1rem;
+  background: var(--fees-surface);
+}
+
+.fees-management__header h1 {
+  color: var(--fees-text);
+  font-size: clamp(1.4rem, 2vw, 1.8rem);
+  font-weight: 750;
+  letter-spacing: -0.025em;
+}
+
+.fees-management__header p:not(.fees-management__eyebrow) {
+  color: var(--fees-muted);
+  font-size: 0.9rem;
+}
+
+.fees-management__eyebrow {
+  margin: 0 0 0.4rem;
+  color: #4f46e5 !important;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+body.dark .fees-management__eyebrow,
+.dark .fees-management__eyebrow,
+[data-theme="dark"] .fees-management__eyebrow,
+.dark-mode .fees-management__eyebrow {
+  color: #a5b4fc !important;
+}
+
+.fees-management__summary {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.fees-management__summary article,
+.fees-management__panel {
+  border-color: var(--fees-border);
+  border-radius: 0.85rem;
+  background: var(--fees-surface);
+  color: var(--fees-text);
+  box-shadow: none;
+}
+
+.fees-management__summary article {
+  min-width: 0;
+  min-height: 112px;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem;
+}
+
+.fees-management__summary article > div {
+  min-width: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.fees-management__summary span:not(.fees-management__summary-icon) {
+  color: var(--fees-muted);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.fees-management__summary strong {
+  color: var(--fees-text);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.fees-management__summary-icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 0.7rem;
+  background: color-mix(in srgb, #4f46e5 12%, var(--fees-surface));
+  color: #4f46e5;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+body.dark .fees-management__summary-icon,
+.dark .fees-management__summary-icon,
+[data-theme="dark"] .fees-management__summary-icon,
+.dark-mode .fees-management__summary-icon {
+  color: #a5b4fc;
+}
+
+.fees-management__panel {
+  gap: 1rem;
+  padding: 1.15rem;
+}
+
+.fees-management__section-heading h2,
+.fees-management__forms h3 {
+  color: var(--fees-text);
+  font-size: 1.05rem;
+  font-weight: 750;
+}
+
+.fees-management__section-heading p,
+.fees-management__method p,
+.fees-management__activity-list p,
+.fees-management__empty {
+  color: var(--fees-muted);
+}
+
+.fees-management__secondary {
+  min-height: 44px;
+  border: 1px solid #4f46e5;
+  border-radius: 0.65rem;
+  padding: 0.7rem 1.1rem;
+  background: #4f46e5;
+  color: #fff;
+  box-shadow: 0 5px 14px rgb(79 70 229 / 18%);
+}
+
+.fees-management__secondary:hover:not(:disabled),
+.fees-management__forms button:hover:not(:disabled),
+.fees-management__cash-form button:hover:not(:disabled),
+.fees-management__review-actions button:hover:not(:disabled) {
+  background: #4338ca;
+}
+
+.fees-management__secondary span {
+  margin-right: 0.25rem;
+  font-size: 1rem;
+}
+
+.fees-management__forms form,
+.fees-management__cash-form,
+.fees-management__method,
+.fees-management__payment,
+.fees-management__activity-list article,
+.fees-management__course-list article {
+  border-color: var(--fees-border);
+  background: var(--fees-bg);
+  color: var(--fees-text);
+}
+
+.fees-management__forms form,
+.fees-management__cash-form {
+  border-radius: 0.8rem;
+}
+
+.fees-management label {
+  color: var(--fees-text);
+  font-size: 0.82rem;
+}
+
+.fees-management input,
+.fees-management textarea {
+  border-color: var(--fees-border);
+  border-radius: 0.55rem;
+  background: var(--fees-input);
+  color: var(--fees-text);
+}
+
+.fees-management input::placeholder,
+.fees-management textarea::placeholder {
+  color: var(--fees-muted);
+}
+
+.fees-management__file-hint {
+  color: var(--fees-muted);
+  font-size: 0.75rem;
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+
+.fees-management input:focus-visible,
+.fees-management textarea:focus-visible {
+  outline: 3px solid rgb(99 102 241 / 30%);
+  outline-offset: 1px;
+}
+
+.fees-management__forms button,
+.fees-management__cash-form button,
+.fees-management__review-actions button {
+  border: 0;
+  background: #4f46e5;
+}
+
+.fees-management__table-wrap {
+  overflow: auto;
+  border: 1px solid var(--fees-border);
+  border-radius: 0.7rem;
+}
+
+.fees-management__table {
+  background: var(--fees-surface);
+  color: var(--fees-text);
+}
+
+.fees-management__table th,
+.fees-management__table td {
+  border-bottom-color: var(--fees-border);
+}
+
+.fees-management__table th {
+  background: var(--fees-surface-muted);
+  color: var(--fees-muted);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.fees-management__table td {
+  color: var(--fees-text);
+}
+
+.fees-management__table tbody tr:hover {
+  background: var(--fees-surface-muted);
+}
+
+.fees-management__table small,
+.fees-management__payment-details span {
+  color: var(--fees-muted);
+}
+
+.fees-management__notice {
+  border: 1px solid transparent;
+}
+
+.fees-management__notice--error {
+  border-color: #fecaca;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.fees-management__notice--success {
+  border-color: #bbf7d0;
+  background: #dcfce7;
+  color: #166534;
+}
+
+body.dark .fees-management__notice--error,
+.dark .fees-management__notice--error,
+[data-theme="dark"] .fees-management__notice--error,
+.dark-mode .fees-management__notice--error {
+  border-color: #7f1d1d;
+  background: #450a0a;
+  color: #fecaca;
+}
+
+body.dark .fees-management__notice--success,
+.dark .fees-management__notice--success,
+[data-theme="dark"] .fees-management__notice--success,
+.dark-mode .fees-management__notice--success {
+  border-color: #14532d;
+  background: #052e16;
+  color: #bbf7d0;
+}
+
+.fees-management__pill {
+  background: var(--fees-surface-muted);
+  color: var(--fees-muted);
+}
+
+.fees-management__pill.is-active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* Student account filters and table align with the Domain Admin finance view. */
+.fees-management__student-search {
+  width: min(100%, 320px);
+  min-width: 0;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--fees-border);
+  border-radius: 0.55rem;
+  background: var(--fees-input);
+  color: var(--fees-text);
+  font: inherit;
+}
+
+.fees-management__student-search::placeholder {
+  color: var(--fees-muted);
+}
+
+.fees-management__filters {
+  display: grid;
+  justify-items: start;
+  gap: 0.8rem;
+}
+
+.fees-management__filter-group {
+  display: grid;
+  gap: 0.35rem;
+  width: min(100%, 720px);
+}
+
+.fees-management__filter-group > span {
+  color: var(--fees-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.fees-management__filter-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  gap: 0.55rem;
+  width: 100%;
+}
+
+.fees-management__filter-options button {
+  min-width: 0;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--fees-border);
+  border-radius: 999px;
+  background: var(--fees-surface);
+  color: var(--fees-muted);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 650;
+  text-align: left;
+  cursor: pointer;
+}
+
+.fees-management__filter-options button:hover {
+  border-color: #818cf8;
+  color: var(--fees-text);
+}
+
+.fees-management__filter-options button.is-selected {
+  border-color: #4f46e5;
+  background: #4f46e5;
+  color: #fff;
+}
+
+.fees-management__filter-options button:focus-visible,
+.fees-management__student-search:focus-visible {
+  outline: 3px solid rgb(99 102 241 / 35%);
+  outline-offset: 2px;
+}
+
+.fees-management__filter-options button span {
+  display: inline-grid;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  place-items: center;
+  padding: 0 0.25rem;
+  border-radius: 999px;
+  background: var(--fees-surface-muted);
+  color: var(--fees-muted);
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+.fees-management__filter-options button.is-selected span {
+  background: rgb(255 255 255 / 20%);
+  color: #fff;
+}
+
+.fees-management__table-wrap {
+  border: 1px solid var(--fees-border);
+  border-radius: 0.7rem;
+}
+
+.fees-management__table {
+  width: 100%;
+  min-width: 800px;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.fees-management__table th,
+.fees-management__table td {
+  padding: 0.82rem 0.75rem;
+  vertical-align: top;
+}
+
+.fees-management__table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--fees-surface-muted);
+  color: var(--fees-muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.fees-management__table th:first-child {
+  border-top-left-radius: 0.65rem;
+}
+
+.fees-management__table th:last-child {
+  border-top-right-radius: 0.65rem;
+}
+
+.fees-management__table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.fees-management__table tbody tr:hover {
+  background: var(--fees-surface-muted);
+}
+
+.fees-management__table td:first-child {
+  width: 4%;
+  color: var(--fees-text);
+}
+
+.fees-management__table td:nth-child(2) {
+  width: 23%;
+  overflow-wrap: anywhere;
+}
+
+.fees-management__table th:nth-child(3),
+.fees-management__table td:nth-child(3) {
+  width: 12%;
+}
+
+.fees-management__table th:nth-child(4),
+.fees-management__table td:nth-child(4) {
+  width: 13%;
+}
+
+.fees-management__table th:nth-child(5),
+.fees-management__table td:nth-child(5) {
+  width: 11%;
+}
+
+.fees-management__table td:nth-child(n + 6) {
+  white-space: nowrap;
+}
+
+body.dark .fees-management__pill.is-active,
+.dark .fees-management__pill.is-active,
+[data-theme="dark"] .fees-management__pill.is-active,
+.dark-mode .fees-management__pill.is-active {
+  background: #052e2b;
+  color: #6ee7b7;
+}
+
+@media (max-width: 900px) {
+  .fees-management__summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .fees-management__summary {
+    grid-template-columns: 1fr;
+  }
+
+  .fees-management__header,
+  .fees-management__panel {
+    padding: 1rem;
+  }
+
+  .fees-management__student-search {
+    width: 100%;
+  }
+}

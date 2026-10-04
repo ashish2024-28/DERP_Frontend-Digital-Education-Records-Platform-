@@ -119,12 +119,6 @@
 //     },
 
 //     {
-//       label: "Reports",
-//       icon: "reports",
-//       path: `/${domain}/domainAdmin/dashboard/reports`,
-//     },
-
-//     {
 //       label: "Notepad",
 //       icon: "reports",
 //       path: `/${domain}/domainAdmin/dashboard/notepad`,
@@ -1676,8 +1670,6 @@
 //               <Link className="main-content-Link" to="notepad">  <div className="card card-notepad">    📝 Notepad  </div></Link>
 //               {/* ERP Attendance */}
 //               <Link className="main-content-Link" to="attendance">  <div className="card card-notepad">    Attendance  </div></Link>
-//               {/* ERP  Reports*/}
-//               <Link className="main-content-Link" to="reports">  <div className="card card-notepad">    Reports  </div></Link>
 
 //               <Link className="main-content-Link" to="admin-erp-attendence">  <div className="card card-notepad">    admin-erp-attendence  </div></Link>
 //             </div>
@@ -4128,10 +4120,11 @@ import { useEffect, useRef, useState } from "react";
 
 import { Outlet, useLocation, useNavigate, useParams, Link, } from "react-router-dom";
 
-import { Eye, EyeOff, Building2, RefreshCw, Users, GraduationCap, UserCog, WalletCards, ShieldCheck, KeyRound, Pencil, Trash2, Upload, LogOut, X, LayoutDashboard, ClipboardCheck, FileText, StickyNote, } from "lucide-react";
+import { Eye, EyeOff, Building2, RefreshCw, Users, GraduationCap, UserCog, WalletCards, ShieldCheck, KeyRound, Pencil, Trash2, Upload, LogOut, X, LayoutDashboard, ClipboardCheck, StickyNote, History, } from "lucide-react";
 
 import "../Common/css/common.css";
 import "./DomainAdminDashboard.css";
+
 
 import FormatDate from "../../Components/DateTimeFunction/FormatDate";
 import ChangePasswordModal from "../../Components/Auth/ChangePasswordModal";
@@ -4245,21 +4238,11 @@ export default function DomainAdminDashboard() {
     },
 
     {
-      label: "Reports",
-      icon: "reports",
-      path: `/${domain}/domainAdmin/dashboard/reports`,
-    },
-
-    {
       label: "Notepad",
       icon: "reports",
       path: `/${domain}/domainAdmin/dashboard/notepad`,
     },
   ];
-
-  const isDashboard =
-    location.pathname ===
-    `/${domain}/domainAdmin/dashboard`;
 
   // ─────────────────────────────────────────────
   // Profile state
@@ -4282,6 +4265,8 @@ export default function DomainAdminDashboard() {
   const [faculty, setFaculty] = useState([]);
   const [subAdmins, setSubAdmins] = useState([]);
   const [feesAdmins, setFeesAdmins] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [totalCourses, setTotalCourses] = useState(0);
 
   // ─────────────────────────────────────────────
   // UI state
@@ -4289,9 +4274,7 @@ export default function DomainAdminDashboard() {
   const [activeTab, setActiveTab] = useState("student");
   const [searchQuery, setSearchQuery] = useState("");
   const [showSidebar, setShowSidebar] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-
 
   // ─────────────────────────────────────────────
   // Modal state
@@ -4380,39 +4363,7 @@ export default function DomainAdminDashboard() {
     };
   };
 
-  // ─────────────────────────────────────────────
-  // Domain Admin API registry
-  // ─────────────────────────────────────────────
-  // GET:  /{domain}/domainAdmin
-  // GET:  /{domain}/domainAdmin/get_dashboard
-  // GET:  /{domain}/domainAdmin/all_student
-  // GET:  /{domain}/domainAdmin/all_faculty
-  // GET:  /{domain}/domainAdmin/all_subAdmin
-  // GET:  /{domain}/domainAdmin/all_feesAdmin
-  // POST: /{domain}/domainAdmin/add_student
-  // POST: /{domain}/domainAdmin/add_faculty
-  // POST: /{domain}/domainAdmin/add_subAdmin
-  // POST: /{domain}/domainAdmin/add_feesAdmin
-  // PUT:  /{domain}/domainAdmin/update_profile
-  // PUT:  /{domain}/domainAdmin/update_profile_pic
-  // PUT:  /{domain}/domainAdmin/update_university_logo
-  // PUT:  /{domain}/domainAdmin/forgot_update_password
-  // PUT:  /{domain}/domainAdmin/update_student_profile
-  // PUT:  /{domain}/domainAdmin/update_student_password
-  // PUT:  /{domain}/domainAdmin/update_faculty_profile
-  // PUT:  /{domain}/domainAdmin/update_faculty_password
-  // PUT:  /{domain}/domainAdmin/update_subAdmin
-  // PUT:  /{domain}/domainAdmin/update_subAdmin_password
-  // PUT:  /{domain}/domainAdmin/update_feesAdmin
-  // PUT:  /{domain}/domainAdmin/update_feesAdmin_password
-  // DELETE:/{domain}/domainAdmin/delete_student
-  // DELETE:/{domain}/domainAdmin/delete_faculty
-  // DELETE:/{domain}/domainAdmin/delete_subAdmin
-  // DELETE:/{domain}/domainAdmin/delete_feesAdmin
-  // POST: /{domain}/domainAdmin/upload_students
-  // POST: /{domain}/domainAdmin/upload_faculty
-  // POST: /{domain}/domainAdmin/upload_subAdmin
-  // POST: /{domain}/domainAdmin/upload_feesAdmin
+
 
   // ─────────────────────────────────────────────
   // API helper
@@ -4430,120 +4381,7 @@ export default function DomainAdminDashboard() {
     return text ? { message: text } : {};
   };
 
-  // =========================================================
-  // Teaching Assignment Helpers
-  // =========================================================
-  //
-  // Display format:
-  // 1A:JAVA,C ; 2A:DSA,OS ; 2C:DBMS ; 3A:CN
-  //
-  // Backend / MongoDB format:
-  // {
-  //   "1A": ["JAVA", "C"],
-  //   "2A": ["DSA", "OS"],
-  //   "2C": ["DBMS"],
-  //   "3A": ["CN"]
-  // }
-  // =========================================================
 
-  const parseTeachingAssignments = (value) => {
-    // If the value is already an object, return it directly.
-    if (
-      value &&
-      typeof value === "object" &&
-      !Array.isArray(value)
-    ) {
-      return value;
-    }
-
-    if (!value || typeof value !== "string") {
-      return {};
-    }
-
-    const assignments = {};
-
-    // Supports both:
-    // 1A:JAVA,C,DSA;2A:AI,ML,OS
-    // and
-    // 1A:JAVA,C,DSA ; 2A:AI,ML,OS
-    value
-      .split(";")
-      .map((entry) => entry.trim())
-      .filter(Boolean)
-      .forEach((entry) => {
-        const separatorIndex = entry.indexOf(":");
-
-        // Ignore invalid entries.
-        if (separatorIndex === -1) {
-          return;
-        }
-
-        const batch = entry
-          .substring(0, separatorIndex)
-          .trim()
-          .toUpperCase();
-
-        const subjectsText = entry
-          .substring(separatorIndex + 1)
-          .trim();
-
-        if (!batch) {
-          return;
-        }
-
-        const subjects = subjectsText
-          .split(",")
-          .map((subject) => subject.trim())
-          .filter(Boolean)
-          .map((subject) => subject.toUpperCase());
-
-        assignments[batch] = subjects;
-      });
-
-    return assignments;
-  };
-
-
-  // Convert backend object into display text.
-  //
-  // Example:
-  //
-  // {
-  //   "1A": ["JAVA", "C"],
-  //   "2A": ["DSA", "OS"]
-  // }
-  //
-  // becomes:
-  //
-  // 1A:JAVA,C ; 2A:DSA,OS
-  //
-  const formatTeachingAssignments = (assignments) => {
-    if (
-      !assignments ||
-      typeof assignments !== "object" ||
-      Array.isArray(assignments)
-    ) {
-      return "-";
-    }
-
-    const entries = Object.entries(assignments);
-
-    if (entries.length === 0) {
-      return "-";
-    }
-
-    return entries
-      .map(([batch, subjects]) => {
-        const subjectList = Array.isArray(subjects)
-          ? subjects
-            .map((subject) => String(subject).trim())
-            .filter(Boolean)
-          : [];
-
-        return `${batch}:${subjectList.join(",")}`;
-      })
-      .join(" ; ");
-  };
 
 
   // ─────────────────────────────────────────────
@@ -4571,7 +4409,7 @@ export default function DomainAdminDashboard() {
     try {
       const headers = authHeaders();
 
-      const [adminRes, dashRes, studentRes, facultyRes, subRes, feesRes,] = await Promise.all([
+      const [adminRes, dashRes, studentRes, facultyRes, subRes, feesRes, courseRes,] = await Promise.all([
         fetch(
           `${API_BASE}/${domain}/domainAdmin`,
           { headers }
@@ -4599,6 +4437,11 @@ export default function DomainAdminDashboard() {
 
         fetch(
           `${API_BASE}/${domain}/domainAdmin/all_feesAdmin`,
+          { headers }
+        ),
+
+        fetch(
+          `${API_BASE}/${domain}/domainAdmin/all-fees-course-wise`,
           { headers }
         ),
       ]);
@@ -4631,7 +4474,7 @@ export default function DomainAdminDashboard() {
       const subData = await readJsonResponse(subRes);
 
       const feesData = await readJsonResponse(feesRes);
-
+      const courseData = await readJsonResponse(courseRes);
       // ─────────────────────────────────────────
       // Check important API errors
 
@@ -4690,6 +4533,11 @@ export default function DomainAdminDashboard() {
 
       setFeesAdmins(extractArray(feesData));
 
+      const courseList = extractArray(courseData);
+
+      setCourses(courseList);
+      setTotalCourses(courseList.length);
+
     } catch (error) {
       console.error("Domain Admin Dashboard loading error:", error);
 
@@ -4734,7 +4582,7 @@ export default function DomainAdminDashboard() {
 
   // ─────────────────────────────────────────────
   // Table data
-  const currentData = activeTab === "student" ? students : activeTab === "faculty" ? faculty : activeTab === "subadmin" ? subAdmins : feesAdmins;
+  const currentData = activeTab === "student" ? students : activeTab === "faculty" ? faculty : activeTab === "subadmin" ? subAdmins : activeTab === "feesAdmin" ? feesAdmins : courses;
 
   const normalizedSearch = searchQuery.trim().toLowerCase();
 
@@ -4742,7 +4590,7 @@ export default function DomainAdminDashboard() {
     currentData.filter((item) => {
       if (!normalizedSearch) { return true; }
 
-      return [item?.name, item?.rollNumber, item?.course, item?.branch, item?.batch, item?.studyBatch, item?.studySubjects, item?.email, item?.mobileNumber, item?.facultyId, item?.subAdminId, item?.feesAdminId,
+      return [item?.name, item?.rollNumber, item?.course, item?.batch, item?.academicSession, item?.studyBatch, item?.studySubjects, item?.email, item?.mobileNumber, item?.facultyId, item?.subAdminId, item?.feesAdminId, item?.fees,
       ].some((value) =>
         String(value || "")
           .toLowerCase()
@@ -4752,7 +4600,7 @@ export default function DomainAdminDashboard() {
 
   const isParentRoute = location.pathname.endsWith("/dashboard");
 
-  const activeTabLabel = activeTab === "student" ? "Student" : activeTab === "faculty" ? "Faculty" : activeTab === "subadmin" ? "SubAdmin" : "FeesAdmin";
+  const activeTabLabel = activeTab === "student" ? "Student" : activeTab === "faculty" ? "Faculty" : activeTab === "subadmin" ? "SubAdmin" : activeTab === "feesAdmin" ? "FeesAdmin" : "Course";
 
   // ─────────────────────────────────────────────
   // Domain Admin profile picture
@@ -4999,7 +4847,7 @@ export default function DomainAdminDashboard() {
   const handleAdd = async () => {
     clearFeedback();
 
-    const endpointMap = { student: "add_student", faculty: "add_faculty", subadmin: "add_subAdmin", feesAdmin: "add_feesAdmin", };
+    const endpointMap = { student: "add_student", faculty: "add_faculty", subadmin: "add_subAdmin", feesAdmin: "add_feesAdmin", course: "add-fees-course-wise", };
 
     const endpoint = endpointMap[activeTab];
 
@@ -5011,6 +4859,21 @@ export default function DomainAdminDashboard() {
     try {
       const payload = { ...addForm };
 
+      if (activeTab === "course") {
+        const course = String(addForm?.course || "").trim();
+        const fees = Number(addForm?.fees);
+
+        if (!course) {
+          setActionErr("Course name is required.");
+          return;
+        }
+
+        if (!Number.isFinite(fees) || fees < 0) {
+          setActionErr("Course fees must be a valid non-negative number.");
+          return;
+        }
+      }
+
       // Student → normal String
       if (activeTab === "student") {
         payload.studySubjects =
@@ -5018,22 +4881,6 @@ export default function DomainAdminDashboard() {
             ? payload.studySubjects.trim()
             : "";
       }
-
-      // Faculty/SubAdmin → normal String
-      if (
-        activeTab === "faculty" ||
-        activeTab === "subadmin"
-      ) {
-        payload.teachingAssignments =
-          typeof payload.teachingAssignments === "string"
-            ? payload.teachingAssignments.trim()
-            : "";
-      }
-
-      console.log(
-        "Final Add Payload:",
-        JSON.stringify(payload, null, 2)
-      );
 
       const res = await fetch(
         `${API_BASE}/${domain}/domainAdmin/${endpoint}`,
@@ -5078,6 +4925,7 @@ export default function DomainAdminDashboard() {
   };
 
 
+
   // ─────────────────────────────────────────────
   // Edit
   // const openEditModal = (item) => { setSelectedItem(item); setEditForm({ ...item }); clearFeedback(); setShowEditModal(true); };
@@ -5088,8 +4936,7 @@ export default function DomainAdminDashboard() {
       studySubjects:
         item?.studySubjects || "",
 
-      teachingAssignments:
-        item?.teachingAssignments || "",
+
     };
 
     setSelectedItem(item);
@@ -5098,6 +4945,7 @@ export default function DomainAdminDashboard() {
     clearFeedback();
     setShowEditModal(true);
   };
+
 
   // =========================================================
   // Edit Student / Faculty / SubAdmin / FeesAdmin
@@ -5111,6 +4959,7 @@ export default function DomainAdminDashboard() {
       faculty: "update_faculty_profile",
       subadmin: "update_subAdmin",
       feesAdmin: "update_feesAdmin",
+      course: "update-fees-course-wise",
     };
 
     const endpoint = endpointMap[activeTab];
@@ -5125,6 +4974,17 @@ export default function DomainAdminDashboard() {
         ...editForm,
       };
 
+      if (activeTab === "course") {
+
+        payload.course =
+          typeof payload.course === "string"
+            ? payload.course.trim().toUpperCase()
+            : "";
+
+        payload.fees =
+          Number(payload.fees);
+      }
+
       // Student
       if (activeTab === "student") {
         payload.studySubjects =
@@ -5133,21 +4993,6 @@ export default function DomainAdminDashboard() {
             : "";
       }
 
-      // Faculty/SubAdmin
-      if (
-        activeTab === "faculty" ||
-        activeTab === "subadmin"
-      ) {
-        payload.teachingAssignments =
-          typeof payload.teachingAssignments === "string"
-            ? payload.teachingAssignments.trim()
-            : "";
-      }
-
-      console.log(
-        "Final Edit Payload:",
-        JSON.stringify(payload, null, 2)
-      );
 
       const res = await fetch(
         `${API_BASE}/${domain}/domainAdmin/${endpoint}`,
@@ -5282,27 +5127,46 @@ export default function DomainAdminDashboard() {
   const handleDelete = async () => {
     clearFeedback();
 
-    if (!selectedItem?.email) {
-      setActionErr(
-        "Selected user email is missing."
-      );
-      return;
-    }
+    let endpoint;
 
-    const endpointMap = {
-      student: `delete_student?email=${encodeURIComponent(selectedItem.email)}`,
+    if (activeTab === "course") {
 
-      faculty: `delete_faculty?email=${encodeURIComponent(selectedItem.email)}`,
+      if (!selectedItem?.course) {
+        setActionErr(
+          "Selected course is missing."
+        );
+        return;
+      }
 
-      subadmin: `delete_subAdmin?email=${encodeURIComponent(selectedItem.email)}`,
+      endpoint =
+        `delete-fees-course-wise?course=${encodeURIComponent(
+          selectedItem.course
+        )}`;
 
-      feesAdmin: `delete_feesAdmin?email=${encodeURIComponent(selectedItem.email)}`,
-    };
+    } else {
 
-    const endpoint = endpointMap[activeTab];
+      if (!selectedItem?.email) {
+        setActionErr(
+          "Selected user email is missing."
+        );
+        return;
+      }
 
-    if (!endpoint) {
-      setActionErr("Invalid user type selected."); return;
+      const endpointMap = {
+        student: `delete_student?email=${encodeURIComponent(selectedItem.email)}`,
+
+        faculty: `delete_faculty?email=${encodeURIComponent(selectedItem.email)}`,
+
+        subadmin: `delete_subAdmin?email=${encodeURIComponent(selectedItem.email)}`,
+
+        feesAdmin: `delete_feesAdmin?email=${encodeURIComponent(selectedItem.email)}`,
+      };
+
+      endpoint = endpointMap[activeTab];
+
+      if (!endpoint) {
+        setActionErr("Invalid user type selected."); return;
+      }
     }
 
     try {
@@ -5316,7 +5180,9 @@ export default function DomainAdminDashboard() {
 
       const data = await readJsonResponse(res);
 
-      if (!res.ok) { throw new Error(data?.message || "Delete failed."); }
+      if (!res.ok || data?.success === false) {
+        throw new Error(data?.message || data?.error || "Delete failed.");
+      }
 
       setActionMsg(data?.message || "Deleted successfully!");
 
@@ -5337,7 +5203,7 @@ export default function DomainAdminDashboard() {
   const handleExcelUpload = async () => {
     clearFeedback();
 
-    const endpointMap = { student: "upload_students", faculty: "upload_faculty", subadmin: "upload_subAdmin", feesAdmin: "upload_feesAdmin", };
+    const endpointMap = { student: "upload_students", faculty: "upload_faculty", subadmin: "upload_subAdmin", feesAdmin: "upload_feesAdmin", course: "fees/course/excel", };
 
     const endpoint = endpointMap[activeTab];
 
@@ -5413,8 +5279,8 @@ export default function DomainAdminDashboard() {
     { key: "email", label: "Email", type: "email", placeholder: "Example: ashish@gmail;.com / ashishkumar.bcse2024@huroorkee.ac.in", },
     { key: "mobileNumber", label: "Mobile Number", type: "text", placeholder: "Example: 9999999999", },
     { key: "course", label: "Course", type: "text", placeholder: "Example: B.Tech / B.Pharma / BCA", },
-    { key: "branch", label: "Branch", type: "text", placeholder: "Example: CSE / ", },
     { key: "batch", label: "Batch", type: "text", placeholder: "Example: 2024-28", },
+    { key: "academicSession", label: "Academic Session", type: "text", placeholder: "Example: 2024-25 ", },
     { key: "studyBatch", label: "Study Batch / YearSection", type: "text", placeholder: "Example: 1A / 1B (YearSection) ", },
     { key: "studySubjects", label: "Study Subjects (JAVA,DSA,OS)", type: "text", placeholder: "Example: JAVA, DSA, OS", helpText: "Enter subjects separated by commas.", },
     { key: "fatherName", label: "Father Name", type: "text", placeholder: "Example: Father Name", },
@@ -5428,7 +5294,6 @@ export default function DomainAdminDashboard() {
     { key: "email", label: "Email", type: "email", placeholder: "Example: xyz@gmail;.com / xyz@university.ac.in / xyz@university.com", },
     { key: "mobileNumber", label: "Mobile Number", type: "text", placeholder: "Example: 9999999999" },
     { key: "course", label: "Course", type: "text", placeholder: "Example: B.Tech / B.Pharma / BCA", },
-    { key: "teachingAssignments", label: "Teaching Assignments", type: "text", placeholder: "Example: 1A:JAVA,C,DSA; 2A:AI,ML,OS; 3A:MATH", helpText: "Format: Batch(YearSection):Subject1,Subject2; Batch(YearSection):Subject1,Subject2", },
     { key: "password", label: "Password", type: "text", placeholder: "Example: Password@12#%etcLikeThat", helpText: "Enter Password must be add symbols, upper and lower case and Numbers.", },
   ];
 
@@ -5438,7 +5303,6 @@ export default function DomainAdminDashboard() {
     { key: "email", label: "Email", type: "email", placeholder: "Example: xyz@gmail;.com / xyz@university.ac.in / xyz@university.com", },
     { key: "mobileNumber", label: "Mobile Number", type: "text", },
     { key: "course", label: "Course", type: "text", },
-    { key: "teachingAssignments", label: "Teaching Assignments", type: "text", placeholder: "Example: 1A:JAVA,C,DSA; 2A:AI,ML,OS; 3A:MATH", helpText: "Format: Batch(YearSection):Subject1,Subject2; Batch(YearSection):Subject1,Subject2", },
     { key: "password", label: "Password", type: "text", placeholder: "Example: Password@12#%etcLikeThat", helpText: "Enter Password must be add symbols, upper and lower case and Numbers.", },
   ];
 
@@ -5450,7 +5314,12 @@ export default function DomainAdminDashboard() {
     { key: "password", label: "Password", type: "text", placeholder: "Example: Password@12#%etcLikeThat", helpText: "Enter Password must be add symbols, upper and lower case and Numbers.", },
   ];
 
-  const activeFields = activeTab === "student" ? studentFields : activeTab === "faculty" ? facultyFields : activeTab === "subadmin" ? subAdminFields : feesAdminFields;
+  const courseFields = [
+    { key: "course", label: "Course", type: "text", placeholder: "Example: B.Tech CSE", },
+    { key: "fees", label: "Course Fees", type: "number", min: 0, step: "0.01", placeholder: "Example: 120000", },
+  ];
+
+  const activeFields = activeTab === "student" ? studentFields : activeTab === "faculty" ? facultyFields : activeTab === "subadmin" ? subAdminFields : activeTab === "feesAdmin" ? feesAdminFields : courseFields;
   // ─────────────────────────────────────────────
   // Image URLs
   const profileImageUrl = admin?.profilePic ? `${API_BASE}/${String(admin.profilePic).replace(/^\/+/, "")}` : "/default.png";
@@ -5800,12 +5669,15 @@ export default function DomainAdminDashboard() {
               <Link className="main-content-Link" to="all-subAdmin">  <div className="card card-subadmin">    <UserCog size={20} /> All SubAdmin:{" "}    {totalSubAdmin}  </div></Link>
               <Link className="main-content-Link" to="all-feesAdmin">  <div className="card card-fees">    <WalletCards size={20} /> All FeesAdmin:{" "}    {totalFeesAdmin}  </div></Link>
               <Link className="main-content-Link" to="notepad">  <div className="card card-notepad">    📝 Notepad  </div></Link>
-              {/* ERP Attendance */}
-              <Link className="main-content-Link" to="attendance">  <div className="card card-notepad">    Attendance  </div></Link>
-              {/* ERP  Reports*/}
-              <Link className="main-content-Link" to="reports">  <div className="card card-notepad">    Reports  </div></Link>
-
-              <Link className="main-content-Link" to="admin-erp-attendence">  <div className="card card-notepad">    admin-erp-attendence  </div></Link>
+              <Link className="main-content-Link" to="attendance">
+                <div className="card card-notepad"><ClipboardCheck size={19} /> Attendance Management</div>
+              </Link>
+              <Link className="main-content-Link" to="erp-activity">
+                <div className="card card-notepad"><History size={19} /> ERP Activity Logs</div>
+              </Link>
+              <Link className="main-content-Link" to="fees-account">
+                <div className="card card-fees"><WalletCards size={19} /> Fees Account Oversight</div>
+              </Link>
             </div>
 
             <div className="domain-admin-overview-strip">
@@ -5817,7 +5689,7 @@ export default function DomainAdminDashboard() {
 
             {/* Tabs */}
             <div
-              className="grid grid-cols-4 gap-6 mt-8"
+              className="grid grid-cols-5 gap-6 mt-8"
             >
 
               {[
@@ -5825,6 +5697,7 @@ export default function DomainAdminDashboard() {
                 "faculty",
                 "subadmin",
                 "feesAdmin",
+                "course",
               ].map((tab) => (
                 <button
                   type="button"
@@ -5860,10 +5733,13 @@ export default function DomainAdminDashboard() {
                       ? `Faculty (${totalFaculty})`
                       : tab === "subadmin"
                         ? `SubAdmin (${totalSubAdmin})`
-                        : `FeesAdmin (${totalFeesAdmin})`}
+                        : tab === "feesAdmin"
+                          ? `FeesAdmin (${totalFeesAdmin})`
+                          : `Courses (${totalCourses})`}
                 </button>
               ))}
             </div>
+
 
             {/* Table container */}
             <div className="shadow rounded-xl p-6">
@@ -5878,6 +5754,7 @@ export default function DomainAdminDashboard() {
                   flexWrap: "wrap",
                 }}
               >
+                
                 <input
                   type="text"
                   placeholder={`Search ${activeTabLabel}...`}
@@ -5946,6 +5823,21 @@ export default function DomainAdminDashboard() {
                 </button>
               </div>
 
+<div
+  style={{
+    marginBottom: 16,
+    padding: "10px 14px",
+    borderRadius: 8,
+    background: "#eff6ff",
+    border: "1px solid #bfdbfe",
+    color: "#1d4ed8",
+    fontSize: 13,
+    fontWeight: 600,
+  }}
+>
+  💡  DoubleClick on any row to open the complete profile.
+</div>
+
               {/* Table */}
               <div
                 style={{
@@ -5956,62 +5848,68 @@ export default function DomainAdminDashboard() {
               >
                 <table className="table-wrapper">
                   <thead>
-                    <tr>
-                      <th>S.No</th>
+                    {activeTab === "course" ? (
+                      <>
+                        <th>S.No</th>
+                        <th>Course</th>
+                        <th>Fees</th>
+                        <th>Actions</th>
+                      </>
+                    ) : (
+                      <>
+                        <tr>
+                          <th>S.No</th>
 
-                      {/* ================= ID ================= */}
-                      {activeTab === "student" && <th>Roll No</th>}
-                      {activeTab === "faculty" && <th>Faculty ID</th>}
-                      {activeTab === "subadmin" && <th>SubAdmin ID</th>}
-                      {activeTab === "feesAdmin" && <th>FeesAdmin ID</th>}
+                          {/* ================= ID ================= */}
+                          {activeTab === "student" && <th>Roll No</th>}
+                          {activeTab === "faculty" && <th>Faculty ID</th>}
+                          {activeTab === "subadmin" && <th>SubAdmin ID</th>}
+                          {activeTab === "feesAdmin" && <th>FeesAdmin ID</th>}
 
-                      {/* ================= COMMON ================= */}
-                      <th>Name</th>
+                          {/* ================= COMMON ================= */}
+                          <th>Name</th>
 
-                      {/* Course is not available in FeesAdmin */}
-                      {activeTab !== "feesAdmin" && <th>Course</th>}
+                          {/* Course is not available in FeesAdmin */}
+                          {activeTab !== "feesAdmin" && <th>Course</th>}
 
-                      {/* ================= STUDENT ================= */}
-                      {activeTab === "student" && (
-                        <>
-                          <th>Branch</th>
-                          <th>Batch</th>
-                          <th>
-                            Study Batch
-                            <br />
-                            <small>(YearSection)</small>
-                          </th>
-                          <th>
-                            Study Subject
-                            <br />
-                            <small>(All Subjects)</small>
-                          </th>
-                        </>
-                      )}
+                          {/* ================= STUDENT ================= */}
+                          {activeTab === "student" && (
+                            <>
+                              <th>Batch</th>
+                              <th>Academic Session</th>
+                              <th>
+                                Study Batch
+                                <br />
+                                <small>(YearSection)</small>
+                              </th>
+                              <th>
+                                Study Subject
+                                <br />
+                                <small>(All Subjects)</small>
+                              </th>
+                            </>
+                          )}
 
-                      {/* ================= FACULTY / SUBADMIN ================= */}
-                      {(activeTab === "faculty" || activeTab === "subadmin") && (
-                        <th>Teaching Assignments</th>
-                      )}
 
-                      {/* ================= COMMON ================= */}
-                      <th>Email</th>
-                      <th>Mobile</th>
 
-                      {/* ================= STUDENT PARENT ================= */}
-                      {activeTab === "student" && (
-                        <>
-                          <th>Father Name</th>
-                          <th>Father Mob</th>
-                        </>
-                      )}
+                          {/* ================= COMMON ================= */}
+                          <th>Email</th>
+                          <th>Mobile</th>
 
-                      {/* ================= LOGIN INFORMATION ================= */}
-                      <th>Created At</th>
-                      <th>Updated At</th>
-                      <th>Last Login</th>
+                          {/* ================= STUDENT PARENT ================= */}
+                          {activeTab === "student" && (
+                            <>
+                              <th>Father Name</th>
+                              <th>Father Mob</th>
+                            </>
+                          )}
 
-                      {/* ================= PASSWORD =================
+                          {/* ================= LOGIN INFORMATION ================= */}
+                          <th>Created At</th>
+                          <th>Updated At</th>
+                          <th>Last Login</th>
+
+                          {/* ================= PASSWORD =================
                       <th>
                         Password
 
@@ -6038,358 +5936,413 @@ export default function DomainAdminDashboard() {
                         </span>
                       </th> */}
 
-                      {/* ================= ACTIONS ================= */}
-                      <th>Actions</th>
-                    </tr>
+                          {/* ================= ACTIONS ================= */}
+                          <th>Actions</th>
+                        </tr>
+
+                      </>
+                    )}
                   </thead>
 
                   <tbody>
 
-                    {/* =============================== LOADING ============================================ */}
-                    {loading && filteredData.length === 0 && (
+                    {activeTab === "course" ? (
+                      filteredData.map((item, index) => (
+                        <tr key={item?.id || `${item?.course}-${index}`}>
+                          <td>{index + 1}</td>
 
-                      <tr>
-                        <td
-                          colSpan={
-                            activeTab === "student"
-                              ? 16
-                              : activeTab === "feesAdmin"
-                                ? 9
-                                : 11
-                          }
-                          style={{
-                            textAlign: "center",
-                            padding: 24,
-                          }}
-                        >
-                          Loading...
-                        </td>
-                      </tr>
-                    )}
+                          <td style={{ fontWeight: 600 }}>
+                            {item?.course || "-"}
+                          </td>
 
-                    {/* ===================== DATA =============================== */}
-                    {!loading &&
-                      filteredData.map((item, index) => {
+                          <td>
+                            ₹ {Number(item?.fees ?? 0).toLocaleString("en-IN")}
+                          </td>
 
-                        /* =================================================
-                           ROW KEY
-                        ================================================= */
-                        const rowKey =
-                          item?.id ||
-                          item?.email ||
-                          item?.facultyId ||
-                          item?.subAdminId ||
-                          item?.feesAdminId ||
-                          item?.rollNumber ||
-                          `row-${index}`;
+                          <td>
+                            <div
+                              style={{
+                                display: "flex",
+                                gap: 8,
+                                justifyContent: "center",
+                              }}
+                            >
+                              <button
+                                type="button"
+                                onClick={() => openEditModal(item)}
+                                title="Edit course fees"
+                              >
+                                <Pencil size={16} />
+                              </button>
 
-                        return (
-                          <tr key={rowKey}>
+                              <button
+                                type="button"
+                                onClick={() => openDeleteModal(item)}
+                                title="Delete course"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <>
 
-                            {/* =================================================
+
+
+                        {/* =============================== LOADING ============================================ */}
+                        {loading && filteredData.length === 0 && (
+
+                          <tr>
+                            <td
+                              colSpan={
+                                activeTab === "student"
+                                  ? 16
+                                  : activeTab === "feesAdmin"
+                                    ? 9
+                                    : activeTab === "course"
+                                      ? 4
+                                      : 11
+                              }
+                              style={{
+                                textAlign: "center",
+                                padding: 24,
+                              }}
+                            >
+                              Loading...
+                            </td>
+                          </tr>
+                        )}
+
+                        {/* ===================== DATA =============================== */}
+                        {!loading &&
+                          filteredData.map((item, index) => {
+
+                            /* =================================================
+                               ROW KEY
+                            ================================================= */
+                            const rowKey =
+                              item?.id ||
+                              item?.email ||
+                              item?.facultyId ||
+                              item?.subAdminId ||
+                              item?.feesAdminId ||
+                              item?.rollNumber ||
+                              `row-${index}`;
+
+                            return (
+                             <tr
+  key={rowKey}
+  onClick={() => {
+    const currentRole =
+      localStorage.getItem("role") || item.role;
+
+    let userType;
+    let userId;
+
+    if (item.rollNumber) {
+      userType = "student";
+      userId = item.rollNumber;
+    } else if (item.facultyId) {
+      userType = "faculty";
+      userId = item.facultyId;
+    } else if (item.subAdminId) {
+      userType = "subAdmin";
+      userId = item.subAdminId;
+    } else if (item.feesAdminId) {
+      userType = "feesAdmin";
+      userId = item.feesAdminId;
+    }
+
+    if (!userType || !userId) {
+      console.error("Unable to determine user type/id:", item);
+      return;
+    }
+
+    navigate(
+      `/${domain}/${currentRole}/${userType}/${encodeURIComponent(userId)}`,
+      {
+        state: {
+          email: item.email,
+        },
+      }
+    );
+  }}
+  title="Click to open complete profile"
+  className="border-t border-gray-100 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+>
+
+                                {/* =================================================
                 S.NO
             ================================================= */}
-                            <td>{index + 1}</td>
+                                <td>{index + 1}</td>
 
-                            {/* =================================================
+                                {/* =================================================
                 STUDENT ID
             ================================================= */}
-                            {activeTab === "student" && (
-                              <td>
-                                {item?.rollNumber || "-"}
-                              </td>
-                            )}
+                                {activeTab === "student" && (
+                                  <td>
+                                    {item?.rollNumber || "-"}
+                                  </td>
+                                )}
 
-                            {/* ========================================  FACULTY ID ================================================= */}
-                            {activeTab === "faculty" && (
-                              <td>
-                                {item?.facultyId || "-"}
-                              </td>
-                            )}
+                                {/* ========================================  FACULTY ID ================================================= */}
+                                {activeTab === "faculty" && (
+                                  <td>
+                                    {item?.facultyId || "-"}
+                                  </td>
+                                )}
 
-                            {/* ======================================= SUBADMIN ID ============================================= */}
-                            {activeTab === "subadmin" && (
-                              <td>
-                                {item?.subAdminId || "-"}
-                              </td>
-                            )}
+                                {/* ======================================= SUBADMIN ID ============================================= */}
+                                {activeTab === "subadmin" && (
+                                  <td>
+                                    {item?.subAdminId || "-"}
+                                  </td>
+                                )}
 
-                            {/* ==================================== FEES ADMIN ID ======================================== */}
-                            {activeTab === "feesAdmin" && (
-                              <td>
-                                {item?.feesAdminId || "-"}
-                              </td>
-                            )}
+                                {/* ==================================== FEES ADMIN ID ======================================== */}
+                                {activeTab === "feesAdmin" && (
+                                  <td>
+                                    {item?.feesAdminId || "-"}
+                                  </td>
+                                )}
 
-                            {/* ================================ NAME =================================== */}
-                            <td>
-                              {item?.name || "-"}
-                            </td>
-
-                            {/* =========================== COURSE ================================================= */}
-                            {activeTab !== "feesAdmin" && (
-                              <td>
-                                {item?.course || "-"}
-                              </td>
-                            )}
-
-                            {/* =================== STUDENT INFORMATION ============================================ */}
-                            {activeTab === "student" && (
-                              <>
-                                {/* Branch */}
+                                {/* ================================ NAME =================================== */}
                                 <td>
-                                  {item?.branch || "-"}
+                                  {item?.name || "-"}
                                 </td>
 
-                                {/* Batch */}
-                                <td>
-                                  {item?.batch || "-"}
-                                </td>
+                                {/* =========================== COURSE ================================================= */}
+                                {activeTab !== "feesAdmin" && (
+                                  <td>
+                                    {item?.course || "-"}
+                                  </td>
+                                )}
 
-                                {/* Study Batch */}
-                                <td>
-                                  {item?.studyBatch || "-"}
-                                </td>
+                                {/* =================== STUDENT INFORMATION ============================================ */}
+                                {activeTab === "student" && (
+                                  <>
+                                    {/* Batch */}
+                                    <td>
+                                      {item?.batch || "-"}
+                                    </td>
+                                    {/* academicSession */}
+                                    <td>
+                                      {item?.academicSession || "-"}
+                                    </td>
 
-                                {/* Study Subject - Normal String */}
-                                <td>
-                                  {item?.studySubjects?.trim() ? (
-                                    <div className="study-subjects">
-                                      {item.studySubjects
-                                        .split(",")
-                                        .map((subject, subjectIndex) => (
-                                          <span
-                                            key={`${subject}-${subjectIndex}`}
-                                            className="study-subject"
-                                          >
-                                            {subject?.toUpperCase().trim()}
-                                          </span>
-                                        ))}
-                                    </div>
-                                  ) : (
-                                    <span className="table-empty-value">-</span>
-                                  )}
-                                </td>
-                              </>
-                            )}
+                                    {/* Study Batch */}
+                                    <td>
+                                      {item?.studyBatch || "-"}
+                                    </td>
 
-                            {/* =================================================
+                                    {/* Study Subject - Normal String */}
+                                    <td>
+                                      {item?.studySubjects?.trim() ? (
+                                        <div className="study-subjects">
+                                          {item.studySubjects
+                                            .split(",")
+                                            .map((subject, subjectIndex) => (
+                                              <span
+                                                key={`${subject}-${subjectIndex}`}
+                                                className="study-subject"
+                                              >
+                                                {subject?.toUpperCase().trim()}
+                                              </span>
+                                            ))}
+                                        </div>
+                                      ) : (
+                                        <span className="table-empty-value">-</span>
+                                      )}
+                                    </td>
+                                  </>
+                                )}
+
+                                {/* =================================================
     FACULTY / SUBADMIN
     TEACHING ASSIGNMENTS
 ================================================= */}
-                            {/* Teaching Assignments - Normal String */}
 
-                            {(activeTab === "faculty" ||
-                              activeTab === "subadmin") && (
-                                <td>
-                                  {item?.teachingAssignments?.trim() ? (
-                                    <div className="teaching-assignment-display">
-                                      {item.teachingAssignments
-                                        .split(";")
-                                        .filter((assignment) => assignment.trim())
-                                        .map((assignment, assignmentIndex) => {
-                                          const [batch, subjects = ""] = assignment
-                                            .split(":")
-                                            .map((value) => value.trim());
-
-                                          const subjectList = subjects
-                                            .split(",")
-                                            .map((subject) => subject.trim())
-                                            .filter(Boolean);
-
-                                          return (
-                                            <div
-                                              key={`${assignment}-${assignmentIndex}`}
-                                              className="teaching-assignment-item"
-                                            >
-                                              <span className="teaching-assignment-batch">  {batch} </span>
-
-                                              <span className="teaching-assignment-arrow"> → </span>
-                                              <span className="teaching-assignment-subjects">{subjectList.join(", ")}</span>
-                                            </div>
-                                          );
-                                        })}
-                                    </div>
-                                  ) : (
-                                    <span className="table-empty-value">-</span>
-                                  )}
-                                </td>
-                              )}
-
-                            {/* =================================================
+                                {/* =================================================
                 EMAIL
             ================================================= */}
-                            <td>
-                              {item?.email || "-"}
-                            </td>
+                                <td>
+                                  {item?.email || "-"}
+                                </td>
 
-                            {/* =================================================
+                                {/* =================================================
                 MOBILE
             ================================================= */}
-                            <td>
-                              {item?.mobileNumber || "-"}
-                            </td>
+                                <td>
+                                  {item?.mobileNumber || "-"}
+                                </td>
 
-                            {/* =================================================
+                                {/* =================================================
                 STUDENT PARENT INFORMATION
             ================================================= */}
-                            {activeTab === "student" && (
-                              <>
-                                <td>
-                                  {item?.fatherName || "-"}
-                                </td>
+                                {activeTab === "student" && (
+                                  <>
+                                    <td>
+                                      {item?.fatherName || "-"}
+                                    </td>
 
-                                <td>
-                                  {item?.fatherMobNo || "-"}
-                                </td>
-                              </>
-                            )}
+                                    <td>
+                                      {item?.fatherMobNo || "-"}
+                                    </td>
+                                  </>
+                                )}
 
-                            {/* =================================================
+                                {/* =================================================
                 CREATED DATE
             ================================================= */}
-                            <td>
-                              {item?.createdDateTime
-                                ? FormatDate(item.createdDateTime)
-                                : "-"}
-                            </td>
+                                <td>
+                                  {item?.createdDateTime
+                                    ? FormatDate(item.createdDateTime)
+                                    : "-"}
+                                </td>
 
-                            {/* =================================================
+                                {/* =================================================
                 Last Updated Date
             ================================================= */}
-                            <td>
-                              {item?.lastUpdateDateTime
-                                ? FormatDate(item.lastUpdateDateTime)
-                                : "-"}
-                            </td>
+                                <td>
+                                  {item?.lastUpdateDateTime
+                                    ? FormatDate(item.lastUpdateDateTime)
+                                    : "-"}
+                                </td>
 
-                            {/* =================================================
+                                {/* =================================================
                 LAST LOGIN
             ================================================= */}
-                            <td>
-                              {item?.lastLoginDateTime
-                                ? FormatDate(item.lastLoginDateTime)
-                                : "-"}
-                            </td>
+                                <td>
+                                  {item?.lastLoginDateTime
+                                    ? FormatDate(item.lastLoginDateTime)
+                                    : "-"}
+                                </td>
 
-                            {/* =================================================
+                                {/* =================================================
                 PASSWORD
             ================================================= */}
-                            {/* <td>
+                                {/* <td>
                               {showPassword
                                 ? item?.password || "-"
                                 : "••••••••"}
                             </td> */}
 
-                            {/* =================================================
+                                {/* =================================================
                 ACTIONS
             ================================================= */}
-                            <td
-                              style={{
-                                whiteSpace: "nowrap",
-                              }}
-                            >
+                                <td
+                                  style={{
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
 
-                              {/* Edit */}
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  openEditModal(item)
-                                }
-                                className="action-btn action-edit"
-                                style={{
-                                  marginRight: 6,
-                                  marginBottom: 4,
-                                  padding: "4px 12px",
-                                  borderRadius: 5,
-                                  border: "none",
-                                  background: "#2563eb",
-                                  color: "#fff",
-                                  cursor: "pointer",
-                                  fontWeight: 600,
-                                  fontSize: 13,
-                                }}
-                                title="Edit record"
-                              >
-                                ✎ Edit
-                              </button>
-
-                              {/* Change Password */}
-                              {(activeTab === "student" ||
-                                activeTab === "faculty" ||
-                                activeTab === "subadmin" ||
-                                activeTab === "feesAdmin") && (
+                                  {/* Edit */}
                                   <button
                                     type="button"
-                                    className="action-btn action-password"
                                     onClick={() =>
-                                      openUserPasswordModal(item)
+                                      openEditModal(item)
                                     }
+                                    className="action-btn action-edit"
                                     style={{
                                       marginRight: 6,
                                       marginBottom: 4,
                                       padding: "4px 12px",
                                       borderRadius: 5,
                                       border: "none",
-                                      background: "#7c3aed",
+                                      background: "#2563eb",
                                       color: "#fff",
                                       cursor: "pointer",
                                       fontWeight: 600,
                                       fontSize: 13,
                                     }}
-                                    title="Change user password"
+                                    title="Edit record"
                                   >
-                                    🔑 Password
+                                    ✎ Edit
                                   </button>
-                                )}
 
-                              {/* Delete */}
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  openDeleteModal(item)
-                                }
-                                className="action-btn action-delete"
-                                style={{
-                                  padding: "4px 12px",
-                                  borderRadius: 5,
-                                  border: "none",
-                                  background: "#dc2626",
-                                  color: "#fff",
-                                  cursor: "pointer",
-                                  fontWeight: 600,
-                                  fontSize: 13,
-                                }}
-                                title="Delete record"
-                              >
-                                🗑 Delete
-                              </button>
+                                  {/* Change Password */}
+                                  {(activeTab === "student" ||
+                                    activeTab === "faculty" ||
+                                    activeTab === "subadmin" ||
+                                    activeTab === "feesAdmin") && (
+                                      <button
+                                        type="button"
+                                        className="action-btn action-password"
+                                        onClick={() =>
+                                          openUserPasswordModal(item)
+                                        }
+                                        style={{
+                                          marginRight: 6,
+                                          marginBottom: 4,
+                                          padding: "4px 12px",
+                                          borderRadius: 5,
+                                          border: "none",
+                                          background: "#7c3aed",
+                                          color: "#fff",
+                                          cursor: "pointer",
+                                          fontWeight: 600,
+                                          fontSize: 13,
+                                        }}
+                                        title="Change user password"
+                                      >
+                                        🔑 Password
+                                      </button>
+                                    )}
 
+                                  {/* Delete */}
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      openDeleteModal(item)
+                                    }
+                                    className="action-btn action-delete"
+                                    style={{
+                                      padding: "4px 12px",
+                                      borderRadius: 5,
+                                      border: "none",
+                                      background: "#dc2626",
+                                      color: "#fff",
+                                      cursor: "pointer",
+                                      fontWeight: 600,
+                                      fontSize: 13,
+                                    }}
+                                    title="Delete record"
+                                  >
+                                    🗑 Delete
+                                  </button>
+
+                                </td>
+                              </tr>
+                            );
+                          })}
+
+                        {/* =====================================================EMPTY====================================================== */}
+                        {!loading && filteredData.length === 0 && (
+                          <tr>
+                            <td
+                              colSpan={
+                                activeTab === "student"
+                                  ? 16
+                                  : activeTab === "feesAdmin"
+                                    ? 9
+                                    : activeTab === "course"
+                                      ? 4
+                                      : 11
+                              }
+                              style={{
+                                textAlign: "center",
+                                color: "#9ca3af",
+                                padding: 24,
+                              }}
+                            >
+                              No {activeTabLabel.toLowerCase()}s found.
                             </td>
                           </tr>
-                        );
-                      })}
+                        )}
 
-                    {/* =====================================================EMPTY====================================================== */}
-                    {!loading && filteredData.length === 0 && (
-                      <tr>
-                        <td
-                          colSpan={
-                            activeTab === "student"
-                              ? 16
-                              : activeTab === "feesAdmin"
-                                ? 9
-                                : 11
-                          }
-                          style={{
-                            textAlign: "center",
-                            color: "#9ca3af",
-                            padding: 24,
-                          }}
-                        >
-                          No {activeTabLabel.toLowerCase()}s found.
-                        </td>
-                      </tr>
+                      </>
                     )}
 
                   </tbody>
@@ -6739,9 +6692,6 @@ export default function DomainAdminDashboard() {
           {activeFields.map((field) => {
             const value = addForm?.[field.key] || "";
 
-            const isLongPlaceholder =
-              field.key === "teachingAssignments" ||
-              field.placeholder?.length > 10;
 
             return (
               <div
@@ -6761,21 +6711,10 @@ export default function DomainAdminDashboard() {
                   {field.label}
                 </label>
 
-                <div
-                  className={
-                    isLongPlaceholder
-                      ? "input-scroll-wrapper"
-                      : undefined
-                  }
-                >
+                <div>
                   <input
                     type={field.type}
                     value={value}
-                    placeholder={
-                      isLongPlaceholder
-                        ? ""
-                        : field.placeholder
-                    }
                     onChange={(e) => {
                       let newValue = e.target.value;
 
@@ -6806,7 +6745,7 @@ export default function DomainAdminDashboard() {
                     }}
                   />
 
-                  {isLongPlaceholder && !value && (
+                  {!value && (
                     <div
                       className="input-scroll-placeholder"
                       title={field.placeholder}
@@ -7116,6 +7055,9 @@ export default function DomainAdminDashboard() {
             >
               📋 Excel Format Required
             </p>
+            <p style={{ margin: "4px 0", fontSize: 11, color: "#1e40af" }}>
+              Columns are matched by header, so their order may vary. Extra columns are ignored.
+            </p>
 
             {/* Student Format */}
             {activeTab === "student" && (
@@ -7125,7 +7067,10 @@ export default function DomainAdminDashboard() {
                     <strong>Student Excel Columns:</strong>
                   </p>
                   <p style={{ margin: "4px 0", fontSize: 11, fontFamily: "monospace" }}>
-                    rollNumber → name → email → mobileNumber → course → branch → batch → studyBatch → studySubjects → fatherName → fatherMobNo → password
+                    rollNumber → name → email → mobileNumber → course → batch → academicSession → studyBatch → studySubjects → fatherName → fatherMobNo → password
+                  </p>
+                  <p style={{ margin: "4px 0", fontSize: 11 }}>
+                    academicSession is required (for example, 2026-27).
                   </p>
 
                   <p style={{ margin: "8px 0 4px", fontWeight: 600 }}>
@@ -7150,8 +7095,15 @@ export default function DomainAdminDashboard() {
                           <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>rollNumber</th>
                           <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>name</th>
                           <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>email</th>
+                          <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>mobileNumber </th>
+                          <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>course</th>
+                          <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>batch</th>
+                          <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>academicSession</th>
+
                           <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>studyBatch</th>
                           <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>studySubjects</th>
+                          <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>fatherName</th>
+                          <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>fatherMobNo</th>
                           <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>password</th>
                         </tr>
                       </thead>
@@ -7160,8 +7112,14 @@ export default function DomainAdminDashboard() {
                           <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>STU001</td>
                           <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>STU Name</td>
                           <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>stu@gmail.com</td>
+                          <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>1111112222</td>
+                          <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>B.Tech cse</td>
+                          <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>2024-28</td>
+                          <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>2026-27</td>
                           <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>1A</td>
                           <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>JAVA,DSA,OS</td>
+                          <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>father name</td>
+                          <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>1111111125</td>
                           <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>Pasword@123</td>
                         </tr>
                       </tbody>
@@ -7185,18 +7143,7 @@ export default function DomainAdminDashboard() {
                     <strong>Faculty Excel Columns:</strong>
                   </p>
                   <p style={{ margin: "4px 0", fontSize: 11, fontFamily: "monospace" }}>
-                    facultyId → name → email → mobileNumber → course → teachingAssignments → password
-                  </p>
-
-                  <p style={{ margin: "8px 0 4px", fontWeight: 600 }}>
-                    <strong>Teaching Assignments Format:</strong>
-                  </p>
-                  <p style={{ margin: "4px 0", fontSize: 11, fontFamily: "monospace" }}>
-                    BATCH:SUBJECT1,SUBJECT2 ; BATCH:SUBJECT1,SUBJECT2
-                  </p>
-
-                  <p style={{ margin: "8px 0 4px", fontWeight: 600 }}>
-                    <strong>Example:</strong> 1A:JAVA,C,DSA;2A:AI,ML,OS;3A:MATH
+                    facultyId → name → email → mobileNumber → course → password
                   </p>
 
                   <div style={{ overflowX: "auto", marginTop: 8 }}>
@@ -7210,7 +7157,8 @@ export default function DomainAdminDashboard() {
                           <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>facultyId</th>
                           <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>name</th>
                           <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>email</th>
-                          <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>teachingAssignments</th>
+                          <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>mobileNumber</th>
+                          <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>course</th>
                           <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>password</th>
                         </tr>
                       </thead>
@@ -7219,7 +7167,8 @@ export default function DomainAdminDashboard() {
                           <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>FAC01</td>
                           <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>FAC Name</td>
                           <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>fac@gmail.com</td>
-                          <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>1A:JAVA,C,DSA;2A:AI,ML,OS</td>
+                          <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>9876543210</td>
+                          <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>B.Tech CSE</td>
                           <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>Pasword@123</td>
                         </tr>
                       </tbody>
@@ -7243,19 +7192,9 @@ export default function DomainAdminDashboard() {
                     <strong>SubAdmin Excel Columns:</strong>
                   </p>
                   <p style={{ margin: "4px 0", fontSize: 11, fontFamily: "monospace" }}>
-                    subAdminId → name → email → mobileNumber → course → teachingAssignments → password
+                    subAdminId → name → email → mobileNumber → course → password
                   </p>
 
-                  <p style={{ margin: "8px 0 4px", fontWeight: 600 }}>
-                    <strong>Teaching Assignments Format:</strong>
-                  </p>
-                  <p style={{ margin: "4px 0", fontSize: 11, fontFamily: "monospace" }}>
-                    BATCH:SUBJECT1,SUBJECT2;BATCH:SUBJECT1,SUBJECT2
-                  </p>
-
-                  <p style={{ margin: "8px 0 4px", fontWeight: 600 }}>
-                    <strong>Example:</strong> 1A:JAVA,C,DSA;2A:AI,ML,OS;3A:MATH
-                  </p>
 
                   <div style={{ overflowX: "auto", marginTop: 8 }}>
                     <table className="excel-example-table" style={{
@@ -7268,7 +7207,8 @@ export default function DomainAdminDashboard() {
                           <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>subAdminId</th>
                           <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>name</th>
                           <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>email</th>
-                          <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>teachingAssignments</th>
+                          <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>mobileNumber</th>
+                          <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>course</th>
                           <th style={{ padding: "4px", border: "1px solid #bfdbfe", background: "#dbeafe" }}>password</th>
                         </tr>
                       </thead>
@@ -7277,7 +7217,8 @@ export default function DomainAdminDashboard() {
                           <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>SUB001</td>
                           <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>Admin One</td>
                           <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>admin@gmail.com</td>
-                          <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>1A:JAVA,C,DSA;2A:AI,ML,OS</td>
+                          <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>9876543210</td>
+                          <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>B.Tech CSE</td>
                           <td style={{ padding: "4px", border: "1px solid #bfdbfe" }}>Pasword@123</td>
                         </tr>
                       </tbody>
@@ -7334,6 +7275,148 @@ export default function DomainAdminDashboard() {
               </div>
             )}
           </div>
+
+
+          {/* Course Fees Format */}
+          {activeTab === "course" && (
+            <div
+              style={{
+                marginTop: 12,
+                fontSize: 12,
+                color: "#1e40af",
+              }}
+            >
+              <div className="excel-help">
+
+                <p style={{ margin: "8px 0 4px", fontWeight: 600 }}>
+                  <strong>Course Fees Excel Columns:</strong>
+                </p>
+
+                <p
+                  style={{
+                    margin: "4px 0",
+                    fontSize: 11,
+                    fontFamily: "monospace",
+                  }}
+                >
+                  course → fees
+                </p>
+
+                <p style={{ margin: "8px 0 4px", fontWeight: 600 }}>
+                  <strong>Example:</strong>
+                </p>
+
+                <div style={{ overflowX: "auto", marginTop: 8 }}>
+                  <table
+                    className="excel-example-table"
+                    style={{
+                      width: "100%",
+                      borderCollapse: "collapse",
+                      fontSize: 11,
+                    }}
+                  >
+                    <thead>
+                      <tr>
+                        <th
+                          style={{
+                            padding: "6px",
+                            border: "1px solid #bfdbfe",
+                            background: "#dbeafe",
+                          }}
+                        >
+                          course
+                        </th>
+
+                        <th
+                          style={{
+                            padding: "6px",
+                            border: "1px solid #bfdbfe",
+                            background: "#dbeafe",
+                          }}
+                        >
+                          fees
+                        </th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr>
+                        <td
+                          style={{
+                            padding: "6px",
+                            border: "1px solid #bfdbfe",
+                          }}
+                        >
+                          B.TECH CSE
+                        </td>
+
+                        <td
+                          style={{
+                            padding: "6px",
+                            border: "1px solid #bfdbfe",
+                          }}
+                        >
+                          120000
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td
+                          style={{
+                            padding: "6px",
+                            border: "1px solid #bfdbfe",
+                          }}
+                        >
+                          BCA
+                        </td>
+
+                        <td
+                          style={{
+                            padding: "6px",
+                            border: "1px solid #bfdbfe",
+                          }}
+                        >
+                          90000
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td
+                          style={{
+                            padding: "6px",
+                            border: "1px solid #bfdbfe",
+                          }}
+                        >
+                          MBA
+                        </td>
+
+                        <td
+                          style={{
+                            padding: "6px",
+                            border: "1px solid #bfdbfe",
+                          }}
+                        >
+                          150000
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <p
+                  style={{
+                    margin: "10px 0 0",
+                    fontSize: 11,
+                    color: "#1d4ed8",
+                  }}
+                >
+                  💡 Fees should be a valid number and cannot be negative.
+                </p>
+
+              </div>
+            </div>
+          )}
+
 
           {/* File Input */}
           <label style={labelStyle}>

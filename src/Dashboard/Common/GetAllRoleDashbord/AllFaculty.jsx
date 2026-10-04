@@ -185,7 +185,6 @@ export default function AllFaculty() {
         f.name?.toLowerCase().includes(q) ||
         f.facultyId?.toLowerCase().includes(q) ||
         f.course?.toLowerCase().includes(q) ||
-        f.teachingBatch?.toLowerCase().includes(q) ||
         f.email?.toLowerCase().includes(q)
     );
   }, [faculty, searchQuery]);
@@ -234,6 +233,21 @@ export default function AllFaculty() {
         />
       </div>
 
+      <div
+  style={{
+    marginBottom: 16,
+    padding: "10px 14px",
+    borderRadius: 8,
+    background: "#eff6ff",
+    border: "1px solid #bfdbfe",
+    color: "#1d4ed8",
+    fontSize: 13,
+    fontWeight: 600,
+  }}
+>
+  💡  DoubleClick on any row to open the complete profile.
+</div>
+
       {filtered.length === 0 && (
         <div className="text-center py-16 text-gray-400 text-sm">No faculty found.</div>
       )}
@@ -274,7 +288,6 @@ export default function AllFaculty() {
                         <th className="px-4 py-2 text-left">Faculty ID</th>
                         <th className="px-4 py-2 text-left">Name</th>
                         <th className="px-4 py-2 text-left">Course</th>
-                        <th className="px-4 py-2 text-left">Teaching Assignments</th>
                         <th className="px-4 py-2 text-left">Email</th>
                         <th className="px-4 py-2 text-left">Mobile</th>
                         {/* {role === "DOMAIN_ADMIN" && (
@@ -298,26 +311,25 @@ export default function AllFaculty() {
                       {members.map((f, idx) => (
                         <tr
                           key={f.facultyId || idx}
-                          className="border-t border-gray-100 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 bg-white dark:bg-gray-900 transition-colors"
+                          onClick={() => {
+                            const currentRole = localStorage.getItem("role") || f.role;
+                            if (!f.facultyId || !currentRole) {
+                              console.error("Unable to open Faculty profile:", f);
+                              return;
+                            }
+                            navigate(
+                              `/${domain}/${currentRole}/faculty/${encodeURIComponent(f.facultyId)}`,
+                              { state: { email: f.email } }
+                            );
+                          }}
+                          title="Click to open faculty profile"
+                          className="border-t border-gray-100 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
                         >
                           <td className="px-4 py-2 text-gray-400">{idx + 1}.</td>
                           <td className="px-4 py-2 font-mono font-medium text-gray-700 dark:text-gray-200">{f.facultyId}</td>
                           <td className="px-4 py-2 font-medium text-gray-800 dark:text-gray-100">{f.name}</td>
                           <td className="px-4 py-2 text-gray-500">{f.course}</td>
-                          {/* <td className="px-4 py-2 text-gray-500">{f.teachingAssignments}</td> */}
-                          <td className="px-4 py-2 text-gray-500">
-                            {f.teachingAssignments
-                              ?.split(";")
-                              .map((assignment) => {
-                                const [batch, subjects] = assignment.split(":");
-
-                                return `${batch?.trim()} : ${subjects
-                                  ?.split(",")
-                                  .map((subject) => subject.trim())
-                                  .join(" , ")}`;
-                              })
-                              .join(" | ")}
-                          </td>
+                         
                           <td className="px-4 py-2 text-gray-500">{f.email}</td>
                           <td className="px-4 py-2 text-gray-500">{f.mobileNumber}</td>
                           {/* {role === "DOMAIN_ADMIN" && (

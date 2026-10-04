@@ -80,8 +80,9 @@ export default function FacultyDashboard() {
                 fetch(`${API_BASE}/${domain}/faculty`, { headers }),
                 fetch(`${API_BASE}/${domain}/faculty/all_student`, { headers }),
             ]);
-            setFaculty(await facultyRes.json() || {});
-            setStudents((await studentRes.json())?.data || []);
+            const facultyData = await facultyRes.json();
+            setFaculty(facultyData);
+            setStudents(await studentRes.json());
         } catch {
             alert("Session expired. Please login again.");
             localStorage.clear();

@@ -11,7 +11,9 @@ async function readJson(response) {
   const text = await response.text();
   let data = {};
   try { data = text ? JSON.parse(text) : {}; } catch { data = { message: text }; }
-  if (!response.ok) throw new Error(data?.message || "Request failed");
+  if (!response.ok || data?.success === false) {
+    throw new Error(data?.message || "Request failed");
+  }
   return data;
 }
 
@@ -55,11 +57,11 @@ export default function RecentAttendancePanel({ domain }) {
       setError("");
 
       const res = await getRecentAttendance(domain);
-      const data = res?.data?.batches || [];
+      const data = Array.isArray(res?.data?.batches) ? res.data.batches : [];
       setBatches(data);
 
       if (data.length > 0) {
-        setActiveBatch(data[0].teachingBatch);
+        setActiveBatch(data[0].key);
       }
     } catch (err) {
       setError(err?.message || "Unable to load recent attendance.");
@@ -70,7 +72,7 @@ export default function RecentAttendancePanel({ domain }) {
   }
 
   const activeBatchGroup = useMemo(
-    () => batches.find((b) => b.teachingBatch === activeBatch),
+    () => batches.find((b) => b.key === activeBatch),
     [batches, activeBatch]
   );
 
@@ -165,12 +167,12 @@ export default function RecentAttendancePanel({ domain }) {
           <div className="recent-batch-tabs">
             {batches.map((b) => (
               <button
-                key={b.teachingBatch}
+                key={b.key}
                 type="button"
-                className={activeBatch === b.teachingBatch ? "active" : ""}
-                onClick={() => setActiveBatch(b.teachingBatch)}
+                className={activeBatch === b.key ? "active" : ""}
+                onClick={() => setActiveBatch(b.key)}
               >
-                {b.teachingBatch}
+                {b.key}
               </button>
             ))}
           </div>
@@ -183,7 +185,7 @@ export default function RecentAttendancePanel({ domain }) {
 
                 <div className="recent-session-list">
                   {subjectGroup.sessions.map((session) => {
-                    const sessionKey = `${activeBatchGroup.teachingBatch}-${subjectGroup.subject}-${session.date}-${session.periodNumber}`;
+                    const sessionKey = `${activeBatchGroup.key}-${subjectGroup.subject}-${session.date}-${session.periodNumber}`;
                     const isExpanded = expandedSessions.has(sessionKey);
                     const pct =
                       session.totalCount > 0

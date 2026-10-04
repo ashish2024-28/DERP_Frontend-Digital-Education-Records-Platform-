@@ -8,6 +8,16 @@ const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "");
 
 const ATTENDANCE_PRESENT = "P";
 const ATTENDANCE_ABSENT = "A";
+const STUDY_YEARS = Array.from({ length: 9 }, (_, index) => String(index + 1));
+const SECTIONS = Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index));
+
+function formatYear(year) {
+  const value = Number(year);
+  const suffix = value % 100 >= 11 && value % 100 <= 13
+    ? "th"
+    : ({ 1: "st", 2: "nd", 3: "rd" }[value % 10] || "th");
+  return `${value}${suffix} Year`;
+}
 
 function authHeaders(json = true) {
   const headers = { Authorization: `Bearer ${localStorage.getItem("token")}` };
@@ -19,19 +29,40 @@ async function readJson(response) {
   const text = await response.text();
   let data = {};
   try { data = text ? JSON.parse(text) : {}; } catch { data = { message: text }; }
-  if (!response.ok) throw new Error(data?.message || "Request failed");
+  if (!response.ok || data?.success === false) {
+    throw new Error(data?.message || data?.detail || "Request failed");
+  }
   return data;
 }
 
 const facultyApi = {
   getSetup: (domain) =>
-    fetch(`${API_BASE}/${domain}/erp/attendance/faculty/setup`, {
+    fetch(`${API_BASE}/${domain}/faculty`, {
       headers: authHeaders(false),
     }).then(readJson),
 
-  getStudents: (domain, batch, subject) => {
-    const query = new URLSearchParams({ batch, subject });
+  getSubjects: (domain, course, studyBatch) => {
+    const query = new URLSearchParams({ course, studyBatch });
+    return fetch(`${API_BASE}/${domain}/erp/attendance/faculty/subjects?${query}`, {
+      headers: authHeaders(false),
+    }).then(readJson);
+  },
+
+  getStudents: (domain, course, studyBatch, subject) => {
+    const query = new URLSearchParams({ course, studyBatch, subject });
     return fetch(`${API_BASE}/${domain}/erp/attendance/faculty/students?${query}`, {
+      headers: authHeaders(false),
+    }).then(readJson);
+  },
+
+  getExisting: (domain, studyBatch, subject, date, period) => {
+    const query = new URLSearchParams({
+      studentBatch: studyBatch,
+      subject,
+      date,
+      period: String(period),
+    });
+    return fetch(`${API_BASE}/${domain}/erp/attendance/faculty/existing?${query}`, {
       headers: authHeaders(false),
     }).then(readJson);
   },
@@ -44,46 +75,34 @@ const facultyApi = {
     }).then(readJson),
 };
 
-function parseTeachingAssignments(value) {
-  const result = {};
-  if (!value || typeof value !== "string") return result;
-
-  value
-    .split(";")
-    .map((item) => item.trim())
-    .filter(Boolean)
-    .forEach((item) => {
-      const separatorIndex = item.indexOf(":");
-      if (separatorIndex === -1) return;
-
-      const batch = item.substring(0, separatorIndex).trim();
-      const subjectsString = item.substring(separatorIndex + 1).trim();
-      if (!batch || !subjectsString) return;
-
-      const subjects = subjectsString
-        .split(",")
-        .map((subject) => subject.trim())
-        .filter(Boolean);
-
-      if (subjects.length > 0) result[batch] = [...new Set(subjects)];
-    });
-
-  return result;
-}
-
 function normalizeText(value) {
   return String(value || "").trim().toLowerCase();
+}
+
+function getLocalDate() {
+  const date = new Date();
+  const offset = date.getTimezoneOffset() * 60_000;
+  return new Date(date.getTime() - offset).toISOString().slice(0, 10);
+}
+
+function normalizeAttendanceStatus(value) {
+  const status = String(value || "").trim().toUpperCase();
+  if (status === "PRESENT" || status === ATTENDANCE_PRESENT) return ATTENDANCE_PRESENT;
+  if (status === "ABSENT" || status === ATTENDANCE_ABSENT) return ATTENDANCE_ABSENT;
+  return "";
 }
 
 export default function FacultyErpAttendence() {
   const { domain } = useParams();
 
-  const [assignments, setAssignments] = useState({});
   const [facultyCourse, setFacultyCourse] = useState("");
 
-  const [batch, setBatch] = useState("");
+  const [year, setYear] = useState("");
+  const [section, setSection] = useState("");
+  const [subjects, setSubjects] = useState([]);
+  const [loadingSubjects, setLoadingSubjects] = useState(false);
   const [subject, setSubject] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [date] = useState(getLocalDate);
   const [period, setPeriod] = useState(1);
 
   const [students, setStudents] = useState([]);
@@ -101,8 +120,6 @@ export default function FacultyErpAttendence() {
 
   // ---- NEW: lock state so faculty can't save the same sheet twice by accident ----
   const [isLocked, setIsLocked] = useState(false);
-
-  const today = useMemo(() => new Date().toISOString().split("T")[0], []);
 
   useEffect(() => {
     loadAssignments();
@@ -122,13 +139,9 @@ export default function FacultyErpAttendence() {
       setLoadingAssignments(true);
 
       const res = await facultyApi.getSetup(domain);
-      const setup = res?.data || {};
-      const parsed = parseTeachingAssignments(setup.teachingAssignments || "");
-
+      const setup = res?.data ?? res ?? {};
       setFacultyCourse(setup.course || "");
-      setAssignments(parsed);
     } catch (err) {
-      setAssignments({});
       setFacultyCourse("");
       showToast("error", err?.message || "Unable to load teaching assignments.");
     } finally {
@@ -136,15 +149,44 @@ export default function FacultyErpAttendence() {
     }
   }
 
-  const batches = useMemo(
-    () =>
-      Object.keys(assignments).sort((a, b) =>
-        a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" })
-      ),
-    [assignments]
-  );
+  const batch = year && section ? `${year}${section}` : "";
 
-  const subjects = useMemo(() => (batch ? assignments[batch] || [] : []), [assignments, batch]);
+  useEffect(() => {
+    if (!facultyCourse || !batch) {
+      setSubjects([]);
+      setSubject("");
+      setLoadingSubjects(false);
+      return undefined;
+    }
+
+    let isCurrentRequest = true;
+    setSubjects([]);
+    setSubject("");
+    setLoadingSubjects(true);
+
+    facultyApi
+      .getSubjects(domain, facultyCourse, batch)
+      .then((response) => {
+        if (!isCurrentRequest) return;
+        const subjectList = Array.isArray(response?.data) ? response.data : [];
+        setSubjects(subjectList);
+        if (subjectList.length === 0) {
+          showToast("info", `No subjects found for teaching batch ${batch}.`);
+        }
+      })
+      .catch((err) => {
+        if (!isCurrentRequest) return;
+        setSubjects([]);
+        showToast("error", err?.message || "Unable to load subjects for this teaching batch.");
+      })
+      .finally(() => {
+        if (isCurrentRequest) setLoadingSubjects(false);
+      });
+
+    return () => {
+      isCurrentRequest = false;
+    };
+  }, [domain, facultyCourse, batch]);
 
   const filteredStudents = useMemo(() => {
     const query = normalizeText(searchQuery);
@@ -181,8 +223,14 @@ export default function FacultyErpAttendence() {
     setIsLocked(false); // ---- NEW: unlock whenever the sheet is cleared ----
   }
 
-  function handleBatchChange(event) {
-    setBatch(event.target.value);
+  function handleYearChange(event) {
+    setYear(event.target.value);
+    setSubject("");
+    resetStudents();
+  }
+
+  function handleSectionChange(event) {
+    setSection(event.target.value);
     setSubject("");
     resetStudents();
   }
@@ -192,26 +240,24 @@ export default function FacultyErpAttendence() {
     resetStudents();
   }
 
-  function handleDateChange(event) {
-    setDate(event.target.value);
-    resetStudents(); // ---- NEW: changing date means a different session, so unlock/clear ----
-  }
-
   function handlePeriodChange(event) {
     setPeriod(event.target.value);
     resetStudents(); // ---- NEW: changing period means a different session, so unlock/clear ----
   }
 
   async function loadStudents() {
+    if (!facultyCourse) return showToast("error", "Unable to determine your faculty course.");
     if (!batch) return showToast("error", "Please select a teaching batch.");
     if (!subject) return showToast("error", "Please select a subject.");
-    if (!date) return showToast("error", "Attendance date is required.");
     if (!period || Number(period) < 1) return showToast("error", "Please enter a valid period.");
 
     try {
       setLoadingStudents(true);
 
-      const res = await facultyApi.getStudents(domain, batch, subject);
+      const [res, existing] = await Promise.all([
+        facultyApi.getStudents(domain, facultyCourse, batch, subject),
+        facultyApi.getExisting(domain, batch, subject, date, Number(period)),
+      ]);
       const list = Array.isArray(res?.data) ? res.data : [];
 
       const uniqueStudents = [];
@@ -227,16 +273,22 @@ export default function FacultyErpAttendence() {
 
       setStudents(uniqueStudents);
 
+      const existingAttendance = existing?.data?.attendance || {};
       const initialAttendance = {};
       uniqueStudents.forEach((student) => {
         const rollNumber = String(student?.rollNumber || "").trim();
-        if (rollNumber) initialAttendance[rollNumber] = ATTENDANCE_PRESENT;
+        const priorStatus = normalizeAttendanceStatus(existingAttendance[rollNumber]);
+        if (rollNumber) {
+          initialAttendance[rollNumber] = priorStatus || ATTENDANCE_PRESENT;
+        }
       });
       setAttendance(initialAttendance);
-      setIsLocked(false); // ---- NEW: fresh load is always editable ----
+      setIsLocked(existing?.data?.alreadyMarked === true);
 
       if (uniqueStudents.length === 0) {
         showToast("info", `No students found for batch ${batch} and subject ${subject}.`);
+      } else if (existing?.data?.alreadyMarked) {
+        showToast("info", "Attendance already exists for today. Review it or choose Edit Attendance.");
       } else {
         showToast("success", `${uniqueStudents.length} student(s) loaded.`);
       }
@@ -293,8 +345,6 @@ export default function FacultyErpAttendence() {
     }
     if (!students.length) return showToast("error", "Please load students before saving attendance.");
     if (!batch || !subject) return showToast("error", "Teaching batch and subject are required.");
-    if (!date) return showToast("error", "Attendance date is required.");
-    if (date > today) return showToast("error", "Attendance date cannot be in the future.");
     if (!period || Number(period) < 1 || Number(period) > 20)
       return showToast("error", "Period must be between 1 and 20.");
 
@@ -314,9 +364,8 @@ export default function FacultyErpAttendence() {
       setSavingAttendance(true);
 
       await facultyApi.markAttendance(domain, {
-        teachingBatch: batch,
+        studyBatch: batch,
         subject,
-        attendanceDate: date,
         periodNumber: Number(period),
         attendance,
       });
@@ -351,7 +400,7 @@ export default function FacultyErpAttendence() {
         <div>
           <div className="attendance-page-label">ERP / Attendance</div>
           <h1>Mark Attendance</h1>
-          <p>Manage attendance for your assigned batches and subjects.</p>
+          <p>Choose a year, section, and subject to mark student attendance.</p>
         </div>
         <div className="attendance-header-icon">✓</div>
       </div>
@@ -364,13 +413,17 @@ export default function FacultyErpAttendence() {
         <div className="attendance-card-header">
           <div>
             <h2>Attendance Details</h2>
-            <p>Select a batch and subject from your teaching assignments.</p>
+            <p>Choose a year and section. Subjects are loaded from students in that teaching batch.</p>
           </div>
           <div className="setup-status">
             <span className="status-dot" />
             {loadingAssignments
-              ? "Loading assignments..."
-              : `${batches.length} assigned batch${batches.length !== 1 ? "es" : ""}`}
+              ? "Loading faculty profile..."
+              : batch && loadingSubjects
+                ? `Finding subjects for ${batch}...`
+                : batch
+                  ? `${subjects.length} subject${subjects.length === 1 ? "" : "s"} found`
+                  : "Choose year and section"}
           </div>
         </div>
 
@@ -388,28 +441,62 @@ export default function FacultyErpAttendence() {
           </div>
 
           <div className="attendance-form-group">
-            <label>Teaching Batch</label>
+            <label htmlFor="attendance-year">Year</label>
             <select
-              value={batch}
-              onChange={handleBatchChange}
+              id="attendance-year"
+              value={year}
+              onChange={handleYearChange}
               disabled={loadingAssignments || loadingStudents || savingAttendance}
             >
-              <option value="">Select teaching batch</option>
-              {batches.map((item) => (
-                <option key={item} value={item}>{item}</option>
+              <option value="">Select year</option>
+              {STUDY_YEARS.map((item) => (
+                <option key={item} value={item}>{formatYear(item)}</option>
               ))}
             </select>
-            <small>Year + Section · e.g. 1A = 1st year, Section A.</small>
+            <small>Select the current study year (1 to 9).</small>
           </div>
 
           <div className="attendance-form-group">
-            <label>Subject</label>
+            <label htmlFor="attendance-section">Section</label>
             <select
+              id="attendance-section"
+              value={section}
+              onChange={handleSectionChange}
+              disabled={loadingAssignments || loadingStudents || savingAttendance}
+            >
+              <option value="">Select section</option>
+              {SECTIONS.map((item) => (
+                <option key={item} value={item}>Section {item}</option>
+              ))}
+            </select>
+            <small>Select a section from A to Z.</small>
+          </div>
+
+          <div className="attendance-form-group attendance-readonly-group">
+            <label htmlFor="attendance-teaching-batch">Teaching Batch</label>
+            <input
+              id="attendance-teaching-batch"
+              type="text"
+              value={batch}
+              placeholder="Year + section"
+              readOnly
+              aria-readonly="true"
+              disabled={!batch || loadingStudents || savingAttendance}
+            />
+            <small>Automatically combined, e.g. 2A.</small>
+          </div>
+
+          <div className="attendance-form-group">
+            <label htmlFor="attendance-subject">Subject</label>
+            <select
+              id="attendance-subject"
               value={subject}
-              disabled={!batch || loadingAssignments || loadingStudents || savingAttendance}
+              disabled={!batch || loadingSubjects || loadingStudents || savingAttendance || subjects.length === 0}
               onChange={handleSubjectChange}
             >
-              <option value="">Select subject</option>
+              <option value="">
+                {loadingSubjects ? "Loading subjects..." : "Select subject"}
+              </option>
               {subjects.map((item) => (
                 <option key={item} value={item}>{item}</option>
               ))}
@@ -417,19 +504,22 @@ export default function FacultyErpAttendence() {
           </div>
 
           <div className="attendance-form-group">
-            <label>Attendance Date</label>
+            <label htmlFor="attendance-date">Attendance Date</label>
             <input
-              type="date"
+              id="attendance-date"
+              type="text"
               value={date}
-              max={today}
+              readOnly
+              aria-readonly="true"
               disabled={loadingStudents || savingAttendance}
-              onChange={handleDateChange}
             />
+            <small>Attendance is recorded for today by the server.</small>
           </div>
 
           <div className="attendance-form-group">
-            <label>Period</label>
+            <label htmlFor="attendance-period">Period</label>
             <input
+              id="attendance-period"
               type="number"
               min="1"
               max="20"

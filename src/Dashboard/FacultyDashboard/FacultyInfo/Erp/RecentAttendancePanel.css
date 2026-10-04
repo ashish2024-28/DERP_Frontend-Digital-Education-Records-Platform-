@@ -1,5 +1,4 @@
 .recent-panel {
-  background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
@@ -18,14 +17,13 @@
 
 .recent-panel-header h2 {
   margin: 0;
-  color: #0f172a;
   font-size: 17px;
   font-weight: 800;
 }
 
 .recent-panel-header p {
   margin: 4px 0 0;
-  color: #64748b;
+  color: #758499;
   font-size: 12.5px;
 }
 
@@ -33,8 +31,7 @@
   padding: 7px 14px;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
-  background: #ffffff;
-  color: #475569;
+  color: #cbd5e1;
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
@@ -42,7 +39,7 @@
 }
 
 .recent-collapse-btn:hover {
-  background: #f8fafc;
+  background: #53a07e;
 }
 
 /* Loading / error / empty */
@@ -52,7 +49,7 @@
   align-items: center;
   gap: 10px;
   padding: 22px 24px;
-  color: #64748b;
+  color: #a1abb9;
   font-size: 13px;
 }
 
@@ -91,8 +88,7 @@
   padding: 8px 14px;
   border: 1px solid #e2e8f0;
   border-radius: 999px;
-  background: #f8fafc;
-  color: #475569;
+  color: #e2e8f0;
   font-size: 12.5px;
   font-weight: 700;
   white-space: nowrap;
@@ -102,7 +98,7 @@
 
 .recent-batch-tabs button.active {
   border-color: #2563eb;
-  background: #2563eb;
+    background: #4d9374;
   color: #ffffff;
 }
 
@@ -116,7 +112,6 @@
 
 .recent-subject-title {
   margin-bottom: 8px;
-  color: #1e293b;
   font-size: 13px;
   font-weight: 800;
 }
@@ -131,7 +126,6 @@
   border: 1px solid #e2e8f0;
   border-radius: 10px;
   overflow: hidden;
-  background: #fafafa;
 }
 
 .recent-session-summary {
@@ -155,12 +149,12 @@
 }
 
 .recent-session-date strong {
-  color: #1e293b;
+  color: #858e9d;
   font-size: 12.5px;
 }
 
 .recent-session-date span {
-  color: #94a3b8;
+  color: #8490a0;
   font-size: 11px;
 }
 
@@ -191,9 +185,9 @@
   font-weight: 800;
 }
 
-.count-pct.good { background: #dcfce7; color: #15803d; }
-.count-pct.warn { background: #fef3c7; color: #92400e; }
-.count-pct.bad  { background: #fee2e2; color: #dc2626; }
+.count-pct.good { color: #15803d; }
+.count-pct.warn { color: #92400e; }
+.count-pct.bad  { color: #dc2626; }
 
 .recent-chevron {
   color: #94a3b8;
@@ -207,7 +201,6 @@
 
 .recent-session-details {
   border-top: 1px solid #e2e8f0;
-  background: #ffffff;
   padding: 10px 14px 14px;
 }
 
@@ -219,7 +212,6 @@
 .recent-student-table th {
   padding: 8px 10px;
   text-align: left;
-  color: #94a3b8;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -230,7 +222,6 @@
 .recent-student-table td {
   padding: 8px 10px;
   border-bottom: 1px solid #f8fafc;
-  color: #334155;
   font-size: 12.5px;
 }
 

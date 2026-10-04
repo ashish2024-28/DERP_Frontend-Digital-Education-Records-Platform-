@@ -74,7 +74,7 @@ export default function StudentDashboard() {
         headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`, "Content-Type": "application/json" },
       });
       const data = await res.json();
-      setStudent(data || {});
+      setStudent(data);
     } catch {
       alert("Session expired. Please login again.");
       localStorage.clear();

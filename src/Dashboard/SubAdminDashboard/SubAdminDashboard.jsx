@@ -79,9 +79,10 @@ export default function SubAdminDashboard() {
         fetch(`${API_BASE}/${domain}/subAdmin/all_student`, { headers }),
         fetch(`${API_BASE}/${domain}/subAdmin/all_faculty`, { headers }),
       ]);
-      setSubAdmin(await subAdminRes.json() || {});
-      setStudents((await studentRes.json())?.data || []);
-      setFaculty((await facultyRes.json())?.data  || []);
+      const subAdminData = await subAdminRes.json();
+      setSubAdmin(subAdminData);
+      setStudents(await studentRes.json());
+      setFaculty(await facultyRes.json());
     } catch {
       alert("Session expired. Please login again.");
       localStorage.clear();

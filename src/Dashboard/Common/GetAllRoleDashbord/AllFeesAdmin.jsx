@@ -23,7 +23,6 @@ export default function AllFeesAdmin() {
   const [feesAdmins, setFeesAdmins] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isUniversityOpen, setIsUniversityOpen] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
 
@@ -168,6 +167,20 @@ export default function AllFeesAdmin() {
             size={17}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
           />
+<div
+  style={{
+    marginBottom: 16,
+    padding: "10px 14px",
+    borderRadius: 8,
+    background: "#eff6ff",
+    border: "1px solid #bfdbfe",
+    color: "#1d4ed8",
+    fontSize: 13,
+    fontWeight: 600,
+  }}
+>
+  💡  DoubleClick on any row to open the complete profile.
+</div>
 
           <input
             type="text"
@@ -383,18 +396,20 @@ export default function AllFeesAdmin() {
                 <tbody>
                   {filteredFeesAdmins.map((feesAdmin, index) => (
                     <tr
-                      key={
-                        feesAdmin.feesAdminId ||
-                        `${feesAdmin.email}-${index}`
-                      }
-                      className="
-                        border-b border-gray-100
-                        transition-colors
-                        last:border-b-0
-                        hover:bg-orange-50/50
-                        dark:border-gray-800
-                        dark:hover:bg-gray-800/60
-                      "
+                      key={feesAdmin.feesAdminId ||`${feesAdmin.email}-${index}`}
+                      onClick={() => {
+                        const currentRole = localStorage.getItem("role") || feesAdmin.role;
+                        if (!feesAdmin.feesAdminId || !currentRole) {
+                          console.error("Unable to open Fees Admin profile:", feesAdmin);
+                          return;
+                        }
+                        navigate(
+                          `/${domain}/${currentRole}/feesAdmin/${encodeURIComponent(feesAdmin.feesAdminId)}`,
+                          { state: { email: feesAdmin.email } }
+                        );
+                      }}
+                      title="Click to open Fees Admin profile"
+                      className="border-t border-gray-100 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
                     >
                       {/* NUMBER */}
                       <td className="px-4 py-4 text-gray-400">

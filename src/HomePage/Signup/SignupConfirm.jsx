@@ -124,7 +124,9 @@ export default function SignupConfirm() {
     const cached = JSON.parse(localStorage.getItem("universities_cache") || "[]");
     const uni = cached.find(u => u.domain === domain);
     if (uni) { universityName = uni.universityName || ""; universityLogo = uni.universityLogoPath || ""; }
-  } catch {}
+  } catch {
+    // Continue without cached branding if the browser cache is malformed.
+  }
 
   // ── Guard ─────────────────────────────────────────────────────────────────
   if (!userData || !role) {
@@ -162,13 +164,17 @@ export default function SignupConfirm() {
     try {
       // 1️⃣ Check if email is already registered
       const checkRes = await fetch(
-        `${API_OTP}/${domain}/signup/check_email?email=${encodeURIComponent(userData.email)}`,
+        `${API_BASE}/${domain}/signup/check_email?email=${encodeURIComponent(userData.email)}`,
         { method: "GET" }
       );
       const checkCt   = checkRes.headers.get("content-type") ?? "";
       const checkData = checkCt.includes("application/json") ? await checkRes.json() : {};
 
-      if (!checkRes.ok || checkData.exists) {
+      if (!checkRes.ok) {
+        throw new Error(checkData.message || "Unable to verify this email. Please try again.");
+      }
+
+      if (checkData.success === true) {
         // Email already taken — show error, stay on review
         setError(checkData.message || "This email is already registered. Please use a different email.");
         setPhase("review");
@@ -418,4 +424,3 @@ export default function SignupConfirm() {
     </div>
   );
 }
-
