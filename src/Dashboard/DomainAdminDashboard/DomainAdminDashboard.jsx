@@ -6034,7 +6034,7 @@ export default function DomainAdminDashboard() {
                             return (
                              <tr
   key={rowKey}
-  onClick={() => {
+  onDoubleClick={() => {
     const currentRole =
       localStorage.getItem("role") || item.role;
 
@@ -6069,7 +6069,7 @@ export default function DomainAdminDashboard() {
       }
     );
   }}
-  title="Click to open complete profile"
+  title="DoubleClick  to open complete profile"
   className="border-t border-gray-100 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
 >
 
