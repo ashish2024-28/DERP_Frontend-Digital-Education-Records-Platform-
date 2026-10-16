@@ -6,8 +6,6 @@ import '../SignupLogin.css'
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 const UNI_CACHE_KEY = "universities_cache"; // same key written by Home.jsx
 
-const platformLogo = "/Logo.png";
-const univLogo = "/defaultUniversity.png";
 
 export default function Login() {
 
@@ -135,6 +133,7 @@ const data = await response.json();
                     {loading ? "Processing..." : "Login"}
                 </button>
                 <p>Don't have an account? <Link to={`/${domain}/signup`}>Signup</Link></p>
+                <p>Forgot Password? <Link to={`/${domain}/forgot-password`}>ForgotPassword</Link></p>
             </form>
         </div>
     );

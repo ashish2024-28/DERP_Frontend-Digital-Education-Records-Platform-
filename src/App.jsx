@@ -10,6 +10,7 @@ import NotFound from "./Error/NotFound_404/NotFound";
 // Home
 const Home = lazy(() => import("./HomePage/Home/Home"));
 const Login = lazy(() => import("./HomePage/Login/Login"));
+const Forgot = lazy(() => import("./HomePage/ForgotPassword"));
 const Signup = lazy(() => import("./HomePage/Signup/Signup"));
 const SignupConfirm = lazy(() => import("./HomePage/Signup/SignupConfirm"));
 
@@ -110,6 +111,11 @@ function App() {
             <Route
               path="/:domain/signup/confirm"
               element={<SignupConfirm />}
+            />
+
+            <Route
+              path="/:domain/forgot-password"
+              element={<Forgot />}
             />
 
 
