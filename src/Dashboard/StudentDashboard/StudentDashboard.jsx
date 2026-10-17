@@ -78,8 +78,9 @@ export default function StudentDashboard() {
     } catch {
       alert("Session expired. Please login again.");
       localStorage.clear();
-      // navigate(`/${domain}/login`);
+      navigate(`/${domain}/login`);
     }
+    console.log("Fetched student data:", student, localStorage.getItem("token"));
   };
 
   const authHeaders = () => ({
@@ -194,7 +195,6 @@ export default function StudentDashboard() {
             <p><strong>Email:</strong>{" "}             {student.email || "-"}</p>
             <p><strong>Mobile:</strong>{" "}            {student.mobileNumber || "-"}</p>
             <p><strong>Course:</strong>{" "}            {student.course || "-"}</p>
-            <p><strong>Branch:</strong>{" "}            {student.branch || "-"}</p>
             <p><strong>Batch:</strong>{" "}             {student.batch ||  "-"}</p>
             <p><strong>Study Batch: <br /><span>yearSection</span></strong>{" "}             {student.studyBatch || "-"}</p>
             <p><strong>Study Subjects:</strong>{" "}    {student.studySubjects || "-"}</p>

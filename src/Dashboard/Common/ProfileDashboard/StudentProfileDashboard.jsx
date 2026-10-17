@@ -1047,7 +1047,7 @@ export default function StudentProfileDashboard() {
             FEES
         ================================================= */}
 
-        {canSeeFees && (
+        {/* {canSeeFees && (
           <ProfileSection
             icon={<IndianRupee size={21} />}
             title="Fees Information"
@@ -1132,6 +1132,166 @@ export default function StudentProfileDashboard() {
 
           </ProfileSection>
         )}
+ */}
+
+ {/* =================================================
+    FEES INFORMATION
+================================================= */}
+
+{canSeeFees && (
+  <ProfileSection
+    icon={<IndianRupee size={21} />}
+    title="Fees Information"
+    description="Student fee account and payment information"
+    contentClassName="min-w-0 space-y-6"
+  >
+    {/* Fees Account */}
+    <div>
+      <h3 className="mb-3 font-semibold text-gray-900 dark:text-white">
+        Fees Account
+      </h3>
+
+      {feesAccountAvailable ? (
+        <>
+          <p className="mb-3 text-sm text-gray-500 dark:text-gray-400">
+            Academic session:{" "}
+            {feesAccountAvailable.academicSession ||
+              student.academicSession ||
+              "-"}
+          </p>
+
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            <FeeSummary
+              label="Total Fees"
+              value={feesAccountAvailable.totalFees}
+            />
+
+            <FeeSummary
+              label="Total Paid"
+              value={feesAccountAvailable.totalPaid}
+            />
+
+            <FeeSummary
+              label="Total Dues"
+              value={feesAccountAvailable.totalDues}
+            />
+          </div>
+        </>
+      ) : (
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          No fee account is available.
+        </p>
+      )}
+    </div>
+
+    {/* All Payment History */}
+    <div>
+      <h3 className="mb-3 font-semibold text-gray-900 dark:text-white">
+        All Payment History
+      </h3>
+
+      {Array.isArray(feesPaymentsAvailable) &&
+      feesPaymentsAvailable.length > 0 ? (
+        <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
+          <table className="w-full min-w-[1000px] divide-y divide-gray-200 text-left text-sm dark:divide-gray-700">
+            <thead className="bg-gray-50 text-xs uppercase text-gray-500 dark:bg-gray-800 dark:text-gray-300">
+              <tr>
+                <th className="px-4 py-3">#</th>
+                <th className="px-4 py-3">Session</th>
+                <th className="px-4 py-3">Amount</th>
+                <th className="px-4 py-3">Payment Type</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Transaction ID</th>
+                <th className="px-4 py-3">Submitted At</th>
+                <th className="px-4 py-3">Verified At</th>
+                <th className="px-4 py-3">Verified By</th>
+                <th className="px-4 py-3">Note / Rejection Reason</th>
+              </tr>
+            </thead>
+
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+              {feesPaymentsAvailable.map((payment, index) => (
+                <tr
+                  key={`${payment.upiTransactionId || payment.submittedAt || "payment"}-${index}`}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                >
+                  <td className="px-4 py-3">{index + 1}</td>
+
+                  <td className="whitespace-nowrap px-4 py-3">
+                    {payment.academicSession || "-"}
+                  </td>
+
+                  <td className="whitespace-nowrap px-4 py-3 font-semibold">
+                    {formatCurrency(payment.amount)}
+                  </td>
+
+                  <td className="whitespace-nowrap px-4 py-3">
+                    {payment.paymentType || "-"}
+                  </td>
+
+                  <td className="px-4 py-3">
+                    <span
+                      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
+                        String(payment.status || "").toUpperCase() === "SUCCESS" ||
+                        String(payment.status || "").toUpperCase() === "VERIFIED"
+                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300"
+                          : String(payment.status || "").toUpperCase() === "FAILED" ||
+                            String(payment.status || "").toUpperCase() === "REJECTED"
+                          ? "bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-300"
+                          : "bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300"
+                      }`}
+                    >
+                      {payment.status || "Unknown"}
+                    </span>
+                  </td>
+
+                  <td className="max-w-48 break-words px-4 py-3">
+                    {payment.upiTransactionId || "-"}
+                  </td>
+
+                  <td className="whitespace-nowrap px-4 py-3">
+                    {payment.submittedAt
+                      ? FormatDate(payment.submittedAt)
+                      : "-"}
+                  </td>
+
+                  <td className="whitespace-nowrap px-4 py-3">
+                    {payment.verifiedAt
+                      ? FormatDate(payment.verifiedAt)
+                      : "-"}
+                  </td>
+
+                  <td className="px-4 py-3">
+                    {payment.verifyByFeesAdmin || "-"}
+                  </td>
+
+                  <td className="max-w-64 whitespace-normal break-words px-4 py-3">
+                    {payment.rejectionReason || "-"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="rounded-xl border border-dashed border-gray-300 p-6 text-center dark:border-gray-700">
+          <IndianRupee
+            size={28}
+            className="mx-auto mb-2 text-gray-400"
+          />
+
+          <p className="font-medium text-gray-700 dark:text-gray-200">
+            No payment history available
+          </p>
+
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Payment records will appear here once available.
+          </p>
+        </div>
+      )}
+    </div>
+  </ProfileSection>
+)}
 
 
         {/* =================================================

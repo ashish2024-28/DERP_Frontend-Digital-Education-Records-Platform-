@@ -851,3 +851,250 @@ body.dark .fees-management__pill.is-active,
     width: 100%;
   }
 }
+
+
+
+
+
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(3px);
+}
+
+.confirm-modal {
+  width: 100%;
+  max-width: 460px;
+  padding: 24px;
+  border-radius: 14px;
+  background: #fff;
+  color: #1e293b;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.confirm-modal h3 {
+  margin: 0 0 12px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.confirm-modal p {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.confirm-details {
+  margin: 18px 0;
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+  overflow-wrap: anywhere;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.confirm-actions button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.confirm-verify-btn {
+  background: #15803d;
+  color: white;
+}
+
+.confirm-reject-btn {
+  background: #dc2626;
+  color: white;
+}
+
+.confirm-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+
+
+
+
+
+
+/* Collapsible dashboard sections */
+
+.fees-management__collapse-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.fees-management__collapse-toggle:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.fees-management__collapse-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.fees-management__collapse-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.fees-management__collapse-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.fees-management__collapse-description {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.fees-management__section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.fees-management__section-actions {
+  min-width: 0;
+}
+
+.fees-management__section-body {
+  min-width: 0;
+  margin-top: 18px;
+}
+
+/* Tables */
+
+.fees-management__table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.fees-management__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.fees-management__table th,
+.fees-management__table td {
+  padding: 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.fees-management__table td small {
+  display: block;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
+
+.fees-management__pending-table {
+  min-width: 1500px;
+}
+
+.fees-management__pending-table th,
+.fees-management__pending-table td {
+  vertical-align: top;
+}
+
+.fees-management__pending-table input {
+  width: 180px;
+  min-width: 150px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.fees-management__table-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 100px;
+}
+
+.fees-management__table-actions button {
+  white-space: nowrap;
+}
+
+/* Payment method details */
+
+.fees-management__method-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+/* Responsive layout */
+
+@media (max-width: 768px) {
+  .fees-management__collapse-toggle {
+    align-items: flex-start;
+  }
+
+  .fees-management__section-actions {
+    width: 100%;
+  }
+
+  .fees-management__section-actions input,
+  .fees-management__student-search,
+  .fees-management__search {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .fees-management__table th,
+  .fees-management__table td {
+    padding: 9px;
+  }
+}
