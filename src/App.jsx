@@ -13,6 +13,7 @@ const Login = lazy(() => import("./HomePage/Login/Login"));
 const Forgot = lazy(() => import("./HomePage/ForgotPassword"));
 const Signup = lazy(() => import("./HomePage/Signup/Signup"));
 const SignupConfirm = lazy(() => import("./HomePage/Signup/SignupConfirm"));
+const Game = lazy(() => import("./Components/WaitingGame/WaitingGame"));
 
 // Common
 const About = lazy(() => import("./Components/About/About"));
@@ -116,6 +117,11 @@ function App() {
             <Route
               path="/:domain/forgot-password"
               element={<Forgot />}
+            />
+
+            <Route
+              path="/game"
+              element={<Game />}
             />
 
 

@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate , Link} from "react-router-dom";
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/footer";
+
+// import Game from "../../Components/WaitingGame/WaitingGame";
+
 import "./Home.css";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
@@ -98,11 +101,26 @@ const Home = () => {
 
             <Navbar />
 
+{/* Game at the top of Home page */}
+{/* <section className="home-game-section">
+    <Game />
+</section> */}
+
+
+
+
             {/* ── Hero ────────────────────────────────────────────────────────────── */}
             <div className="home-container ">
                 {/* Background Logo */}
                 <div className="background-logo"></div>
-
+<div className="flex justify-end">
+  <Link
+    to="/game"
+    className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+  >
+    🎮 Play Game
+  </Link>
+</div>
                 <div className="logoTitle">
                     {/* Top Logo */}
                     <img src="/Logo.png" alt="Platform Logo" className="top-logo" />

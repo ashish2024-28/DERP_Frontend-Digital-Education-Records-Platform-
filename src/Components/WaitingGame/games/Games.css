@@ -1,0 +1,351 @@
+
+.game-panel {
+    width: 100%;
+    padding: 22px;
+    margin-top: 22px;
+    border: 1px solid var(--wg-border, #e4e7ec);
+    border-radius: 20px;
+    background: var(--wg-panel, #ffffff);
+    color: var(--wg-text, #182230);
+    box-sizing: border-box;
+}
+
+.game-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.game-eyebrow {
+    color: #4285f4;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.game-heading h2 {
+    margin: 6px 0;
+    font-size: 1.35rem;
+    font-weight: 800;
+}
+
+.game-heading p {
+    margin: 0;
+    color: var(--wg-muted, #667085);
+    font-size: 0.9rem;
+}
+
+.game-score {
+    min-width: 70px;
+    padding: 10px;
+    text-align: center;
+    border-radius: 12px;
+    background: var(--wg-soft, #f2f4f7);
+}
+
+.game-score span,
+.game-clock span {
+    display: block;
+    color: var(--wg-muted, #667085);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.game-score strong {
+    display: block;
+    margin-top: 3px;
+    font-size: 1.5rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.game-duration-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.game-option,
+.game-primary {
+    min-height: 42px;
+    padding: 10px 16px;
+    border: 1px solid var(--wg-border, #d0d5dd);
+    border-radius: 11px;
+    background: var(--wg-panel, #ffffff);
+    color: var(--wg-text, #344054);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.game-option {
+    flex: 1;
+}
+
+.game-option.selected {
+    border-color: #4285f4;
+    background: #eaf1ff;
+    color: #1d4ed8;
+}
+
+.game-option:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.game-primary {
+    width: 100%;
+    border-color: #2563eb;
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.game-primary:hover:not(:disabled) {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+.game-clock {
+    margin: 22px 0 16px;
+    text-align: center;
+}
+
+.game-clock strong {
+    display: block;
+    margin-top: 5px;
+    font-size: 2rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.click-play-area,
+.memory-area {
+    margin-top: 18px;
+    text-align: center;
+}
+
+.click-play-area > p,
+.memory-instruction {
+    color: var(--wg-muted, #667085);
+    font-size: 0.9rem;
+}
+
+.click-target {
+    display: grid;
+    place-items: center;
+    width: 94px;
+    height: 94px;
+    margin: 18px auto;
+    border: 0;
+    border-radius: 24px;
+    background: var(--target-color, #4285f4);
+    color: white;
+    font-size: 2.2rem;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 8px 20px #0000001a;
+    transition: transform 0.12s;
+    touch-action: manipulation;
+    user-select: none;
+}
+
+.click-target:hover {
+    transform: scale(1.05);
+}
+
+.click-target:active {
+    transform: scale(0.94);
+}
+
+.game-hint {
+    font-size: 0.8rem;
+    color: var(--wg-muted, #667085);
+}
+
+.game-result {
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 14px;
+    background: var(--wg-soft, #f8fafc);
+    text-align: center;
+}
+
+.game-result h3 {
+    margin: 0 0 8px;
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+.game-result p {
+    margin: 8px 0 16px;
+    line-height: 1.6;
+}
+
+.game-result .game-option {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.memory-stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 20px 0;
+}
+
+.memory-stats span {
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: var(--wg-soft, #f2f4f7);
+    color: var(--wg-muted, #475467);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.memory-sequence {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 20px 0;
+}
+
+.memory-digit {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 48px;
+    border-radius: 10px;
+    background: #eaf1ff;
+    color: #1d4ed8;
+    font-size: 1.35rem;
+    font-weight: 800;
+}
+
+.memory-countdown {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 1.6rem;
+    font-weight: 900;
+}
+
+.memory-countdown span {
+    color: var(--wg-muted, #667085);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.memory-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.memory-option {
+    display: flex;
+    min-width: 0;
+    min-height: 78px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 8px;
+    border: 1px solid var(--wg-border, #d0d5dd);
+    border-radius: 13px;
+    background: var(--wg-panel, #ffffff);
+    color: var(--wg-text, #182230);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+}
+
+.memory-option:hover {
+    border-color: #4285f4;
+    background: var(--wg-soft, #f5f8ff);
+    transform: translateY(-1px);
+}
+
+.memory-option-label {
+    color: var(--wg-muted, #667085);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.memory-option-digits {
+    overflow-wrap: anywhere;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 480px) {
+    .game-panel {
+        padding: 16px;
+    }
+
+    .game-heading h2 {
+        font-size: 1.1rem;
+    }
+
+    .game-heading p {
+        font-size: 0.82rem;
+    }
+
+    .game-score {
+        min-width: 56px;
+        padding: 8px;
+    }
+
+    .memory-options {
+        gap: 8px;
+    }
+
+    .memory-option-digits {
+        font-size: 0.88rem;
+        letter-spacing: 0;
+    }
+}
+
+body.dark .game-panel {
+    --wg-panel: #171b26;
+    --wg-text: #f3f4f6;
+    --wg-muted: #a6afc0;
+    --wg-border: #343b4b;
+    --wg-soft: #242b3a;
+}
+
+body.dark .game-option.selected {
+    background: #1e3358;
+    color: #bfdbfe;
+}
+
+body.dark .memory-digit {
+    background: #1e3358;
+    color: #bfdbfe;
+}
+
+
+
+
+
+
+body.light .game-panel {
+    --wg-panel: #171b26;
+    --wg-text: #f3f4f6;
+    --wg-muted: #a6afc0;
+    --wg-border: #343b4b;
+    --wg-soft: #242b3a;
+}
+
+body.light .game-option.selected {
+    background: #1e3358;
+    color: #bfdbfe;
+}
+
+body.light .memory-digit {
+    background: #1e3358;
+    color: #bfdbfe;
+}
