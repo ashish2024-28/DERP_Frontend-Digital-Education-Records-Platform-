@@ -7,6 +7,9 @@ import { ThemeProvider } from "./Components/DarakNLightMode/ThemeContext";
 // 404
 import NotFound from "./Error/NotFound_404/NotFound";
 
+
+import { Analytics } from "@vercel/analytics/react"
+
 // Home
 const Home = lazy(() => import("./HomePage/Home/Home"));
 const Login = lazy(() => import("./HomePage/Login/Login"));
@@ -61,288 +64,292 @@ const StudentErpAttendence = lazy(() => import("./Dashboard/StudentDashboard/Stu
 
 function App() {
   return (
-    <ThemeProvider>
-      <BrowserRouter>
+    <div>
 
-        {/* ONE GLOBAL THEME TOGGLE */}
-        <ThemeToggle />
+      <ThemeProvider>
+        <BrowserRouter>
 
-        <Suspense fallback={<div className="route-loading" role="status">Loading page...</div>}>
-          <Routes>
+          {/* ONE GLOBAL THEME TOGGLE */}
+          <ThemeToggle />
 
-            {/* ================= HOME ================= */}
+          <Suspense fallback={<div className="route-loading" role="status">Loading page...</div>}>
+            <Routes>
 
-            <Route path="/" element={<Home />} />
+              {/* ================= HOME ================= */}
 
-            <Route path="/about" element={<About />} />
+              <Route path="/" element={<Home />} />
 
-            <Route path="/contact" element={<Contact />} />
+              <Route path="/about" element={<About />} />
 
-            <Route path="/admin/dashboard" element={<PlatformAdminDashboard />} />
+              <Route path="/contact" element={<Contact />} />
 
-            <Route
-              path="/HomePage/university-register"
-              element={<UniversityRegister />}
-            />
+              <Route path="/admin/dashboard" element={<PlatformAdminDashboard />} />
 
-{/* :domain     → university/domain
+              <Route
+                path="/HomePage/university-register"
+                element={<UniversityRegister />}
+              />
+
+              {/* :domain     → university/domain
 :role       → logged-in role, e.g. domainAdmin
 :userType   → student / faculty / subAdmin / feesAdmin
 :userId     → rollNumber / facultyId / subAdminId / feesAdminId */}
-            <Route
-              path="/:domain/:role/:userType/:userId"
-              element={<ProfileDashboard />}
-            />
-            {/* 
+              <Route
+                path="/:domain/:role/:userType/:userId"
+                element={<ProfileDashboard />}
+              />
+              {/* 
 
 
 
             {/* ================= AUTH ================= */}
 
-            <Route
-              path="/:domain/login"
-              element={<Login />}
-            />
-
-            <Route
-              path="/:domain/signup"
-              element={<Signup />}
-            />
-
-            <Route
-              path="/:domain/signup/confirm"
-              element={<SignupConfirm />}
-            />
-
-            <Route
-              path="/:domain/forgot-password"
-              element={<Forgot />}
-            />
-
-            <Route
-              path="/game"
-              element={<Game />}
-            />
-
-
-            {/* ================= STUDENT ================= */}
-
-            <Route
-              path="/:domain/student/dashboard"
-              element={<StudentDashboard />}
-            >
-
               <Route
-                path="certification"
-                element={<Certification />}
+                path="/:domain/login"
+                element={<Login />}
               />
 
               <Route
-                path="student-erp-attendence"
-                element={<StudentErpAttendence />}
+                path="/:domain/signup"
+                element={<Signup />}
               />
 
               <Route
-                path="fees"
-                element={<Fees />}
+                path="/:domain/signup/confirm"
+                element={<SignupConfirm />}
               />
 
               <Route
-                path="notepad"
-                element={<Notepad />}
+                path="/:domain/forgot-password"
+                element={<Forgot />}
               />
 
               <Route
-                path="assignment"
-                element={<Assignment />}
+                path="/game"
+                element={<Game />}
               />
+
+
+              {/* ================= STUDENT ================= */}
 
               <Route
-                path="test-quize"
-                element={<TestQuize />}
-              />
+                path="/:domain/student/dashboard"
+                element={<StudentDashboard />}
+              >
+
+                <Route
+                  path="certification"
+                  element={<Certification />}
+                />
+
+                <Route
+                  path="student-erp-attendence"
+                  element={<StudentErpAttendence />}
+                />
+
+                <Route
+                  path="fees"
+                  element={<Fees />}
+                />
+
+                <Route
+                  path="notepad"
+                  element={<Notepad />}
+                />
+
+                <Route
+                  path="assignment"
+                  element={<Assignment />}
+                />
+
+                <Route
+                  path="test-quize"
+                  element={<TestQuize />}
+                />
+
+                <Route
+                  path="notes"
+                  element={<Notes />}
+                />
+
+              </Route>
+
+
+              {/* ================= FACULTY ================= */}
 
               <Route
-                path="notes"
-                element={<Notes />}
-              />
+                path="/:domain/faculty/dashboard"
+                element={<FacultyDashboard />}
+              >
 
-            </Route>
+                <Route
+                  path="faculty-erp-attendence"
+                  element={<FacultyErpAttendence />}
+                />
 
+                <Route
+                  path="notepad"
+                  element={<Notepad />}
+                />
 
-            {/* ================= FACULTY ================= */}
+                <Route
+                  path="all-students"
+                  element={<AllStudents />}
+                />
 
-            <Route
-              path="/:domain/faculty/dashboard"
-              element={<FacultyDashboard />}
-            >
+                <Route
+                  path="notes"
+                  element={<Notes />}
+                />
 
-              <Route
-                path="faculty-erp-attendence"
-                element={<FacultyErpAttendence />}
-              />
+                <Route
+                  path="assignment"
+                  element={<Assignment />}
+                />
 
-              <Route
-                path="notepad"
-                element={<Notepad />}
-              />
+                <Route
+                  path="test-quize"
+                  element={<TestQuize />}
+                />
 
-              <Route
-                path="all-students"
-                element={<AllStudents />}
-              />
-
-              <Route
-                path="notes"
-                element={<Notes />}
-              />
-
-              <Route
-                path="assignment"
-                element={<Assignment />}
-              />
-
-              <Route
-                path="test-quize"
-                element={<TestQuize />}
-              />
-
-            </Route>
+              </Route>
 
 
-            {/* ================= SUB ADMIN ================= */}
-
-            <Route
-              path="/:domain/subadmin/dashboard"
-              element={<SubAdminDashboard />}
-            >
+              {/* ================= SUB ADMIN ================= */}
 
               <Route
-                path="all-students"
-                element={<AllStudents />}
-              />
+                path="/:domain/subadmin/dashboard"
+                element={<SubAdminDashboard />}
+              >
+
+                <Route
+                  path="all-students"
+                  element={<AllStudents />}
+                />
+
+                <Route
+                  path="all-faculty"
+                  element={<AllFaculty />}
+                />
+
+                <Route
+                  path="notepad"
+                  element={<Notepad />}
+                />
+
+                <Route
+                  path="attendance"
+                  element={<SubAdminErpAttendance />}
+                />
+
+              </Route>
+
+
+              {/* ================= FEES ADMIN ================= */}
 
               <Route
-                path="all-faculty"
-                element={<AllFaculty />}
-              />
+                path="/:domain/feesadmin/dashboard"
+                element={<FeesAdminDashboard />}
+              >
 
-              <Route
-                path="notepad"
-                element={<Notepad />}
-              />
+                <Route
+                  path="all-students"
+                  element={<AllStudents />}
+                />
 
-              <Route
-                path="attendance"
-                element={<SubAdminErpAttendance />}
-              />
+                <Route
+                  path="all-faculty"
+                  element={<AllFaculty />}
+                />
 
-            </Route>
+                <Route
+                  path="notepad"
+                  element={<Notepad />}
+                />
 
+                <Route
+                  path="fees"
+                  element={<FeesAccount />}
+                />
 
-            {/* ================= FEES ADMIN ================= */}
-
-            <Route
-              path="/:domain/feesadmin/dashboard"
-              element={<FeesAdminDashboard />}
-            >
-
-              <Route
-                path="all-students"
-                element={<AllStudents />}
-              />
-
-              <Route
-                path="all-faculty"
-                element={<AllFaculty />}
-              />
-
-              <Route
-                path="notepad"
-                element={<Notepad />}
-              />
-
-              <Route
-                path="fees"
-                element={<FeesAccount />}
-              />
-
-              {/* <Route
+                {/* <Route
               path="attendance"
               element={<SubAdminErpAttendance />}
             /> */}
 
-            </Route>
+              </Route>
 
 
-            {/* ================= DOMAIN ADMIN ================= */}
-
-            <Route
-              path="/:domain/domainAdmin/dashboard"
-              element={<DomainAdminDashboard />}
-            >
+              {/* ================= DOMAIN ADMIN ================= */}
 
               <Route
-                path="all-students"
-                element={<AllStudents />}
-              />
+                path="/:domain/domainAdmin/dashboard"
+                element={<DomainAdminDashboard />}
+              >
+
+                <Route
+                  path="all-students"
+                  element={<AllStudents />}
+                />
+
+                <Route
+                  path="all-faculty"
+                  element={<AllFaculty />}
+                />
+
+                <Route
+                  path="all-subAdmin"
+                  element={<AllSubAdmin />}
+                />
+
+                <Route
+                  path="all-feesAdmin"
+                  element={<AllFeesAdmin />}
+                />
+
+                <Route
+                  path="notepad"
+                  element={<Notepad />}
+                />
+
+
+                <Route
+                  path="attendance"
+                  element={<DomainAdminErpAttendence />}
+                />
+
+                <Route
+                  path="erp-activity"
+                  element={<DomainAdminErpActivity />}
+                />
+
+                <Route
+                  path="fees-account"
+                  element={<DomainAdminFeesAccount />}
+                />
+
+                <Route
+                  path="admin-erp-attendence"
+                  element={<DomainAdminErpAttendence />}
+                />
+
+              </Route>
+
+
+              {/* ================= 404 ================= */}
 
               <Route
-                path="all-faculty"
-                element={<AllFaculty />}
+                path="*"
+                element={<NotFound />}
               />
 
-              <Route
-                path="all-subAdmin"
-                element={<AllSubAdmin />}
-              />
+            </Routes>
+          </Suspense>
 
-              <Route
-                path="all-feesAdmin"
-                element={<AllFeesAdmin />}
-              />
-
-              <Route
-                path="notepad"
-                element={<Notepad />}
-              />
-
-
-              <Route
-                path="attendance"
-                element={<DomainAdminErpAttendence />}
-              />
-
-              <Route
-                path="erp-activity"
-                element={<DomainAdminErpActivity />}
-              />
-
-              <Route
-                path="fees-account"
-                element={<DomainAdminFeesAccount />}
-              />
-
-              <Route
-                path="admin-erp-attendence"
-                element={<DomainAdminErpAttendence />}
-              />
-
-            </Route>
-
-
-            {/* ================= 404 ================= */}
-
-            <Route
-              path="*"
-              element={<NotFound />}
-            />
-
-          </Routes>
-        </Suspense>
-
-      </BrowserRouter>
-    </ThemeProvider>
+        </BrowserRouter>
+      </ThemeProvider>
+      <Analytics />
+    </div>
   );
 }
 
